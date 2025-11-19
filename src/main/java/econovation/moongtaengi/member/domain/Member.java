@@ -23,9 +23,6 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private MemberStatus status;
 
-    @Column(name = "interest_category_id")
-    private Long interestCategoryId;
-
     // 카카오 로그인 시 임시 회원 생성
     public static Member createTemporaryMember(String kakaoId) {
         Member member = new Member();
