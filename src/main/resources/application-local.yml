@@ -1,0 +1,6 @@
+server:
+  port: 8080
+
+oauth:
+  kakao:
+    frontend-redirect-uri: http://localhost:3000
