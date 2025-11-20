@@ -2,7 +2,9 @@ package econovation.moongtaengi.global.oauth;
 
 import econovation.moongtaengi.global.exception.KakaoAuthException;
 import econovation.moongtaengi.global.exception.KakaoServerException;
+import econovation.moongtaengi.global.oauth.dto.KakaoTokenResponse;
 import java.time.Duration;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
@@ -13,19 +15,20 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
 
+@Slf4j
 @Component
 public class KakaoOAuthClient {
 
     private static final int CONNECTION_TIMEOUT_MS = 5000;  // 5초
     private static final int READ_TIMEOUT_MS = 10000;
 
-    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
+    @Value("${oauth.kakao.client-id}")
     private String clientId;
-    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
+    @Value("${oauth.kakao.redirect-uri}")
     private String redirectUri;
-    @Value("${spring.security.oauth2.client.provider.kakao.token-uri}")
+    @Value("${oauth.kakao.token-uri}")
     private String tokenUri;
-    @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
+    @Value("${oauth.kakao.user-info-uri}")
     private String userInfoUri;
 
     private final RestClient restClient;
@@ -41,7 +44,6 @@ public class KakaoOAuthClient {
                 .build();
     }
 
-
     public String getAccessToken(String code) {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("grant_type", "authorization_code");
@@ -50,23 +52,29 @@ public class KakaoOAuthClient {
         formData.add("code", code);
 
         try {
-            return restClient.post()
+            KakaoTokenResponse response = restClient.post()
                     .uri(tokenUri)
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                     .body(formData)
                     .retrieve()
-                    .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
+                    .onStatus(HttpStatusCode::is4xxClientError, (request, res) -> {
                         throw new KakaoAuthException();
                     })
-                    .onStatus(HttpStatusCode::is5xxServerError, (request, response) -> {
+                    .onStatus(HttpStatusCode::is5xxServerError, (request, res) -> {
                         throw new KakaoServerException();
                     })
-                    .body(String.class);
+                    .body(KakaoTokenResponse.class);
+
+            if (response == null || response.accessToken() == null) {
+                throw new KakaoAuthException();
+            }
+
+            return response.accessToken();
+
         } catch (KakaoAuthException | KakaoServerException e) {
             throw new KakaoAuthException(e);
         }
     }
-
 
     public String getKakaoId(String accessToken) {
         try {
