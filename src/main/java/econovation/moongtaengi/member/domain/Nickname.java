@@ -18,7 +18,7 @@ public class Nickname {
     private static final int MAX_LENGTH = 7;
     private static final Pattern PATTERN = Pattern.compile("^[가-힣0-9]+$");
 
-    @Column(name = "nickname", nullable = false, unique = true)
+    @Column(name = "nickname", unique = true)
     private String value;
 
     public Nickname(String value) {
