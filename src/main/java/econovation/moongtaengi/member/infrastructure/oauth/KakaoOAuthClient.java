@@ -1,13 +1,12 @@
 package econovation.moongtaengi.member.infrastructure.oauth;
 
-import econovation.moongtaengi.global.exception.KakaoAuthException;
-import econovation.moongtaengi.global.exception.KakaoServerException;
+import econovation.moongtaengi.member.infrastructure.oauth.exception.KakaoAuthException;
+import econovation.moongtaengi.member.infrastructure.oauth.exception.KakaoServerException;
 import econovation.moongtaengi.member.infrastructure.oauth.config.KakaoConfig;
 import econovation.moongtaengi.member.infrastructure.oauth.dto.KakaoTokenResponse;
 import econovation.moongtaengi.member.infrastructure.oauth.dto.KakaoUserInfoResponse;
 import java.time.Duration;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
