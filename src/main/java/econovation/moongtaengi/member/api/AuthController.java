@@ -36,7 +36,7 @@ public class AuthController {
         // 임시 회원
         if (response.needsAdditionalInfo()) {
             return UriComponentsBuilder
-                    .fromUriString(frontendRedirectUri + "/signup/additional-info")
+                    .fromUriString(frontendRedirectUri + "/signup")
                     .queryParam("memberId", response.memberId())
                     .build()
                     .toUriString();

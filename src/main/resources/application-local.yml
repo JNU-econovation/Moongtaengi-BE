@@ -3,4 +3,4 @@ server:
 
 oauth:
   kakao:
-    frontend-redirect-uri: http://localhost:3000
+    frontend-redirect-uri: http://localhost:5173
