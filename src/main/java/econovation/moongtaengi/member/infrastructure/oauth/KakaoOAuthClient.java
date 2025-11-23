@@ -3,6 +3,7 @@ package econovation.moongtaengi.member.infrastructure.oauth;
 import econovation.moongtaengi.global.exception.KakaoAuthException;
 import econovation.moongtaengi.global.exception.KakaoServerException;
 import econovation.moongtaengi.member.infrastructure.oauth.dto.KakaoTokenResponse;
+import econovation.moongtaengi.member.infrastructure.oauth.dto.KakaoUserInfoResponse;
 import java.time.Duration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -77,17 +78,24 @@ public class KakaoOAuthClient {
 
     public String getKakaoId(String accessToken) {
         try {
-            return restClient.get()
+            KakaoUserInfoResponse response = restClient.get()
                     .uri(userInfoUri)
                     .header("Authorization", "Bearer " + accessToken)
                     .retrieve()
-                    .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
+                    .onStatus(HttpStatusCode::is4xxClientError, (request, res) -> {
                         throw new KakaoAuthException();
                     })
-                    .onStatus(HttpStatusCode::is5xxServerError, (request, response) -> {
+                    .onStatus(HttpStatusCode::is5xxServerError, (request, res) -> {
                         throw new KakaoServerException();
                     })
-                    .body(String.class);
+                    .body(KakaoUserInfoResponse.class);
+
+            if (response == null || response.id() == null) {
+                throw new KakaoAuthException();
+            }
+
+            return String.valueOf(response.id());
+
         } catch (KakaoAuthException | KakaoServerException e) {
             throw new KakaoAuthException(e);
         }
