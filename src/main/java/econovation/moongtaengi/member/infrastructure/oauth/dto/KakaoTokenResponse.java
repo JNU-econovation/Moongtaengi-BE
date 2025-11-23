@@ -1,4 +1,4 @@
-package econovation.moongtaengi.global.oauth.dto;
+package econovation.moongtaengi.member.infrastructure.oauth.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
