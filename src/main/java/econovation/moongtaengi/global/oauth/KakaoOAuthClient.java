@@ -3,8 +3,7 @@ package econovation.moongtaengi.global.oauth;
 import econovation.moongtaengi.global.exception.KakaoAuthException;
 import econovation.moongtaengi.global.exception.KakaoServerException;
 import econovation.moongtaengi.global.oauth.dto.KakaoTokenResponse;
-import java.time.Duration;
-import java.util.Map;
+import java.time.Duration;ㅎ
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
