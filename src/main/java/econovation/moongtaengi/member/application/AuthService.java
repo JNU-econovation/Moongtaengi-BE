@@ -21,14 +21,7 @@ public class AuthService {
     public KakaoLoginResponse loginWithKakao(String code) {
         String kakaoAccessToken = kakaoOAuthClient.getAccessToken(code);
 
-        if (kakaoAccessToken == null) {
-            throw new KakaoAuthException();
-        }
-
         String kakaoId = kakaoOAuthClient.getKakaoId(kakaoAccessToken);
-        if (kakaoId == null) {
-            throw new KakaoAuthException();
-        }
 
         Member member = memberRepository.findByKakaoId(kakaoId)
                 .orElseGet(() -> createTemporaryMember(kakaoId));
