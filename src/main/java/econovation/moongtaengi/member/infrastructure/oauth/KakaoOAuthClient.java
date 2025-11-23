@@ -2,6 +2,7 @@ package econovation.moongtaengi.member.infrastructure.oauth;
 
 import econovation.moongtaengi.global.exception.KakaoAuthException;
 import econovation.moongtaengi.global.exception.KakaoServerException;
+import econovation.moongtaengi.member.infrastructure.oauth.config.KakaoConfig;
 import econovation.moongtaengi.member.infrastructure.oauth.dto.KakaoTokenResponse;
 import econovation.moongtaengi.member.infrastructure.oauth.dto.KakaoUserInfoResponse;
 import java.time.Duration;
@@ -22,22 +23,16 @@ public class KakaoOAuthClient {
     private static final int CONNECTION_TIMEOUT_MS = 5000;  // 5초
     private static final int READ_TIMEOUT_MS = 10000;
 
-    @Value("${oauth.kakao.client-id}")
-    private String clientId;
-    @Value("${oauth.kakao.redirect-uri}")
-    private String redirectUri;
-    @Value("${oauth.kakao.token-uri}")
-    private String tokenUri;
-    @Value("${oauth.kakao.user-info-uri}")
-    private String userInfoUri;
-
+    private final KakaoConfig kakaoConfig;
     private final RestClient restClient;
 
-    public KakaoOAuthClient() {
+    public KakaoOAuthClient(KakaoConfig kakaoConfig) {
 
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(Duration.ofMillis(CONNECTION_TIMEOUT_MS));
         requestFactory.setReadTimeout(Duration.ofMillis(READ_TIMEOUT_MS));
+
+        this.kakaoConfig = kakaoConfig;
 
         this.restClient = RestClient.builder()
                 .requestFactory(requestFactory)
@@ -47,13 +42,13 @@ public class KakaoOAuthClient {
     public String getAccessToken(String code) {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("grant_type", "authorization_code");
-        formData.add("client_id", clientId);
-        formData.add("redirect_uri", redirectUri);
+        formData.add("client_id", kakaoConfig.clientId());
+        formData.add("redirect_uri", kakaoConfig.redirectUri());
         formData.add("code", code);
 
         try {
             KakaoTokenResponse response = restClient.post()
-                    .uri(tokenUri)
+                    .uri(kakaoConfig.tokenUri())
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                     .body(formData)
                     .retrieve()
@@ -79,7 +74,7 @@ public class KakaoOAuthClient {
     public String getKakaoId(String accessToken) {
         try {
             KakaoUserInfoResponse response = restClient.get()
-                    .uri(userInfoUri)
+                    .uri(kakaoConfig.userInfoUri())
                     .header("Authorization", "Bearer " + accessToken)
                     .retrieve()
                     .onStatus(HttpStatusCode::is4xxClientError, (request, res) -> {
