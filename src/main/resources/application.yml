@@ -23,6 +23,11 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+        jdbc:
+          time_zone: Asia/Seoul
+
+  jackson:
+    time-zone: Asia/Seoul
 oauth:
   kakao:
     client-id: ${KAKAO_CLIENT_ID}
