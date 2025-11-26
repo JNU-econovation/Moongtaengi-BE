@@ -2,6 +2,7 @@ package econovation.moongtaengi.member.domain;
 
 import econovation.moongtaengi.global.entity.BaseEntity;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -15,6 +16,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
+    @Embedded
+    private Nickname nickname;
 
     @Column(nullable = false, unique = true)
     private String kakaoId;
