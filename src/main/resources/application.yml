@@ -1,6 +1,8 @@
 spring:
   application:
     name: moongtaengi
+  profiles:
+    default: local
 
   jackson:
     time-zone: Asia/Seoul
