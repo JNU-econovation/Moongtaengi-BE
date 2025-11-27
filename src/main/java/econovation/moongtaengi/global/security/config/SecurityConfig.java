@@ -38,6 +38,7 @@ public class SecurityConfig {
                         // 인증 불필요 (public)
                         .requestMatchers(
                                 "/api/auth/kakao/callback",
+                                "/api/members/check-nickname",
                                 "/h2-console/**",
                                 "/error"
                         ).permitAll()
