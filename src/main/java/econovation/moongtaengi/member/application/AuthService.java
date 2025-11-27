@@ -1,5 +1,6 @@
 package econovation.moongtaengi.member.application;
 
+import econovation.moongtaengi.global.security.JwtTokenProvider;
 import econovation.moongtaengi.member.infrastructure.oauth.KakaoOAuthClient;
 import econovation.moongtaengi.member.domain.Member;
 import econovation.moongtaengi.member.domain.MemberRepository;
@@ -13,8 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuthService {
+
     private final MemberRepository memberRepository;
     private final KakaoOAuthClient kakaoOAuthClient;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     public KakaoLoginResponse loginWithKakao(String code) {
@@ -25,8 +28,13 @@ public class AuthService {
         Member member = memberRepository.findByKakaoId(kakaoId)
                 .orElseGet(() -> createTemporaryMember(kakaoId));
 
+        String accessToken = jwtTokenProvider.createAccessToken(member.getId());
+
+        log.info("로그인 성공 - memberId: {}, needsInfo: {}",
+                member.getId(), member.isTemporary());
+
         return new KakaoLoginResponse(
-                member.getId(),
+                accessToken,
                 member.isTemporary()
         );
     }
@@ -39,7 +47,7 @@ public class AuthService {
     }
 
     public record KakaoLoginResponse(
-            Long memberId,
+            String accessToken,
             boolean needsAdditionalInfo  // true면 추가정보 입력 페이지로 이동
     ) {}
 }
