@@ -53,10 +53,12 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/moongtaengi-server:latest
             
             echo "${{ secrets.ENV_FILE }}" > .env
+            chmod 600 .env
             
             sudo docker run -d --name moongtaengi-server \
                           --env-file .env \
                           -p 8080:8080 \
                           ${{ secrets.DOCKER_USERNAME }}/moongtaengi-server:latest
             
+            rm.env
             sudo docker image prune -f
