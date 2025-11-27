@@ -33,19 +33,14 @@ public class AuthController {
     }
 
     private String buildRedirectUrl(KakaoLoginResponse response) {
-        // 임시 회원
-        if (response.needsAdditionalInfo()) {
-            return UriComponentsBuilder
-                    .fromUriString(frontendRedirectUri + "/signup")
-                    .queryParam("memberId", response.memberId())
-                    .build()
-                    .toUriString();
-        }
 
-        // 기존 회원
+        String path = response.needsAdditionalInfo()
+                ? "/signup"
+                : "/";
+
         return UriComponentsBuilder
-                .fromUriString(frontendRedirectUri + "/")
-                .queryParam("memberId", response.memberId())
+                .fromUriString(frontendRedirectUri + path)
+                .queryParam("token", response.accessToken())
                 .build()
                 .toUriString();
     }
