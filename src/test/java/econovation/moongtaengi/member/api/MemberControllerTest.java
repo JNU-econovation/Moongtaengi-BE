@@ -5,17 +5,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
+import econovation.moongtaengi.global.security.JwtAuthenticationEntryPoint;
+import econovation.moongtaengi.global.security.JwtTokenProvider;
+import econovation.moongtaengi.global.security.config.SecurityConfig;
 import econovation.moongtaengi.member.application.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(MemberController.class)
+@Import(SecurityConfig.class)
 @MockitoBean(types = JpaMetamodelMappingContext.class)
 public class MemberControllerTest {
     @Autowired
@@ -24,10 +29,16 @@ public class MemberControllerTest {
     @MockitoBean
     private MemberService memberService;
 
+    @MockitoBean
+    private JwtTokenProvider jwtTokenProvider;
+
+    @MockitoBean
+    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
     @Test
     @DisplayName("사용 가능한 닉네임은 isAvaiable = true를 반환한다.")
     void 닉네임_체크_성공() throws Exception {
-        String validName = "뭉탱이";
+        String validName = "뭉탱이1";
 
         mvc.perform(get("/api/members/check-nickname")
                     .param("nickname", validName)
@@ -40,7 +51,7 @@ public class MemberControllerTest {
     @Test
     @DisplayName("중복되거나 비속어인 닉네임은 isAvailable=false와 메시지를 반환한다")
     void 닉네임_체크_실패() throws Exception {
-        String invalidNickname = "개똥이";
+        String invalidNickname = "개똥이1";
 
         doThrow(new IllegalArgumentException("비속어가 포함되어 있습니다."))
                 .when(memberService).checkNicknameAvailability(invalidNickname);
