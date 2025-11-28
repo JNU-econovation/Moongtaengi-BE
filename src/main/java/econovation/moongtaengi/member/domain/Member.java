@@ -1,6 +1,7 @@
 package econovation.moongtaengi.member.domain;
 
 import econovation.moongtaengi.global.entity.BaseEntity;
+import econovation.moongtaengi.member.exception.AlreadyRegisteredException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -32,6 +33,18 @@ public class Member extends BaseEntity {
         member.kakaoId = kakaoId;
         member.status = MemberStatus.TEMPORARY;
         return member;
+    }
+
+    public void completeRegistration(Nickname nickname) {
+        validateCanComplete();
+        this.nickname = nickname;
+        this.status = MemberStatus.ACTIVE;
+    }
+
+    private void validateCanComplete() {
+        if (this.status == MemberStatus.ACTIVE) {
+            throw new AlreadyRegisteredException();
+        }
     }
 
     public boolean isTemporary() {
