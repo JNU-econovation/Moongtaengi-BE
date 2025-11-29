@@ -21,7 +21,7 @@ public class Nickname {
     @Column(name = "nickname", unique = true)
     private String value;
 
-    Nickname(String value) {
+    public Nickname(String value) {
         validate(value);
         this.value = value;
     }
