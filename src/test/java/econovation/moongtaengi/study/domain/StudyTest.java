@@ -13,10 +13,11 @@ public class StudyTest {
         // given
         StudyName name = new StudyName("스프링 스터디");
         StudyPeriod period = new StudyPeriod(LocalDate.now(), LocalDate.now().plusDays(7));
+        StudyTopic topic = new StudyTopic("스프링부트 JPA");
         Long hostId = 1L;
 
         // when
-        Study study = new Study(name, period, hostId);
+        Study study = new Study(name, period, topic, hostId);
 
         // then
         assertThat(study).isNotNull();

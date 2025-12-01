@@ -9,7 +9,11 @@ import org.springframework.stereotype.Component;
 public class StudyFactory {
     private final StudyRepository studyRepository;
 
-    public Study createStudy(Long memberId, String rawName, LocalDate startDate, LocalDate endDate) {
+    public Study createStudy(Long memberId,
+            String rawName,
+            LocalDate startDate,
+            LocalDate endDate,
+            String topic) {
         int hostedCount = studyRepository.countByMemberIdAndRole(memberId, StudyRole.HOST);
 
         if (hostedCount >= 5) {
@@ -18,7 +22,8 @@ public class StudyFactory {
 
         StudyName studyName = new StudyName(rawName);
         StudyPeriod studyPeriod = new StudyPeriod(startDate, endDate);
+        StudyTopic studyTopic = new StudyTopic(topic);
 
-        return new Study(studyName, studyPeriod, memberId);
+        return new Study(studyName, studyPeriod, studyTopic, memberId);
     }
 }
