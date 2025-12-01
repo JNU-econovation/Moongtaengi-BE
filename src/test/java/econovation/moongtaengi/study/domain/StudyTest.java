@@ -2,6 +2,7 @@ package econovation.moongtaengi.study.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,10 +12,11 @@ public class StudyTest {
     void 스터디_생성_성공() {
         // given
         StudyName name = new StudyName("스프링 스터디");
+        StudyPeriod period = new StudyPeriod(LocalDate.now(), LocalDate.now().plusDays(7));
         Long hostId = 1L;
 
         // when
-        Study study = new Study(name, hostId);
+        Study study = new Study(name, period, hostId);
 
         // then
         assertThat(study).isNotNull();

@@ -20,11 +20,15 @@ public class Study extends BaseEntity {
     @Embedded
     StudyName name;
 
+    @Embedded
+    StudyPeriod period;
+
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StudyMember> members = new ArrayList<>();
 
-    public Study(StudyName name, Long hostId) {
+    public Study(StudyName name, StudyPeriod period, Long hostId) {
         this.name = name;
+        this.period = period;
         addMember(hostId, StudyRole.HOST); //스터디를 생성한 사람은 방장
     }
 

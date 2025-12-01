@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
+import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,11 +27,13 @@ public class StudyFactoryTest {
         // given
         Long hostId = 1L;
         String studyName = "스프링 스터디";
+        LocalDate start = LocalDate.now();
+        LocalDate end = start.plusDays(7);
         given(studyRepository.countByMemberIdAndRole(eq(hostId), eq(StudyRole.HOST)))
                 .willReturn(4);
 
         // when
-        Study study = studyFactory.createStudy(hostId, studyName);
+        Study study = studyFactory.createStudy(hostId, studyName, start, end);
 
         // then
         assertThat(study).isNotNull();
@@ -44,11 +47,13 @@ public class StudyFactoryTest {
     void 스터디_생성_제한_실패() {
         // given
         Long hostId = 1L;
+        LocalDate start = LocalDate.now();
+        LocalDate end = start.plusDays(7);
         given(studyRepository.countByMemberIdAndRole(eq(hostId), eq(StudyRole.HOST)))
                 .willReturn(5);
 
         // when & then
-        assertThatThrownBy(() -> studyFactory.createStudy(hostId, "새 스터디"))
+        assertThatThrownBy(() -> studyFactory.createStudy(hostId, "새 스터디", start, end))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("5개까지만");
     }
