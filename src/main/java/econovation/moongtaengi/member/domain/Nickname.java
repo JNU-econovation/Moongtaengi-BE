@@ -28,15 +28,15 @@ public class Nickname {
 
     private void validate(String value) {
         if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException("닉네임은 비어있을 수 없습니다.");
+            throw new NicknameException(MemberErrorCode.NICKNAME_NOT_BLANK);
         }
 
         if (value.length() < MIN_LENGTH || value.length() > MAX_LENGTH) {
-            throw new IllegalArgumentException("닉네임은 " + MIN_LENGTH + "자 이상 " + MAX_LENGTH + "자 이하여야 합니다.");
+            throw new NicknameException(MemberErrorCode.NICKNAME_LENGTH_INVALID, MIN_LENGTH, MAX_LENGTH);
         }
 
         if (!PATTERN.matcher(value).matches()) {
-            throw new IllegalArgumentException("닉네임은 한글과 숫자 조합으로만 가능합니다.");
+            throw new NicknameException(MemberErrorCode.NICKNAME_INVALID_PATTERN);
         }
     }
 }

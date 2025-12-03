@@ -24,24 +24,28 @@ public class NicknameTest {
     @DisplayName("닉네임은 null이거나 비어있을 수 없다")
     void 닉네임_null_빈값_체크() {
         assertThatThrownBy(() -> new Nickname(null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ERR_MSG_NULL);
+                .isInstanceOf(NicknameException.class)
+                .extracting("errorCode")
+                .isEqualTo(MemberErrorCode.NICKNAME_NOT_BLANK);
 
         assertThatThrownBy(() -> new Nickname(""))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ERR_MSG_NULL);
+                .isInstanceOf(NicknameException.class)
+                .extracting("errorCode")
+                .isEqualTo(MemberErrorCode.NICKNAME_NOT_BLANK);
     }
 
     @Test
     @DisplayName("닉네임 길이는 2자 이상 7자 이하여야 한다.")
     void 닉네임_길이_체크() {
         assertThatThrownBy(() -> new Nickname("뭉"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ERR_MSG_LENGTH);
+                .isInstanceOf(NicknameException.class)
+                .extracting("errorCode")
+                .isEqualTo(MemberErrorCode.NICKNAME_LENGTH_INVALID);
 
         assertThatThrownBy(() -> new Nickname("뭉탱이뭉탱이뭉탱이"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(ERR_MSG_LENGTH);
+                .isInstanceOf(NicknameException.class)
+                .extracting("errorCode")
+                .isEqualTo(MemberErrorCode.NICKNAME_LENGTH_INVALID);
     }
 
     @ParameterizedTest
@@ -49,9 +53,8 @@ public class NicknameTest {
     @DisplayName("닉네임이 한글 숫자 조합이 아닐 경우 예외가 발생한다.")
     void 닉네임_형식_체크(String invalidNickname) {
         assertThatThrownBy(() -> new Nickname(invalidNickname))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ERR_MSG_PATTERN);
+                .isInstanceOf(NicknameException.class)
+                .extracting("errorCode")
+                .isEqualTo(MemberErrorCode.NICKNAME_INVALID_PATTERN);
     }
-
-
 }
