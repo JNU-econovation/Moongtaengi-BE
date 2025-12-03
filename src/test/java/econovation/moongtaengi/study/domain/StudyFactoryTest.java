@@ -56,7 +56,8 @@ public class StudyFactoryTest {
 
         // when & then
         assertThatThrownBy(() -> studyFactory.createStudy(hostId, "새 스터디", start, end, topic))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("5개까지만");
+                .isInstanceOf(StudyCreateLimitException.class)
+                .extracting("errorCode")
+                .isEqualTo(StudyErrorCode.STUDY_CREATION_LIMIT_EXCEEDED);
     }
 }

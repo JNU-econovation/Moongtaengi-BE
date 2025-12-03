@@ -28,15 +28,15 @@ public class StudyName {
 
     private void validate(String value) {
         if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException("스터디 이름은 비어있을 수 없습니다.");
+            throw new StudyException(StudyErrorCode.NAME_NOT_BLANK);
         }
 
         if (value.length() < MIN_LENGTH || value.length() > MAX_LENGTH) {
-            throw new IllegalArgumentException("스터디 이름은 " + MIN_LENGTH + "자 이상 " + MAX_LENGTH + "자 이하여야 합니다.");
+            throw new StudyException(StudyErrorCode.NAME_LENGTH_INVALID, MIN_LENGTH, MAX_LENGTH);
         }
 
         if (!PATTERN.matcher(value).matches()) {
-            throw new IllegalArgumentException("스터디 이름의 형식이 올바르지 않습니다.");
+            throw new StudyException(StudyErrorCode.NAME_PATTERN_INVALID);
         }
     }
 }

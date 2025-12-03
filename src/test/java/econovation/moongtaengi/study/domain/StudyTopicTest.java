@@ -36,12 +36,14 @@ public class StudyTopicTest {
 
         //when&then
         assertThatThrownBy(() -> new StudyTopic(nullValue))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("필수");
+                .isInstanceOf(StudyException.class)
+                .extracting("errorCode")
+                .isEqualTo(StudyErrorCode.TOPIC_NOT_BLANK);
 
         assertThatThrownBy(() -> new StudyTopic(blankValue))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("필수");
+                .isInstanceOf(StudyException.class)
+                .extracting("errorCode")
+                .isEqualTo(StudyErrorCode.TOPIC_NOT_BLANK);
     }
 
     @Test
@@ -49,7 +51,8 @@ public class StudyTopicTest {
     void 주제_길이_체크() {
         String longTopic = "1234567890123456789011238746178236478126348716238471623874612387461412341234231123412341234123412341234321";
         assertThatThrownBy(() -> new StudyTopic(longTopic))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("50자");
+                .isInstanceOf(StudyException.class)
+                .extracting("errorCode")
+                .isEqualTo(StudyErrorCode.TOPIC_LENGTH_INVALID);
     }
 }

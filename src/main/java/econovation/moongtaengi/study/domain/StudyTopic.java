@@ -25,11 +25,11 @@ public class StudyTopic {
 
     private void validate(String value) {
         if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException("스터디 주제는 필수입니다.");
+            throw new StudyException(StudyErrorCode.TOPIC_NOT_BLANK);
         }
 
         if (value.length() > MAX_LENGTH) {
-            throw new IllegalArgumentException("스터디 주제는 최대 " + MAX_LENGTH + "자까지만 가능합니다.");
+            throw new StudyException(StudyErrorCode.TOPIC_LENGTH_INVALID, MAX_LENGTH);
         }
     }
 }
