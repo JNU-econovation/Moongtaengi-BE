@@ -6,10 +6,10 @@ import econovation.moongtaengi.global.exception.ErrorCode;
 public class KakaoAuthException extends BusinessException {
 
     public KakaoAuthException() {
-        super(ErrorCode.KAKAO_AUTH_FAILED);
+        super(KakaoErrorCode.KAKAO_AUTH_FAILED);
     }
 
     public KakaoAuthException(Throwable cause) {
-        super(ErrorCode.KAKAO_AUTH_FAILED, cause);
+        super(KakaoErrorCode.KAKAO_AUTH_FAILED, cause);
     }
 }

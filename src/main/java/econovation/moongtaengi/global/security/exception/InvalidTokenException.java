@@ -9,6 +9,6 @@ import econovation.moongtaengi.global.exception.ErrorCode;
 public class InvalidTokenException extends BusinessException {
 
     public InvalidTokenException() {
-        super(ErrorCode.INVALID_TOKEN);
+        super(AuthErrorCode.INVALID_TOKEN);
     }
 }

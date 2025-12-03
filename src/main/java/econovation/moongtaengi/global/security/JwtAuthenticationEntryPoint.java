@@ -3,6 +3,7 @@ package econovation.moongtaengi.global.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import econovation.moongtaengi.global.exception.ErrorCode;
 import econovation.moongtaengi.global.exception.ErrorResponse;
+import econovation.moongtaengi.global.security.exception.AuthErrorCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,7 +36,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         log.warn("인증 실패 - URI: {}, Message: {}",
                 request.getRequestURI(), authException.getMessage());
 
-        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.UNAUTHORIZED);
+        ErrorResponse errorResponse = ErrorResponse.of(AuthErrorCode.UNAUTHORIZED);
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
