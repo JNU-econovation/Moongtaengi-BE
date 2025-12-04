@@ -9,6 +9,6 @@ import econovation.moongtaengi.global.exception.ErrorCode;
 public class ExpiredTokenException extends BusinessException {
 
     public ExpiredTokenException() {
-        super(ErrorCode.EXPIRED_TOKEN);
+        super(AuthErrorCode.EXPIRED_TOKEN);
     }
 }

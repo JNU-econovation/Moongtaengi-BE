@@ -45,8 +45,9 @@ public class NicknameFactoryTest {
         given(badWordValidator.containsBadWord(badName)).willReturn(true);
 
         assertThatThrownBy(() -> nicknameFactory.createNickname(badName))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("비속어가 포함되어 있습니다.");
+                .isInstanceOf(NicknameException.class)
+                .extracting("errorCode")
+                .isEqualTo(MemberErrorCode.NICKNAME_BAD_WORD);
     }
 
     @Test
@@ -58,7 +59,8 @@ public class NicknameFactoryTest {
         given(memberRepository.existsByNicknameValue(duplicateName)).willReturn(true);
 
         assertThatThrownBy(() -> nicknameFactory.createNickname(duplicateName))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("이미 사용 중인 닉네임입니다.");
+                .isInstanceOf(NicknameException.class)
+                .extracting("errorCode")
+                .isEqualTo(MemberErrorCode.NICKNAME_DUPLICATED);
     }
 }

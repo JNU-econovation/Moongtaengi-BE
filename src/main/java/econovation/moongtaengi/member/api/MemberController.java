@@ -3,6 +3,7 @@ package econovation.moongtaengi.member.api;
 import econovation.moongtaengi.member.api.dto.CompleteRegistrationRequest;
 import econovation.moongtaengi.member.api.dto.NicknameCheckResponse;
 import econovation.moongtaengi.member.application.MemberService;
+import econovation.moongtaengi.member.domain.NicknameException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,21 +28,12 @@ public class MemberController {
 
     @GetMapping("/check-nickname")
     public ResponseEntity<NicknameCheckResponse> checkNickname(@RequestParam("nickname") String nickname) {
-        memberService.checkNicknameAvailability(nickname);
-
-        return ResponseEntity.ok(NicknameCheckResponse.available(nickname));
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class) //예외처리기 PR 머지 후 커스텀 예외 클래스로 변경 예정
-    public ResponseEntity<NicknameCheckResponse> handleIllegalArgumentException(
-            IllegalArgumentException e,
-            HttpServletRequest request
-    ) {
-        String nickname = request.getParameter("nickname");
-
-        return ResponseEntity.ok(
-                NicknameCheckResponse.unavailable(nickname, e.getMessage())
-        );
+        try {
+            memberService.checkNicknameAvailability(nickname);
+            return ResponseEntity.ok(NicknameCheckResponse.available(nickname));
+        } catch (NicknameException e) {
+            return ResponseEntity.ok(NicknameCheckResponse.unavailable(nickname, e.getErrorCode()));
+        }
     }
 
     @PostMapping("/me/complete-registration")

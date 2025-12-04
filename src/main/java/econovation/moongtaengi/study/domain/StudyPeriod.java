@@ -35,17 +35,17 @@ public class StudyPeriod {
 
     private void validate(LocalDate startDate, LocalDate endDate) {
         if (startDate == null || endDate == null) {
-            throw new IllegalArgumentException("시작일과 종료일은 필수입니다.");
+            throw new StudyException(StudyErrorCode.PERIOD_NOT_NULL);
         }
 
         if (endDate.isBefore(startDate)) {
-            throw new IllegalArgumentException("종료일이 시작일보다 앞에 있을 수 없습니다.");
+            throw new StudyException(StudyErrorCode.PERIOD_DATE_INVALID);
         }
 
         long days = ChronoUnit.DAYS.between(startDate, endDate) + 1;
 
         if (days < MIN_TOTAL_DAYS || days > MAX_TOTAL_DAYS) {
-            throw new IllegalArgumentException("기간은 " + MIN_TOTAL_DAYS + " 이상 " + MAX_TOTAL_DAYS + " 이하여야 합니다.");
+            throw new StudyException(StudyErrorCode.PERIOD_DAYS_INVALID, MIN_TOTAL_DAYS, MAX_TOTAL_DAYS);
         }
     }
 }

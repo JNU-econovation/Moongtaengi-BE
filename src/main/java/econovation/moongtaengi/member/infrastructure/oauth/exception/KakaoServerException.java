@@ -6,10 +6,10 @@ import econovation.moongtaengi.global.exception.ErrorCode;
 public class KakaoServerException extends BusinessException {
 
     public KakaoServerException() {
-            super(ErrorCode.KAKAO_SERVER_ERROR);
+            super(KakaoErrorCode.KAKAO_SERVER_ERROR);
         }
 
     public KakaoServerException(Throwable cause) {
-            super(ErrorCode.KAKAO_SERVER_ERROR, cause);
+            super(KakaoErrorCode.KAKAO_SERVER_ERROR, cause);
         }
     }

@@ -1,7 +1,6 @@
 package econovation.moongtaengi.member.domain;
 
 import econovation.moongtaengi.global.entity.BaseEntity;
-import econovation.moongtaengi.member.exception.AlreadyRegisteredException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;

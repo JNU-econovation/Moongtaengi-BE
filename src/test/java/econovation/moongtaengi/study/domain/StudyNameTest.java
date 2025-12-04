@@ -3,6 +3,7 @@ package econovation.moongtaengi.study.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import econovation.moongtaengi.member.domain.NicknameException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -44,12 +45,14 @@ public class StudyNameTest {
 
         //when&then
         assertThatThrownBy(() -> new StudyName(nullValue))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("스터디 이름은 비어있을 수 없습니다.");
+                .isInstanceOf(StudyException.class)
+                .extracting("errorCode")
+                .isEqualTo(StudyErrorCode.NAME_NOT_BLANK);
 
         assertThatThrownBy(() -> new StudyName(blankValue))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("스터디 이름은 비어있을 수 없습니다.");
+                .isInstanceOf(StudyException.class)
+                .extracting("errorCode")
+                .isEqualTo(StudyErrorCode.NAME_NOT_BLANK);
     }
 
     @Test
@@ -61,12 +64,14 @@ public class StudyNameTest {
 
         //when&then
         assertThatThrownBy(() -> new StudyName(shortName))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("2자 이상");
+                .isInstanceOf(StudyException.class)
+                .extracting("errorCode")
+                .isEqualTo(StudyErrorCode.NAME_LENGTH_INVALID);
 
         assertThatThrownBy(() -> new StudyName(longName))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("10자 이하");
+                .isInstanceOf(StudyException.class)
+                .extracting("errorCode")
+                .isEqualTo(StudyErrorCode.NAME_LENGTH_INVALID);
     }
 
     @ParameterizedTest
@@ -75,7 +80,8 @@ public class StudyNameTest {
     void 스터디이름_형식_체크(String invalidValue) {
         //when&then
         assertThatThrownBy(() -> new StudyName(invalidValue))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("스터디 이름의 형식이 올바르지 않습니다.");
+                .isInstanceOf(StudyException.class)
+                .extracting("errorCode")
+                .isEqualTo(StudyErrorCode.NAME_PATTERN_INVALID);
     }
 }

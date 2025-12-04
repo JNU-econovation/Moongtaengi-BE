@@ -44,12 +44,14 @@ public class StudyPeriodTest {
 
         //when&then
         assertThatThrownBy(() -> new StudyPeriod(nullDate, now))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("시작일과 종료일은 필수입니다.");
+                .isInstanceOf(StudyException.class)
+                .extracting("errorCode")
+                .isEqualTo(StudyErrorCode.PERIOD_NOT_NULL);
 
         assertThatThrownBy(() -> new StudyPeriod(now, nullDate))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("시작일과 종료일은 필수입니다.");
+                .isInstanceOf(StudyException.class)
+                .extracting("errorCode")
+                .isEqualTo(StudyErrorCode.PERIOD_NOT_NULL);
     }
 
     @Test
@@ -61,8 +63,9 @@ public class StudyPeriodTest {
 
         // when & then
         assertThatThrownBy(() -> new StudyPeriod(start, end))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("종료일이 시작일보다 앞에 있을 수 없습니다.");
+                .isInstanceOf(StudyException.class)
+                .extracting("errorCode")
+                .isEqualTo(StudyErrorCode.PERIOD_DATE_INVALID);
     }
 
     @Test
@@ -74,8 +77,9 @@ public class StudyPeriodTest {
 
         // when & then
         assertThatThrownBy(() -> new StudyPeriod(start, end))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("730 이하");
+                .isInstanceOf(StudyException.class)
+                .extracting("errorCode")
+                .isEqualTo(StudyErrorCode.PERIOD_DAYS_INVALID);
     }
 
 }

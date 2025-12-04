@@ -21,13 +21,13 @@ public class NicknameFactory {
 
     private void validateBadWord(Nickname nickname) {
         if (badWordValidator.containsBadWord(nickname.getValue())) {
-            throw new IllegalArgumentException("비속어가 포함되어 있습니다.");
+            throw new NicknameException(MemberErrorCode.NICKNAME_BAD_WORD);
         }
     }
 
     private void validateDuplication(Nickname nickname) {
         if (memberRepository.existsByNicknameValue(nickname.getValue())) {
-            throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
+            throw new NicknameException(MemberErrorCode.NICKNAME_DUPLICATED);
         }
     }
 }
