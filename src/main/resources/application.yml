@@ -17,3 +17,9 @@ oauth:
 jwt:
   secret: ${JWT_SECRET}
   access-token-validity: 1800000
+
+gemini:
+  api-key: ${GEMINI_API_KEY}
+  model: gemini-2.5-flash
+  max-retries: 3
+  min-processes: 5

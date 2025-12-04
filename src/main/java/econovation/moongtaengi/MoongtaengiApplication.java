@@ -1,5 +1,6 @@
 package econovation.moongtaengi;
 
+import econovation.moongtaengi.gemini.config.GeminiConfig;
 import econovation.moongtaengi.global.security.config.JwtConfig;
 import econovation.moongtaengi.member.infrastructure.oauth.config.KakaoConfig;
 import org.springframework.boot.SpringApplication;
@@ -10,7 +11,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableConfigurationProperties(
-		{KakaoConfig.class, JwtConfig.class})
+		{KakaoConfig.class, JwtConfig.class, GeminiConfig.class})
 public class MoongtaengiApplication {
 
 	public static void main(String[] args) {
