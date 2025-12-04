@@ -36,7 +36,7 @@ public class StudyProcess extends BaseEntity {
     @Column(nullable = false)
     private String assignmentDescription;  // 과제 소개
 
-    public StudyProcess(
+    public static StudyProcess create(
             Long studyId,
             Integer processOrder,
             String title,
@@ -45,14 +45,18 @@ public class StudyProcess extends BaseEntity {
             String topic,
             String assignmentDescription
     ) {
-        validate();
-        this.studyId = studyId;
-        this.processOrder = processOrder;
-        this.title = title;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.topic = topic;
-        this.assignmentDescription = assignmentDescription;
+        StudyProcess process = new StudyProcess();
+        process.studyId = studyId;
+        process.processOrder = processOrder;
+        process.title = title;
+        process.startDate = startDate;
+        process.endDate = endDate;
+        process.topic = topic;
+        process.assignmentDescription = assignmentDescription;
+
+        process.validate();
+
+        return process;
     }
 
     private void validate() {
