@@ -1,4 +1,4 @@
-package econovation.moongtaengi.study.infrastructure.gemini;
+package econovation.moongtaengi.study.infra.gemini;
 
 import com.google.genai.types.Content;
 import com.google.genai.types.GenerateContentConfig;
