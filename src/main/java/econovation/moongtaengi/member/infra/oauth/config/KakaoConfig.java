@@ -1,4 +1,4 @@
-package econovation.moongtaengi.member.infrastructure.oauth.config;
+package econovation.moongtaengi.member.infra.oauth.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

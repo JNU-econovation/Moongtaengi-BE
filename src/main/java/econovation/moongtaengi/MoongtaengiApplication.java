@@ -2,7 +2,7 @@ package econovation.moongtaengi;
 
 import econovation.moongtaengi.gemini.config.GeminiConfig;
 import econovation.moongtaengi.global.security.config.JwtConfig;
-import econovation.moongtaengi.member.infrastructure.oauth.config.KakaoConfig;
+import econovation.moongtaengi.member.infra.oauth.config.KakaoConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

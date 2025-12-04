@@ -1,10 +1,10 @@
-package econovation.moongtaengi.member.infrastructure.oauth;
+package econovation.moongtaengi.member.infra.oauth;
 
-import econovation.moongtaengi.member.infrastructure.oauth.exception.KakaoAuthException;
-import econovation.moongtaengi.member.infrastructure.oauth.exception.KakaoServerException;
-import econovation.moongtaengi.member.infrastructure.oauth.config.KakaoConfig;
-import econovation.moongtaengi.member.infrastructure.oauth.dto.KakaoTokenResponse;
-import econovation.moongtaengi.member.infrastructure.oauth.dto.KakaoUserInfoResponse;
+import econovation.moongtaengi.member.infra.oauth.exception.KakaoAuthException;
+import econovation.moongtaengi.member.infra.oauth.exception.KakaoServerException;
+import econovation.moongtaengi.member.infra.oauth.config.KakaoConfig;
+import econovation.moongtaengi.member.infra.oauth.dto.KakaoTokenResponse;
+import econovation.moongtaengi.member.infra.oauth.dto.KakaoUserInfoResponse;
 import java.time.Duration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
