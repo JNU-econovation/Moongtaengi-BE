@@ -5,9 +5,11 @@ import econovation.moongtaengi.study.domain.StudyFactory;
 import econovation.moongtaengi.study.domain.StudyRepository;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CreateStudyService {
@@ -29,6 +31,9 @@ public class CreateStudyService {
         );
 
         studyRepository.save(study);
+
+        log.info("스터디 생성 성공 - studyId: {}, memberId: {}, inviteCode: {}",
+                study.getId(), memberId, study.getInviteCode().getValue());
 
         return study.getId();
     }
