@@ -2,6 +2,7 @@ package econovation.moongtaengi.study.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
@@ -32,6 +33,8 @@ public class StudyFactoryTest {
         String topic = "스프링부트 JPA";
         given(studyRepository.countByMemberIdAndRole(eq(hostId), eq(StudyRole.HOST)))
                 .willReturn(4);
+        given(studyRepository.existsByInviteCodeValue(anyString()))
+                .willReturn(false);
 
         // when
         Study study = studyFactory.createStudy(hostId, studyName, start, end, topic);
@@ -59,5 +62,25 @@ public class StudyFactoryTest {
                 .isInstanceOf(StudyCreateLimitException.class)
                 .extracting("errorCode")
                 .isEqualTo(StudyErrorCode.STUDY_CREATION_LIMIT_EXCEEDED);
+    }
+
+    @Test
+    @DisplayName("초대 코드 생성 시 중복이 5번 연속 발생하면 예외가 발생한다")
+    void 초대코드_재시도_초과_실패() {
+        // given
+        Long hostId = 1L;
+        String studyName = "스프링 스터디";
+        LocalDate start = LocalDate.now();
+        LocalDate end = start.plusDays(7);
+        String topic = "스프링부트 JPA";
+        given(studyRepository.countByMemberIdAndRole(eq(hostId), eq(StudyRole.HOST)))
+                .willReturn(4);
+        given(studyRepository.existsByInviteCodeValue(anyString()))
+                .willReturn(true);
+
+        // when & then
+        assertThatThrownBy(() -> studyFactory.createStudy(hostId, studyName, start, end, topic))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("실패했습니다");
     }
 }

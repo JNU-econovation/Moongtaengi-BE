@@ -26,6 +26,24 @@ public class StudyFactory {
         StudyPeriod studyPeriod = new StudyPeriod(startDate, endDate);
         StudyTopic studyTopic = new StudyTopic(topic);
 
-        return new Study(studyName, studyPeriod, studyTopic, memberId);
+        InviteCode inviteCode = generateUniqueInviteCode();
+
+        return new Study(studyName, studyPeriod, studyTopic, memberId, inviteCode);
+    }
+
+    private InviteCode generateUniqueInviteCode() {
+        InviteCode inviteCode;
+        int retryCount = 0;
+
+        do {
+            inviteCode = InviteCode.generate();
+            retryCount++;
+
+            if (retryCount > 5) {
+                throw new IllegalStateException("초대 코드 생성에 실패했습니다.");
+            }
+        } while (studyRepository.existsByInviteCodeValue(inviteCode.getValue()));
+
+        return inviteCode;
     }
 }
