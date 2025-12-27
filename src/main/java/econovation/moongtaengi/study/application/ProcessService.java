@@ -46,9 +46,14 @@ public class ProcessService {
         log.info("스터디 조회 완료 - studyId: {}, topic: {}", studyId, study.getTopic().getValue());
 
         // 2. 호스트 권한 확인
-        validateHost(study, memberId);
-
-        log.info("호스트 권한 확인 완료 - studyId: {}, memberId: {}", studyId, memberId);
+        try {
+            study.validateHost(memberId);
+            log.info("호스트 권한 확인 완료 - studyId: {}, memberId: {}", studyId, memberId);
+        } catch (StudyException e) {
+            log.warn("호스트 권한 없음 - studyId: {}, memberId: {}, errorCode: {}",
+                    studyId, memberId, e.getErrorCode());
+            throw e;
+        }
 
         // 3. 기존 프로세스 삭제 (있다면)
         if (studyProcessRepository.existsByStudyId(studyId)) {
@@ -81,21 +86,6 @@ public class ProcessService {
         log.info("✅ 프로세스 생성 완료 - studyId: {}, 개수: {}", studyId, processes.size());
     }
 
-    /**
-     * 호스트 권한 확인
-     */
-    private void validateHost(Study study, Long memberId) {
-        boolean isHost = study.getMembers().stream()
-                .anyMatch(member ->
-                        member.getMemberId().equals(memberId) &&
-                                member.getRole() == StudyRole.HOST
-                );
-
-        if (!isHost) {
-            log.warn("호스트 권한 없음 - studyId: {}, memberId: {}", study.getId(), memberId);
-            throw new StudyException(StudyErrorCode.UNAUTHORIZED_PROCESS_ACCESS);
-        }
-    }
 
     /**
      * Gemini 응답 → StudyProcess 엔티티 변환

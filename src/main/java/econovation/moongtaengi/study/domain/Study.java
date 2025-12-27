@@ -40,4 +40,19 @@ public class Study extends BaseEntity {
         StudyMember studyMember = new StudyMember(this, memberId, studyRole);
         members.add(studyMember);
     }
+
+    /**
+     * 호스트 권한 검증
+     */
+    public void validateHost(Long memberId) {
+        boolean isHost = getMembers().stream()
+                .anyMatch(member ->
+                        member.getMemberId().equals(memberId) &&
+                                member.getRole() == StudyRole.HOST
+                );
+
+        if (!isHost) {
+            throw new StudyException(StudyErrorCode.UNAUTHORIZED_PROCESS_ACCESS);
+        }
+    }
 }
