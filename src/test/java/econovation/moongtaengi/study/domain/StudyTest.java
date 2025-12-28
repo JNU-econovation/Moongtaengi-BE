@@ -15,9 +15,10 @@ public class StudyTest {
         StudyPeriod period = new StudyPeriod(LocalDate.now(), LocalDate.now().plusDays(7));
         StudyTopic topic = new StudyTopic("스프링부트 JPA");
         Long hostId = 1L;
+        InviteCode inviteCode = new InviteCode("12345678");
 
         // when
-        Study study = new Study(name, period, topic, hostId);
+        Study study = new Study(name, period, topic, hostId, inviteCode);
 
         // then
         assertThat(study).isNotNull();
