@@ -1,7 +1,7 @@
 package econovation.moongtaengi.member.application;
 
 import econovation.moongtaengi.global.security.JwtTokenProvider;
-import econovation.moongtaengi.member.infrastructure.oauth.KakaoOAuthClient;
+import econovation.moongtaengi.member.infra.oauth.KakaoOAuthClient;
 import econovation.moongtaengi.member.domain.Member;
 import econovation.moongtaengi.member.domain.MemberRepository;
 import lombok.RequiredArgsConstructor;

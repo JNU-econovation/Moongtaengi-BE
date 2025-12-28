@@ -1,4 +1,4 @@
-package econovation.moongtaengi.member.infrastructure.oauth.exception;
+package econovation.moongtaengi.member.infra.oauth.exception;
 
 import econovation.moongtaengi.global.exception.ErrorCode;
 import lombok.Getter;
