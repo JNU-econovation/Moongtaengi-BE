@@ -1,6 +1,5 @@
 package econovation.moongtaengi.study.infra;
 
-import econovation.moongtaengi.member.application.MemberNotFoundException;
 import econovation.moongtaengi.member.domain.Member;
 import econovation.moongtaengi.member.domain.MemberRepository;
 import econovation.moongtaengi.study.domain.StudyCreationValidator;
