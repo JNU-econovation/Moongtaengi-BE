@@ -1,6 +1,7 @@
 package econovation.moongtaengi.study.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +26,48 @@ public class StudyTest {
         assertThat(study.getName()).isEqualTo(name);
         assertThat(study.getMembers()).hasSize(1);
         assertThat(study.getMembers().get(0).getMemberId()).isEqualTo(hostId);
+    }
+
+    @Test
+    @DisplayName("새로운 회원은 스터디에 정상적으로 가입할 수 있다.")
+    void 스터디_가입_성공() {
+        //given
+        Long hostId = 1L;
+        Study study = createStudy(hostId);
+        Long newMemberId = 2L;
+
+        //when
+        study.addMember(newMemberId, StudyRole.GUEST);
+
+        //then
+        assertThat(study.getMembers()).hasSize(2);
+        assertThat(study.getMembers())
+                .extracting("memberId")
+                .contains(1L, 2L);
+    }
+
+    @Test
+    @DisplayName("이미 참여 중인 회원이 가입을 시도하면 예외가 발생한다.")
+    void 스터디_가입_중복_실패() {
+        //given
+        Long hostId = 1L;
+        Study study = createStudy(hostId);
+
+        //when&then
+        assertThatThrownBy(() -> study.addMember(hostId, StudyRole.GUEST))
+                .isInstanceOf(StudyException.class)
+                .extracting("errorCode")
+                .isEqualTo(StudyErrorCode.ALREADY_JOINED_MEMBER);
+    }
+
+    private Study createStudy(Long hostId) {
+        return new Study(
+                new StudyName("테스트 스터디"),
+                new StudyPeriod(LocalDate.now(), LocalDate.now().plusDays(7)),
+                new StudyTopic("테스트 주제"),
+                hostId,
+                new InviteCode("12345678")
+        );
     }
 }
 
