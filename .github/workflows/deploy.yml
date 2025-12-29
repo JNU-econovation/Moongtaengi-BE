@@ -60,5 +60,5 @@ jobs:
                           -p 8080:8080 \
                           ${{ secrets.DOCKER_USERNAME }}/moongtaengi-server:latest
             
-            rm.env
+            rm .env
             sudo docker image prune -f
