@@ -36,7 +36,7 @@ public class AuthController {
 
         String path = response.needsAdditionalInfo()
                 ? "/signup"
-                : "/";
+                : "/auth/callback";
 
         return UriComponentsBuilder
                 .fromUriString(frontendRedirectUri + path)
