@@ -34,6 +34,12 @@ public enum StudyErrorCode implements ErrorCode {
     //스터디 참여 중복
     ALREADY_JOINED_MEMBER(HttpStatus.CONFLICT, "STUDY_012", "이미 참여 중인 스터디입니다.");
 
+    //임시회원 생성 제한
+    STUDY_CREATION_DENIED_TEMP_MEMBER(HttpStatus.FORBIDDEN, "STUDY_013", "임시회원은 스터디를 생성할 수 없습니다."),
+
+    //스터디 멤버
+    CREATOR_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY_014", "스터디 개설자 정보를 찾을 수 없습니다.");
+
     private final HttpStatus status;
     private final String code;
     private final String message;

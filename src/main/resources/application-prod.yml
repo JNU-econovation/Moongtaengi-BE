@@ -5,10 +5,10 @@ spring:
 
   #임시적으로 h2 사용
   datasource:
-    url: jdbc:h2:mem:moongtaengidb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:mysql://${RDS_HOSTNAME}:${RDS_PORT:3306}/${RDS_DB_NAME}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
 
   jpa:
     hibernate:
