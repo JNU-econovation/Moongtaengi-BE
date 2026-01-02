@@ -29,7 +29,10 @@ public enum StudyErrorCode implements ErrorCode {
     TOPIC_LENGTH_INVALID(HttpStatus.BAD_REQUEST, "STUDY_010", "스터디 주제는 최대 %d자까지만 가능합니다."),
 
     // 스터디 권한
-    UNAUTHORIZED_PROCESS_ACCESS(HttpStatus.FORBIDDEN, "STUDY_011", "프로세스 생성/수정/삭제 권한이 없습니다. 호스트만 가능합니다.");
+    UNAUTHORIZED_PROCESS_ACCESS(HttpStatus.FORBIDDEN, "STUDY_011", "프로세스 생성/수정/삭제 권한이 없습니다. 호스트만 가능합니다."),
+
+    // 프로세스 기간
+    PROCESS_PERIOD_DAYS_INVALID(HttpStatus.BAD_REQUEST, "STUDY_012", "프로세스 기간은 %d일 이상 %d일 이하여야 합니다.");
 
     private final HttpStatus status;
     private final String code;
