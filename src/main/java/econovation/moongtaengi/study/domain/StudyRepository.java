@@ -1,5 +1,6 @@
 package econovation.moongtaengi.study.domain;
 
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,4 +10,6 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
     int countByMemberIdAndRole(@Param("memberId") Long memberId, @Param("role") StudyRole role);
 
     boolean existsByInviteCodeValue(String value);
+
+    Optional<Study> findByInviteCode(InviteCode inviteCode);
 }
