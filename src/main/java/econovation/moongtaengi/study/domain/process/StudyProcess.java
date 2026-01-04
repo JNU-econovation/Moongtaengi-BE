@@ -2,6 +2,7 @@ package econovation.moongtaengi.study.domain.process;
 
 import econovation.moongtaengi.global.entity.BaseEntity;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
@@ -24,11 +25,8 @@ public class StudyProcess extends BaseEntity {
     @Column(nullable = false, length = 100)
     private String title;  // 프로세스 제목
 
-    @Column(nullable = false)
-    private LocalDate startDate;
-
-    @Column(nullable = false)
-    private LocalDate endDate;
+    @Embedded
+    private ProcessPeriod period;
 
     @Column(nullable = false, length = 100)
     private String topic;  // 학습 주제 (1개)
@@ -49,8 +47,7 @@ public class StudyProcess extends BaseEntity {
         process.studyId = studyId;
         process.processOrder = processOrder;
         process.title = title;
-        process.startDate = startDate;
-        process.endDate = endDate;
+        process.period = new ProcessPeriod(startDate, endDate);
         process.topic = topic;
         process.assignmentDescription = assignmentDescription;
 
@@ -69,11 +66,8 @@ public class StudyProcess extends BaseEntity {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("프로세스 제목은 필수입니다.");
         }
-        if (startDate == null || endDate == null) {
-            throw new IllegalArgumentException("시작일과 종료일은 필수입니다.");
-        }
-        if (endDate.isBefore(startDate)) {
-            throw new IllegalArgumentException("종료일이 시작일보다 앞설 수 없습니다.");
+        if (period == null) {
+            throw new IllegalArgumentException("프로세스 기간은 필수입니다.");
         }
         if (topic == null || topic.isBlank()) {
             throw new IllegalArgumentException("학습 주제는 필수입니다.");
@@ -84,7 +78,14 @@ public class StudyProcess extends BaseEntity {
     }
 
     public long getDurationDays() {
-        return java.time.temporal.ChronoUnit.DAYS.between(startDate, endDate) + 1;
+        return period.getTotalDays();
     }
 
+    public LocalDate getStartDate() {
+        return period.getStartDate();
+    }
+
+    public LocalDate getEndDate() {
+        return period.getEndDate();
+    }
 }
