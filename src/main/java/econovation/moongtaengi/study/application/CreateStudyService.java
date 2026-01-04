@@ -1,6 +1,7 @@
 package econovation.moongtaengi.study.application;
 
 import econovation.moongtaengi.study.domain.Study;
+import econovation.moongtaengi.study.domain.StudyCreationValidator;
 import econovation.moongtaengi.study.domain.StudyFactory;
 import econovation.moongtaengi.study.domain.StudyRepository;
 import java.time.LocalDate;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CreateStudyService {
     private final StudyFactory studyFactory;
+    private final StudyCreationValidator studyCreationValidator;
     private final StudyRepository studyRepository;
 
     @Transactional
@@ -22,6 +24,7 @@ public class CreateStudyService {
             String topic,
             LocalDate startDate,
             LocalDate endDate) {
+        studyCreationValidator.validate(memberId);
         Study study = studyFactory.createStudy(
                 memberId,
                 name,

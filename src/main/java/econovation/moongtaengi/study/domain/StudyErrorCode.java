@@ -30,7 +30,16 @@ public enum StudyErrorCode implements ErrorCode {
 
     // 스터디 권한
     UNAUTHORIZED_PROCESS_ACCESS(HttpStatus.FORBIDDEN, "STUDY_011", "프로세스 생성/수정/삭제 권한이 없습니다. 호스트만 가능합니다."),
+   
+    //스터디 참여 중복
+    ALREADY_JOINED_MEMBER(HttpStatus.CONFLICT, "STUDY_012", "이미 참여 중인 스터디입니다."),
 
+    //임시회원 생성 제한
+    STUDY_CREATION_DENIED_TEMP_MEMBER(HttpStatus.FORBIDDEN, "STUDY_013", "임시회원은 스터디를 생성할 수 없습니다."),
+
+    //스터디 멤버
+    CREATOR_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY_014", "스터디 개설자 정보를 찾을 수 없습니다."),
+  
     // 프로세스 기간
     PROCESS_PERIOD_DAYS_INVALID(HttpStatus.BAD_REQUEST, "STUDY_012", "프로세스 기간은 %d일 이상 %d일 이하여야 합니다.");
 

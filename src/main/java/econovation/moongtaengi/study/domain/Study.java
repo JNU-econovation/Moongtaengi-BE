@@ -41,6 +41,7 @@ public class Study extends BaseEntity {
     }
 
     public void addMember(Long memberId, StudyRole studyRole) {
+        validateAlreadyJoined(memberId);
         StudyMember studyMember = new StudyMember(this, memberId, studyRole);
         members.add(studyMember);
     }
@@ -57,6 +58,15 @@ public class Study extends BaseEntity {
 
         if (!isHost) {
             throw new StudyException(StudyErrorCode.UNAUTHORIZED_PROCESS_ACCESS);
+        }
+    }
+
+    private void validateAlreadyJoined(Long memberId) {
+        boolean isAlreadyJoined = this.members.stream()
+                .anyMatch(member -> member.getMemberId().equals(memberId));
+
+        if (isAlreadyJoined) {
+            throw new StudyException(StudyErrorCode.ALREADY_JOINED_MEMBER);
         }
     }
 }
