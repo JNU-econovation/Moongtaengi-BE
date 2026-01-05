@@ -2,7 +2,9 @@ package econovation.moongtaengi.study.api;
 
 import econovation.moongtaengi.global.annotation.LoginMemberId;
 import econovation.moongtaengi.study.api.dto.StudyCreateRequest;
+import econovation.moongtaengi.study.api.dto.StudyJoinRequest;
 import econovation.moongtaengi.study.application.CreateStudyService;
+import econovation.moongtaengi.study.application.JoinStudyService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/studies")
 public class StudyController {
     private final CreateStudyService createStudyService;
+    private final JoinStudyService joinStudyService;
 
     @PostMapping
     public ResponseEntity<Void> createStudy(
@@ -36,5 +39,17 @@ public class StudyController {
         );
 
         return ResponseEntity.created(URI.create("/api/studies/" + studyId)).build();
+    }
+
+    @PostMapping("/join")
+    public ResponseEntity<Void> joinStudy(
+            @LoginMemberId Long memberId,
+            @RequestBody @Valid StudyJoinRequest request) {
+        log.info("스터디 가입 API 호출 - memberId: {}, inviteCode: {}",
+                memberId, request.inviteCode());
+
+        joinStudyService.joinStudy(memberId, request.inviteCode());
+
+        return ResponseEntity.ok().build();
     }
 }
