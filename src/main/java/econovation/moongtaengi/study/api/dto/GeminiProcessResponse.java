@@ -9,7 +9,6 @@ public record GeminiProcessResponse(
             Integer order,
             String title,
             Integer durationDays,
-            String topic,
             String assignmentDescription
     ) {
     }

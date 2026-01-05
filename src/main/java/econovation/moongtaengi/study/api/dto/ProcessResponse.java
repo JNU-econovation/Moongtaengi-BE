@@ -11,7 +11,7 @@ public record ProcessResponse(
         LocalDate startDate,
         LocalDate endDate,
         Long durationDays,
-        String topic,
+        String memo,
         String assignmentDescription
 ) {
     public static ProcessResponse from(StudyProcess process) {
@@ -22,7 +22,7 @@ public record ProcessResponse(
                 process.getStartDate(),
                 process.getEndDate(),
                 process.getDurationDays(),
-                process.getTopic(),
+                process.getMemo().getValue(),
                 process.getAssignmentDescription()
         );
     }
