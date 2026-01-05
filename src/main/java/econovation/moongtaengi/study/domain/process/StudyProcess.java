@@ -55,6 +55,26 @@ public class StudyProcess extends BaseEntity {
         return process;
     }
 
+    /**
+     * 프로세스 수정
+     */
+    public void update(
+            Integer processOrder,
+            String title,
+            LocalDate startDate,
+            LocalDate endDate,
+            String memo,
+            String assignmentDescription
+    ) {
+        this.processOrder = processOrder;
+        this.title = title;
+        this.period = new ProcessPeriod(startDate, endDate);
+        this.memo = new Memo(memo != null ? memo : "");
+        this.assignmentDescription = assignmentDescription;
+
+        validate();
+    }
+
     private void validate() {
         if (studyId == null) {
             throw new IllegalArgumentException("스터디 ID는 필수입니다.");
