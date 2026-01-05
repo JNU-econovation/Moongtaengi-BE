@@ -54,11 +54,6 @@ public class ProcessSchema {
                 .description("프로세스 기간 (일 단위)")
                 .build());
 
-        properties.put("topic", Schema.builder()
-                .type(Type.Known.STRING)
-                .description("학습 주제 (1개)")
-                .build());
-
         properties.put("assignmentDescription", Schema.builder()
                 .type(Type.Known.STRING)
                 .description("과제 한줄 설명 (마크다운 형식)")
