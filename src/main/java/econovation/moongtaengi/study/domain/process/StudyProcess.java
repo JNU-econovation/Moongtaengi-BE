@@ -28,8 +28,8 @@ public class StudyProcess extends BaseEntity {
     @Embedded
     private ProcessPeriod period;
 
-    @Column(nullable = false, length = 100)
-    private String topic;  // 학습 주제 (1개)
+    @Embedded
+    private Memo memo;
 
     @Column(nullable = false)
     private String assignmentDescription;  // 과제 소개
@@ -40,7 +40,6 @@ public class StudyProcess extends BaseEntity {
             String title,
             LocalDate startDate,
             LocalDate endDate,
-            String topic,
             String assignmentDescription
     ) {
         StudyProcess process = new StudyProcess();
@@ -48,7 +47,7 @@ public class StudyProcess extends BaseEntity {
         process.processOrder = processOrder;
         process.title = title;
         process.period = new ProcessPeriod(startDate, endDate);
-        process.topic = topic;
+        process.memo = new Memo("");
         process.assignmentDescription = assignmentDescription;
 
         process.validate();
@@ -69,8 +68,8 @@ public class StudyProcess extends BaseEntity {
         if (period == null) {
             throw new IllegalArgumentException("프로세스 기간은 필수입니다.");
         }
-        if (topic == null || topic.isBlank()) {
-            throw new IllegalArgumentException("학습 주제는 필수입니다.");
+        if (memo == null) {
+            throw new IllegalArgumentException("메모는 필수입니다.");
         }
         if (assignmentDescription == null || assignmentDescription.isBlank()) {
             throw new IllegalArgumentException("과제 설명은 필수입니다.");
@@ -87,5 +86,9 @@ public class StudyProcess extends BaseEntity {
 
     public LocalDate getEndDate() {
         return period.getEndDate();
+    }
+
+    public void updateMemo(String memoContent) {
+        this.memo = new Memo(memoContent);
     }
 }
