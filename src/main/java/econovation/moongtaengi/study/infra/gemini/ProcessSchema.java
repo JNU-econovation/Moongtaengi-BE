@@ -63,7 +63,7 @@ public class ProcessSchema {
                 .type(Type.Known.OBJECT)
                 .description("개별 프로세스 정보")
                 .properties(properties)
-                .required("order", "title", "durationDays", "topic", "assignmentDescription")
+                .required("order", "title", "durationDays", "assignmentDescription")
                 .build();
     }
 }
