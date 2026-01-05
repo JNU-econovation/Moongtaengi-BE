@@ -1,6 +1,7 @@
 package econovation.moongtaengi.study.api;
 
 import econovation.moongtaengi.global.annotation.LoginMemberId;
+import econovation.moongtaengi.study.api.dto.BatchProcessRequest;
 import econovation.moongtaengi.study.api.dto.ProcessResponse;
 import econovation.moongtaengi.study.application.ProcessService;
 import econovation.moongtaengi.study.api.dto.GenerateProcessRequest;
@@ -76,5 +77,28 @@ public class ProcessController {
         log.info("✅ 프로세스 단건 조회 API 완료 - studyId: {}, processId: {}", studyId, processId);
 
         return ResponseEntity.ok(process);
+    }
+
+    /**
+     * 프로세스 일괄 저장
+     * POST /api/studies/{studyId}/processes/batch
+     *
+     * 권한: 호스트만
+     * 기능: 추가 + 수정
+     */
+    @PostMapping("/batch")
+    public ResponseEntity<Void> batchProcesses(
+            @LoginMemberId Long memberId,
+            @PathVariable Long studyId,
+            @Valid @RequestBody BatchProcessRequest request
+    ) {
+        log.info("프로세스 일괄 저장 API 호출 - studyId: {}, memberId: {}, 개수: {}",
+                studyId, memberId, request.processes().size());
+
+        processService.batchProcesses(studyId, memberId, request);
+
+        log.info("✅ 프로세스 일괄 저장 API 완료 - studyId: {}", studyId);
+
+        return ResponseEntity.ok().build();
     }
 }

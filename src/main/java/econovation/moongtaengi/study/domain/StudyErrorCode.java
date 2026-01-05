@@ -43,6 +43,7 @@ public enum StudyErrorCode implements ErrorCode {
   
     // 프로세스 기간
     PROCESS_PERIOD_DAYS_INVALID(HttpStatus.BAD_REQUEST, "STUDY_015", "프로세스 기간은 %d일 이상 %d일 이하여야 합니다."),
+    PROCESS_DATE_OVERLAP(HttpStatus.BAD_REQUEST, "STUDY_020", "프로세스 날짜가 겹칩니다."),
 
     // 프로세스 메모
     MEMO_NOT_NULL(HttpStatus.BAD_REQUEST, "STUDY_016", "메모는 null일 수 없습니다."),

@@ -1,5 +1,6 @@
 package econovation.moongtaengi.study.application;
 
+import econovation.moongtaengi.study.api.dto.BatchProcessRequest;
 import econovation.moongtaengi.study.api.dto.GeminiProcessResponse;
 import econovation.moongtaengi.study.api.dto.ProcessResponse;
 import econovation.moongtaengi.study.domain.Study;
@@ -184,5 +185,108 @@ public class ProcessService {
 
         // 4. DTO 변환
         return ProcessResponse.from(process);
+    }
+
+    /**
+     * 프로세스 일괄 저장 (신규 추가 + 기존 수정)
+     *
+     * - 삭제는 별도 DELETE API로 처리
+     * - 배열 순서대로 processOrder 부여 (1, 2, 3, ...)
+     *
+     * @param studyId 스터디 ID
+     * @param memberId 요청한 회원 ID
+     * @param request 프로세스 목록 (날짜순 정렬되어야 함)
+     */
+    @Transactional
+    public void batchProcesses(Long studyId, Long memberId, BatchProcessRequest request) {
+        // 1. 권한 확인
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
+
+        study.validateHost(memberId);
+
+        log.info("일괄 저장 권한 확인 완료 - studyId: {}, memberId: {}", studyId, memberId);
+
+        // 2. 날짜 겹침 검증
+        validateProcessDateOverlap(request.processes());
+
+        // 3. 추가/수정 (배열 순서대로 processOrder 부여)
+        List<StudyProcess> toSave = new ArrayList<>();
+        int order = 1;
+
+        for (var item : request.processes()) {
+            StudyProcess process;
+
+            if (item.id() == null) {
+                // 신규 프로세스 생성
+                process = StudyProcess.create(
+                        studyId,
+                        order,
+                        item.title(),
+                        item.startDate(),
+                        item.endDate(),
+                        item.assignmentDescription() != null ? item.assignmentDescription() : "" // 🔥 임시로 이렇게 구현 추후에 과제 설명란 넣는 방식 결정되면 수정하기
+                );
+
+                // 메모 설정 (있으면)
+                if (item.memo() != null && !item.memo().isBlank()) {
+                    process.updateMemo(item.memo());
+                }
+
+                log.debug("신규 프로세스 생성 - order: {}, title: {}", order, item.title());
+
+            } else {
+                // 기존 프로세스 수정
+                process = studyProcessRepository.findById(item.id())
+                        .orElseThrow(() -> new StudyException(StudyErrorCode.PROCESS_NOT_FOUND));
+
+                // 해당 스터디의 프로세스인지 확인
+                if (!process.getStudyId().equals(studyId)) {
+                    throw new StudyException(StudyErrorCode.PROCESS_NOT_FOUND);
+                }
+
+                process.update(
+                        order,
+                        item.title(),
+                        item.startDate(),
+                        item.endDate(),
+                        item.memo(),
+                        item.assignmentDescription()
+                );
+
+                log.debug("프로세스 수정 - id: {}, order: {} → {}, title: {}",
+                        item.id(), process.getProcessOrder(), order, item.title());
+            }
+
+            toSave.add(process);
+            order++;
+        }
+
+        // 4. 저장
+        studyProcessRepository.saveAll(toSave);
+
+        log.info("✅ 프로세스 일괄 저장 완료 - studyId: {}, 저장 개수: {}", studyId, toSave.size());
+    }
+
+    /**
+     * 프로세스 날짜 겹침 검증
+     *
+     * 개별 기간 검증(null, startDate <= endDate, 3~90일)은
+     * ProcessPeriod 생성자에서 자동으로 수행됨
+     */
+    private void validateProcessDateOverlap(List<BatchProcessRequest.ProcessItem> processes) {
+        for (int i = 0; i < processes.size() - 1; i++) {
+            LocalDate currentEnd = processes.get(i).endDate();
+            LocalDate nextStart = processes.get(i + 1).startDate();
+
+            if (nextStart.isBefore(currentEnd.plusDays(1))) {
+                log.error("프로세스 날짜 겹침 - process{}: {} ~ {}, process{}: {} ~ {}",
+                        i + 1, processes.get(i).startDate(), currentEnd,
+                        i + 2, nextStart, processes.get(i + 1).endDate());
+                throw new StudyException(StudyErrorCode.PROCESS_DATE_OVERLAP);
+            }
+        }
+
+        log.debug("프로세스 날짜 겹침 검증 완료 - 개수: {}", processes.size());
     }
 }
