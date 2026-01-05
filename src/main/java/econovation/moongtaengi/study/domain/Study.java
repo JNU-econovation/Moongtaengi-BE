@@ -61,6 +61,15 @@ public class Study extends BaseEntity {
         }
     }
 
+    public void validateMember(Long memberId) {
+        boolean isMember = members.stream()
+                .anyMatch(member -> member.getMemberId().equals(memberId));
+
+        if (!isMember) {
+            throw new StudyException(StudyErrorCode.NOT_STUDY_MEMBER);
+        }
+    }
+
     private void validateAlreadyJoined(Long memberId) {
         boolean isAlreadyJoined = this.members.stream()
                 .anyMatch(member -> member.getMemberId().equals(memberId));

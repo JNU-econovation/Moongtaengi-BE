@@ -1,6 +1,7 @@
 package econovation.moongtaengi.study.application;
 
 import econovation.moongtaengi.study.api.dto.GeminiProcessResponse;
+import econovation.moongtaengi.study.api.dto.ProcessResponse;
 import econovation.moongtaengi.study.domain.Study;
 import econovation.moongtaengi.study.domain.StudyErrorCode;
 import econovation.moongtaengi.study.domain.StudyException;
@@ -129,5 +130,61 @@ public class ProcessService {
         }
 
         return processes;
+    }
+
+    /**
+     * 프로세스 전체 목록 조회
+     *
+     * @param studyId 스터디 ID
+     * @param memberId 요청한 회원 ID
+     * @return 프로세스 목록
+     */
+    public List<ProcessResponse> getProcesses(Long studyId, Long memberId) {
+        // 1. Study 존재 & 멤버 확인
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
+
+        study.validateMember(memberId);
+
+        log.info("프로세스 목록 조회 권한 확인 완료 - studyId: {}, memberId: {}", studyId, memberId);
+
+        // 2. 프로세스 조회
+        List<StudyProcess> processes = studyProcessRepository
+                .findByStudyIdOrderByProcessOrder(studyId);
+
+        // 3. DTO 변환
+        return processes.stream()
+                .map(ProcessResponse::from)
+                .toList();
+    }
+
+    /**
+     * 프로세스 단건 조회
+     *
+     * @param studyId 스터디 ID
+     * @param processId 프로세스 ID
+     * @param memberId 요청한 회원 ID
+     * @return 프로세스 정보
+     */
+    public ProcessResponse getProcess(Long studyId, Long processId, Long memberId) {
+        // 1. Study 존재 & 멤버 확인
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
+
+        study.validateMember(memberId);
+
+        log.info("프로세스 단건 조회 권한 확인 완료 - studyId: {}, memberId: {}", studyId, memberId);
+
+        // 2. Process 조회
+        StudyProcess process = studyProcessRepository.findById(processId)
+                .orElseThrow(() -> new StudyException(StudyErrorCode.PROCESS_NOT_FOUND));
+
+        // 3. 해당 Study의 프로세스인지 확인
+        if (!process.getStudyId().equals(studyId)) {
+            throw new StudyException(StudyErrorCode.PROCESS_NOT_FOUND);
+        }
+
+        // 4. DTO 변환
+        return ProcessResponse.from(process);
     }
 }

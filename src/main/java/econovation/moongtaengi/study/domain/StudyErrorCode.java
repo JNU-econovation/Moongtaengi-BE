@@ -39,13 +39,17 @@ public enum StudyErrorCode implements ErrorCode {
 
     //스터디 멤버
     CREATOR_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY_014", "스터디 개설자 정보를 찾을 수 없습니다."),
+    NOT_STUDY_MEMBER(HttpStatus.FORBIDDEN, "STUDY_018", "스터디 멤버가 아닙니다."),
   
     // 프로세스 기간
     PROCESS_PERIOD_DAYS_INVALID(HttpStatus.BAD_REQUEST, "STUDY_015", "프로세스 기간은 %d일 이상 %d일 이하여야 합니다."),
 
     // 프로세스 메모
     MEMO_NOT_NULL(HttpStatus.BAD_REQUEST, "STUDY_016", "메모는 null일 수 없습니다."),
-    MEMO_LENGTH_EXCEEDED(HttpStatus.BAD_REQUEST, "STUDY_017", "메모는 최대 %d자까지 입력 가능합니다.");
+    MEMO_LENGTH_EXCEEDED(HttpStatus.BAD_REQUEST, "STUDY_017", "메모는 최대 %d자까지 입력 가능합니다."),
+
+    // 프로세스
+    PROCESS_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY_019", "존재하지 않는 프로세스입니다.");
 
     private final HttpStatus status;
     private final String code;
