@@ -129,8 +129,7 @@ public class GeminiClient {
             3. 모든 프로세스 기간의 합은 정확히 %d일이어야 합니다
             4. 각 프로세스는 최소 3일 이상이어야 합니다
             5. 프로세스는 겹치지 않고 연속적이어야 합니다
-            6. 각 프로세스의 topic은 해당 프로세스에서 학습할 핵심 주제 1개만 적어주세요
-            7. assignmentDescription은 해당 프로세스에서 수행할 과제를 마크다운 형식으로 한 줄로 작성해주세요
+            6. assignmentDescription은 해당 프로세스에서 수행할 과제를 마크다운 형식으로 한 줄로 작성해주세요
             
             **응답 형식:**
             반드시 아래 JSON 형식으로만 응답하세요. 다른 텍스트나 설명을 포함하지 마세요.
@@ -141,7 +140,6 @@ public class GeminiClient {
                   "order": 1,
                   "title": "프로세스 제목",
                   "durationDays": 5,
-                  "topic": "학습할 주제",
                   "assignmentDescription": "과제 설명"
                 }
               ]
