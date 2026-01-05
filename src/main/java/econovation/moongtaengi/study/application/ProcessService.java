@@ -289,4 +289,39 @@ public class ProcessService {
 
         log.debug("프로세스 날짜 겹침 검증 완료 - 개수: {}", processes.size());
     }
+
+    /**
+     * 프로세스 삭제
+     *
+     * @param studyId 스터디 ID
+     * @param processId 프로세스 ID
+     * @param memberId 요청한 회원 ID
+     */
+    @Transactional
+    public void deleteProcess(Long studyId, Long processId, Long memberId) {
+        // 1. 권한 확인
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
+
+        study.validateHost(memberId);
+
+        log.info("프로세스 삭제 권한 확인 완료 - studyId: {}, memberId: {}", studyId, memberId);
+
+        // 2. 프로세스 조회
+        StudyProcess process = studyProcessRepository.findById(processId)
+                .orElseThrow(() -> new StudyException(StudyErrorCode.PROCESS_NOT_FOUND));
+
+        // 3. 해당 스터디의 프로세스인지 확인
+        if (!process.getStudyId().equals(studyId)) {
+            throw new StudyException(StudyErrorCode.PROCESS_NOT_FOUND);
+        }
+
+        log.info("프로세스 삭제 대상 확인 - studyId: {}, processId: {}, title: {}",
+                studyId, processId, process.getTitle());
+
+        // 4. 삭제
+        studyProcessRepository.delete(process);
+
+        log.info("✅ 프로세스 삭제 완료 - studyId: {}, processId: {}", studyId, processId);
+    }
 }

@@ -101,4 +101,29 @@ public class ProcessController {
 
         return ResponseEntity.ok().build();
     }
+
+    /**
+     * 프로세스 삭제
+     * DELETE /api/studies/{studyId}/processes/{processId}
+     *
+     * 권한: 호스트만
+     *
+     * 삭제 후 남은 프로세스의 순서를 재정렬하려면
+     * 프론트에서 batch API를 추가로 호출해야 함
+     */
+    @DeleteMapping("/{processId}")
+    public ResponseEntity<Void> deleteProcess(
+            @LoginMemberId Long memberId,
+            @PathVariable Long studyId,
+            @PathVariable Long processId
+    ) {
+        log.info("프로세스 삭제 API 호출 - studyId: {}, processId: {}, memberId: {}",
+                studyId, processId, memberId);
+
+        processService.deleteProcess(studyId, processId, memberId);
+
+        log.info("✅ 프로세스 삭제 API 완료 - studyId: {}, processId: {}", studyId, processId);
+
+        return ResponseEntity.ok().build();
+    }
 }
