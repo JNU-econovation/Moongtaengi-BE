@@ -6,7 +6,6 @@ import econovation.moongtaengi.study.domain.Study;
 import econovation.moongtaengi.study.domain.StudyErrorCode;
 import econovation.moongtaengi.study.domain.StudyException;
 import econovation.moongtaengi.study.domain.StudyRepository;
-import econovation.moongtaengi.study.domain.StudyRole;
 import econovation.moongtaengi.study.domain.process.StudyProcess;
 import econovation.moongtaengi.study.domain.process.StudyProcessRepository;
 import econovation.moongtaengi.study.infra.gemini.GeminiClient;
@@ -26,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ProcessService {
-
     private final GeminiClient geminiClient;
     private final StudyRepository studyRepository;
     private final StudyProcessRepository studyProcessRepository;

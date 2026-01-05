@@ -49,7 +49,7 @@ public class ProcessController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping  // ✅ 신규 API
+    @GetMapping
     public ResponseEntity<List<ProcessResponse>> getProcesses(
             @LoginMemberId Long memberId,
             @PathVariable Long studyId
@@ -63,7 +63,7 @@ public class ProcessController {
         return ResponseEntity.ok(processes);
     }
 
-    @GetMapping("/{processId}")  // ✅ 신규 API
+    @GetMapping("/{processId}")
     public ResponseEntity<ProcessResponse> getProcess(
             @LoginMemberId Long memberId,
             @PathVariable Long studyId,
