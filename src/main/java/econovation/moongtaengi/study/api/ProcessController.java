@@ -1,8 +1,11 @@
 package econovation.moongtaengi.study.api;
 
+import econovation.moongtaengi.global.annotation.LoginMemberId;
+import econovation.moongtaengi.study.api.dto.ProcessResponse;
 import econovation.moongtaengi.study.application.ProcessService;
 import econovation.moongtaengi.study.api.dto.GenerateProcessRequest;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -44,5 +47,34 @@ public class ProcessController {
         log.info("✅ 프로세스 생성 API 완료 - studyId: {}", studyId);
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping  // ✅ 신규 API
+    public ResponseEntity<List<ProcessResponse>> getProcesses(
+            @LoginMemberId Long memberId,
+            @PathVariable Long studyId
+    ) {
+        log.info("프로세스 목록 조회 API 호출 - studyId: {}, memberId: {}", studyId, memberId);
+
+        List<ProcessResponse> processes = processService.getProcesses(studyId, memberId);
+
+        log.info("✅ 프로세스 목록 조회 API 완료 - studyId: {}, 개수: {}", studyId, processes.size());
+
+        return ResponseEntity.ok(processes);
+    }
+
+    @GetMapping("/{processId}")  // ✅ 신규 API
+    public ResponseEntity<ProcessResponse> getProcess(
+            @LoginMemberId Long memberId,
+            @PathVariable Long studyId,
+            @PathVariable Long processId
+    ) {
+        log.info("프로세스 단건 조회 API 호출 - studyId: {}, processId: {}", studyId, processId);
+
+        ProcessResponse process = processService.getProcess(studyId, processId, memberId);
+
+        log.info("✅ 프로세스 단건 조회 API 완료 - studyId: {}, processId: {}", studyId, processId);
+
+        return ResponseEntity.ok(process);
     }
 }
