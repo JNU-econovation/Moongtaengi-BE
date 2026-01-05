@@ -116,7 +116,6 @@ public class ProcessService {
                     processInfo.title(),
                     startDate,
                     endDate,
-                    processInfo.topic(),
                     processInfo.assignmentDescription()
             );
 
