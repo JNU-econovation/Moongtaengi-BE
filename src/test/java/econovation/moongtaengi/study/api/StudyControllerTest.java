@@ -19,7 +19,7 @@ import econovation.moongtaengi.study.api.dto.StudyCreateRequest;
 import econovation.moongtaengi.study.api.dto.StudyJoinRequest;
 import econovation.moongtaengi.study.application.CreateStudyService;
 import econovation.moongtaengi.study.application.JoinStudyService;
-import econovation.moongtaengi.study.domain.InviteCode;
+import econovation.moongtaengi.study.domain.StudyJoinValidator;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,13 +45,12 @@ public class StudyControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
     @MockitoBean
     private CreateStudyService createStudyService;
     @MockitoBean
     private JoinStudyService joinStudyService;
+    @MockitoBean
+    private StudyJoinValidator studyJoinValidator;
 
     @BeforeEach
     void setUp() {
