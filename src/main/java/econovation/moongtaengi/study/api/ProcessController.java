@@ -28,7 +28,7 @@ public class ProcessController {
      * Authorization: Bearer {JWT}
      * Body: { "additionalDescription": "기초부터 심화까지 체계적으로 학습" }
      */
-    @PostMapping
+    @PostMapping("/generate")
     public ResponseEntity<Void> generateProcesses(
             @PathVariable Long studyId,
             @Valid @RequestBody GenerateProcessRequest request
