@@ -39,19 +39,24 @@ public enum StudyErrorCode implements ErrorCode {
 
     //스터디 멤버
     CREATOR_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY_014", "스터디 개설자 정보를 찾을 수 없습니다."),
+    NOT_STUDY_MEMBER(HttpStatus.FORBIDDEN, "STUDY_018", "스터디 멤버가 아닙니다."),
   
     // 프로세스 기간
     PROCESS_PERIOD_DAYS_INVALID(HttpStatus.BAD_REQUEST, "STUDY_015", "프로세스 기간은 %d일 이상 %d일 이하여야 합니다."),
+    PROCESS_DATE_OVERLAP(HttpStatus.BAD_REQUEST, "STUDY_020", "프로세스 날짜가 겹칩니다."),
 
     // 프로세스 메모
     MEMO_NOT_NULL(HttpStatus.BAD_REQUEST, "STUDY_016", "메모는 null일 수 없습니다."),
     MEMO_LENGTH_EXCEEDED(HttpStatus.BAD_REQUEST, "STUDY_017", "메모는 최대 %d자까지 입력 가능합니다."),
 
     //스터디 참여 회원
-    JOINER_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY_018", "스터디 참여 신청자 정보를 찾을 수 없습니다."),
+    JOINER_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY_021", "스터디 참여 신청자 정보를 찾을 수 없습니다."),
 
     //임시회원 스터디 참여 불가
-    STUDY_JOIN_DENIED_TEMP_MEMBER(HttpStatus.FORBIDDEN, "STUDY_019", "임시회원은 스터디를 참여할 수 없습니다.");
+    STUDY_JOIN_DENIED_TEMP_MEMBER(HttpStatus.FORBIDDEN, "STUDY_022", "임시회원은 스터디를 참여할 수 없습니다."),
+ 
+    // 프로세스
+    PROCESS_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY_019", "존재하지 않는 프로세스입니다.");
 
     private final HttpStatus status;
     private final String code;

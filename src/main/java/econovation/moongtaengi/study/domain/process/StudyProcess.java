@@ -31,7 +31,7 @@ public class StudyProcess extends BaseEntity {
     @Embedded
     private Memo memo;
 
-    @Column(nullable = false)
+    @Column(nullable = true) // 🔥 임시로 true로 설정, 아직 프로세스 자체 생성 시 과제명 기입란이 없음
     private String assignmentDescription;  // 과제 소개
 
     public static StudyProcess create(
@@ -53,6 +53,26 @@ public class StudyProcess extends BaseEntity {
         process.validate();
 
         return process;
+    }
+
+    /**
+     * 프로세스 수정
+     */
+    public void update(
+            Integer processOrder,
+            String title,
+            LocalDate startDate,
+            LocalDate endDate,
+            String memo,
+            String assignmentDescription
+    ) {
+        this.processOrder = processOrder;
+        this.title = title;
+        this.period = new ProcessPeriod(startDate, endDate);
+        this.memo = new Memo(memo != null ? memo : "");
+        this.assignmentDescription = assignmentDescription;
+
+        validate();
     }
 
     private void validate() {
