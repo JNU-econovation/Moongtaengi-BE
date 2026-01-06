@@ -14,6 +14,12 @@ public interface StudyProcessRepository extends JpaRepository<StudyProcess, Long
     List<StudyProcess> findByStudyIdOrderByProcessOrder(Long studyId);
 
     /**
+     * 스터디 ID로 프로세스 목록 조회 (시작일 기준 정렬)
+     * processOrder 재정렬용
+     */
+    List<StudyProcess> findByStudyIdOrderByPeriodStartDate(Long studyId);
+
+    /**
      * 스터디 ID로 프로세스 존재 여부
      */
     boolean existsByStudyId(Long studyId);
