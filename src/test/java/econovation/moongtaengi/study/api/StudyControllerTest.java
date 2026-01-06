@@ -13,9 +13,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import econovation.moongtaengi.global.config.WebConfig;
 import econovation.moongtaengi.global.security.CustomAuthentication;
+import econovation.moongtaengi.global.security.JwtTokenProvider;
 import econovation.moongtaengi.global.security.LoginMemberIdArgumentResolver;
 import econovation.moongtaengi.study.api.dto.StudyCreateRequest;
+import econovation.moongtaengi.study.api.dto.StudyJoinRequest;
 import econovation.moongtaengi.study.application.CreateStudyService;
+import econovation.moongtaengi.study.application.JoinStudyService;
+import econovation.moongtaengi.study.domain.StudyJoinValidator;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,6 +47,10 @@ public class StudyControllerTest {
 
     @MockitoBean
     private CreateStudyService createStudyService;
+    @MockitoBean
+    private JoinStudyService joinStudyService;
+    @MockitoBean
+    private StudyJoinValidator studyJoinValidator;
 
     @BeforeEach
     void setUp() {
@@ -96,5 +104,22 @@ public class StudyControllerTest {
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andDo(print())
                 .andExpect(status().isInternalServerError()); // 아직 MethodArgumentException 처리를 못함..
+    }
+
+    @Test
+    @DisplayName("유효한 초대 코드로 스터디 가입 요청 시 200 OK를 반환한다.")
+    void 스터디_가입_성공 () throws Exception {
+        //given
+        String rawCode = "12345678";
+        StudyJoinRequest request = new StudyJoinRequest(rawCode);
+
+        //when&then
+        mvc.perform(post("/api/studies/join")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        verify(joinStudyService).joinStudy(eq(1L), eq(rawCode));
     }
 }

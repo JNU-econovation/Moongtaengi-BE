@@ -40,6 +40,10 @@ public class Study extends BaseEntity {
         addMember(hostId, StudyRole.HOST); //스터디를 생성한 사람은 방장
     }
 
+    public void addGuest(Long memberId) {
+        addMember(memberId, StudyRole.GUEST);
+    }
+
     public void addMember(Long memberId, StudyRole studyRole) {
         validateAlreadyJoined(memberId);
         StudyMember studyMember = new StudyMember(this, memberId, studyRole);
