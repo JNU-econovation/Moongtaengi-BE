@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import jakarta.persistence.PersistenceUnitUtil;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,40 @@ public class StudyMemberRepositoryTest {
 
         PersistenceUnitUtil util = entityManager.getEntityManager().getEntityManagerFactory().getPersistenceUnitUtil();
         boolean isLoaded = util.isLoaded(result.getFirst().getStudy());
+
+        assertThat(isLoaded).isTrue();
+    }
+
+    @Test
+    @DisplayName("스터디 ID와 회원 ID로 조회 시, 스터디 엔티티까지 fetch join으로 한 번에 가져온다.")
+    void 스터디ID_회원ID_조회_성공() {
+        // given
+        Long memberId = 1L;
+        Study study = new Study(
+                new StudyName("테스트 스터디"),
+                new StudyPeriod(LocalDate.now(), LocalDate.now().plusDays(7)),
+                new StudyTopic("테스트 주제"),
+                memberId,
+                new InviteCode("12345678")
+        );
+        entityManager.persist(study);
+        entityManager.flush();
+
+        Long studyId = study.getId();
+        entityManager.clear();
+
+        // when
+        Optional<StudyMember> optionalResult = studyMemberRepository.findByStudyIdAndMemberId(studyId, memberId);
+
+        // then
+        assertThat(optionalResult).isPresent();
+        StudyMember result = optionalResult.get();
+        assertThat(result.getMemberId()).isEqualTo(memberId);
+        assertThat(result.getStudy().getId()).isEqualTo(studyId);
+        assertThat(result.getStudy().getName().getValue()).isEqualTo("테스트 스터디");
+
+        PersistenceUnitUtil util = entityManager.getEntityManager().getEntityManagerFactory().getPersistenceUnitUtil();
+        boolean isLoaded = util.isLoaded(result.getStudy());
 
         assertThat(isLoaded).isTrue();
     }
