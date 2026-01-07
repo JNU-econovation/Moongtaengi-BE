@@ -3,8 +3,8 @@ package econovation.moongtaengi.study.api.dto;
 import econovation.moongtaengi.study.domain.Study;
 
 public record StudySummaryResponse(
-        Long id,
-        String name
+        Long studyId,
+        String studyName
 ) {
     public static StudySummaryResponse from(Study study) {
         return new StudySummaryResponse(

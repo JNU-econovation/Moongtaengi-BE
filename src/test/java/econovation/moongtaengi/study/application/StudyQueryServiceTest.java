@@ -60,8 +60,8 @@ public class StudyQueryServiceTest {
 
         // then
         assertThat(result).hasSize(1);
-        assertThat(result.getFirst().name()).isEqualTo("테스트 스터디");
-        assertThat(result.getFirst().id()).isEqualTo(studyId);
+        assertThat(result.getFirst().studyName()).isEqualTo("테스트 스터디");
+        assertThat(result.getFirst().studyId()).isEqualTo(studyId);
         verify(studyMemberRepository).findAllByMemberIdAndRole(memberId, StudyRole.HOST);
     }
 
@@ -95,8 +95,8 @@ public class StudyQueryServiceTest {
 
         //then
         assertThat(result).hasSize(1);
-        assertThat(result.getFirst().name()).isEqualTo("참여하는 스터디");
-        assertThat(result.getFirst().id()).isEqualTo(studyId);
+        assertThat(result.getFirst().studyName()).isEqualTo("참여하는 스터디");
+        assertThat(result.getFirst().studyId()).isEqualTo(studyId);
         verify(studyMemberRepository).findAllByMemberIdAndRole(memberId, StudyRole.GUEST);
     }
 }

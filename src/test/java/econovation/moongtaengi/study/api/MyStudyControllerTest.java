@@ -57,8 +57,8 @@ public class MyStudyControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$[0].id").value(100L))
-                .andExpect(jsonPath("$[0].name").value("관리 스터디"));
+                .andExpect(jsonPath("$[0].studyId").value(100L))
+                .andExpect(jsonPath("$[0].studyName").value("관리 스터디"));
 
         verify(studyQueryService).getManagedStudies(1L);
     }
@@ -78,8 +78,8 @@ public class MyStudyControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$[0].id").value(100L))
-                .andExpect(jsonPath("$[0].name").value("참여 스터디"));
+                .andExpect(jsonPath("$[0].studyId").value(100L))
+                .andExpect(jsonPath("$[0].studyName").value("참여 스터디"));
         verify(studyQueryService).getJoinedStudies(1L);
     }
 }
