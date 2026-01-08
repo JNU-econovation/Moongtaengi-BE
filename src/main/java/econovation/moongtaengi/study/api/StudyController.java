@@ -2,14 +2,18 @@ package econovation.moongtaengi.study.api;
 
 import econovation.moongtaengi.global.annotation.LoginMemberId;
 import econovation.moongtaengi.study.api.dto.StudyCreateRequest;
+import econovation.moongtaengi.study.api.dto.StudyDetailResponse;
 import econovation.moongtaengi.study.api.dto.StudyJoinRequest;
 import econovation.moongtaengi.study.application.CreateStudyService;
 import econovation.moongtaengi.study.application.JoinStudyService;
+import econovation.moongtaengi.study.application.StudyDetailService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class StudyController {
     private final CreateStudyService createStudyService;
     private final JoinStudyService joinStudyService;
+    private final StudyDetailService studyDetailService;
 
     @PostMapping
     public ResponseEntity<Void> createStudy(
@@ -51,5 +56,15 @@ public class StudyController {
         joinStudyService.joinStudy(memberId, request.inviteCode());
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{studyId}")
+    public ResponseEntity<StudyDetailResponse> getStudyDetail(
+            @PathVariable Long studyId,
+            @LoginMemberId Long memberId
+    ) {
+        log.info("스터디 상 조회 API 호출 - memberId: {}, studyId: {}", memberId, studyId);
+
+        return ResponseEntity.ok(studyDetailService.getStudyDetail(studyId, memberId));
     }
 }
