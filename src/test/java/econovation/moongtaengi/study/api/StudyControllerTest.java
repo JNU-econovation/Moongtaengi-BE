@@ -159,11 +159,11 @@ public class StudyControllerTest {
                     .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(studyId))
-                .andExpect(jsonPath("$.name").value("테스트 스터디"))
-                .andExpect(jsonPath("$.topic").value("테스트 주제"))
-                .andExpect(jsonPath("$.period.startDate").value("2026-01-08"))
-                .andExpect(jsonPath("$.period.endDate").value("2026-03-21"));
+                .andExpect(jsonPath("$.studyId").value(studyId))
+                .andExpect(jsonPath("$.studyName").value("테스트 스터디"))
+                .andExpect(jsonPath("$.studyTopic").value("테스트 주제"))
+                .andExpect(jsonPath("$.studyPeriod.startDate").value("2026-01-08"))
+                .andExpect(jsonPath("$.studyPeriod.endDate").value("2026-03-21"));
 
         verify(studyDetailService).getStudyDetail(studyId, memberId);
     }

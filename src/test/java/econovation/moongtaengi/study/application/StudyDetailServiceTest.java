@@ -58,11 +58,11 @@ public class StudyDetailServiceTest {
         StudyDetailResponse result = studyDetailService.getStudyDetail(studyId, memberId);
 
         //then
-        assertThat(result.id()).isEqualTo(studyId);
-        assertThat(result.name()).isEqualTo("테스트 스터디");
+        assertThat(result.studyId()).isEqualTo(studyId);
+        assertThat(result.studyName()).isEqualTo("테스트 스터디");
 
-        assertThat(result.period().startDate()).isEqualTo(startDate);
-        assertThat(result.period().endDate()).isEqualTo(endDate);
+        assertThat(result.studyPeriod().startDate()).isEqualTo(startDate);
+        assertThat(result.studyPeriod().endDate()).isEqualTo(endDate);
 
         assertThat(result.myRole()).isEqualTo(StudyRole.HOST);
     }

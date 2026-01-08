@@ -7,11 +7,11 @@ import econovation.moongtaengi.study.domain.StudyRole;
 import java.time.LocalDate;
 
 public record StudyDetailResponse(
-        Long id,
-        String name,
-        StudyPeriodDto period,
-        String topic,
-        String inviteCode,
+        Long studyId,
+        String studyName,
+        StudyPeriodDto studyPeriod,
+        String studyTopic,
+        String studyInviteCode,
         StudyRole myRole
 ) {
     public record StudyPeriodDto(
