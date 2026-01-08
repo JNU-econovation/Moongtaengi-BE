@@ -6,8 +6,10 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,10 +18,14 @@ import econovation.moongtaengi.global.security.CustomAuthentication;
 import econovation.moongtaengi.global.security.JwtTokenProvider;
 import econovation.moongtaengi.global.security.LoginMemberIdArgumentResolver;
 import econovation.moongtaengi.study.api.dto.StudyCreateRequest;
+import econovation.moongtaengi.study.api.dto.StudyDetailResponse;
+import econovation.moongtaengi.study.api.dto.StudyDetailResponse.StudyPeriodDto;
 import econovation.moongtaengi.study.api.dto.StudyJoinRequest;
 import econovation.moongtaengi.study.application.CreateStudyService;
 import econovation.moongtaengi.study.application.JoinStudyService;
+import econovation.moongtaengi.study.application.StudyDetailService;
 import econovation.moongtaengi.study.domain.StudyJoinValidator;
+import econovation.moongtaengi.study.domain.StudyRole;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -51,6 +57,8 @@ public class StudyControllerTest {
     private JoinStudyService joinStudyService;
     @MockitoBean
     private StudyJoinValidator studyJoinValidator;
+    @MockitoBean
+    private StudyDetailService studyDetailService;
 
     @BeforeEach
     void setUp() {
@@ -121,5 +129,42 @@ public class StudyControllerTest {
                 .andExpect(status().isOk());
 
         verify(joinStudyService).joinStudy(eq(1L), eq(rawCode));
+    }
+
+    @Test
+    @DisplayName("스터디 상세 조회 성공 시 200 OK와 상세 정보를 반환한다.")
+    void 스터디_상세_조회_성공() throws Exception {
+        //given
+        Long studyId = 100L;
+        Long memberId = 1L;
+
+        StudyDetailResponse.StudyPeriodDto periodDto = new StudyPeriodDto(
+                LocalDate.of(2026, 1, 8),
+                LocalDate.of(2026, 3, 21)
+        );
+
+        StudyDetailResponse response = new StudyDetailResponse(
+                studyId,
+                "테스트 스터디",
+                periodDto,
+                "테스트 주제",
+                "12345678",
+                StudyRole.HOST
+        );
+        given(studyDetailService.getStudyDetail(studyId, memberId))
+                .willReturn(response);
+
+        //when&then
+        mvc.perform(get("/api/studies/{studyId}", studyId)
+                    .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.studyId").value(studyId))
+                .andExpect(jsonPath("$.studyName").value("테스트 스터디"))
+                .andExpect(jsonPath("$.studyTopic").value("테스트 주제"))
+                .andExpect(jsonPath("$.studyPeriod.startDate").value("2026-01-08"))
+                .andExpect(jsonPath("$.studyPeriod.endDate").value("2026-03-21"));
+
+        verify(studyDetailService).getStudyDetail(studyId, memberId);
     }
 }
