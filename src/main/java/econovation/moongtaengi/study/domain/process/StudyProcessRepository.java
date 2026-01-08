@@ -1,6 +1,8 @@
 package econovation.moongtaengi.study.domain.process;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,4 +30,14 @@ public interface StudyProcessRepository extends JpaRepository<StudyProcess, Long
      * 스터디 ID로 프로세스 전체 삭제
      */
     void deleteByStudyId(Long studyId);
+
+    @Query("""
+        SELECT new econovation.moongtaengi.study.domain.process.StudyProcessPeriodBound(
+            MIN(sp.period.startDate),
+            MAX(sp.period.endDate)
+        )
+        FROM StudyProcess sp
+        WHERE sp.studyId = :studyId
+    """)
+    StudyProcessPeriodBound findProcessPeriodBound(@Param("studyId") Long studyId);
 }
