@@ -43,5 +43,8 @@ public class UpdateStudyService {
         studyPeriodValidator.validate(study.getId(), period);
 
         study.update(command.memberId(), name, period, topic);
+
+        log.info("스터디 정보 수정 완료 - memberId: {}, studyId: {}, studyName: {}",
+                command.memberId(), study.getId(), study.getName().getValue());
     }
 }
