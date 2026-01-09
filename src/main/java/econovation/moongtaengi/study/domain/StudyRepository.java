@@ -12,4 +12,7 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
     boolean existsByInviteCodeValue(String value);
 
     Optional<Study> findByInviteCode(InviteCode inviteCode);
+
+    @Query("SELECT s FROM Study s JOIN FETCH s.members WHERE s.id = :id")
+    Optional<Study> findByIdWithMembers(@Param("id") Long id);
 }
