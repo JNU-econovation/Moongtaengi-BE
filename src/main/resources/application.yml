@@ -23,3 +23,20 @@ gemini:
   model: gemini-2.5-flash
   max-retries: 3
   min-processes: 5
+
+aws:
+  credentials:
+    access-key: ${AWS_ACCESS_KEY}
+    secret-key: ${AWS_SECRET_KEY}
+
+  s3:
+    bucket-name: ${S3_BUCKET_NAME}
+    region: ${AWS_REGION:ap-northeast-2}
+    presigned-url-expiration: 300
+    max-file-size: 10485760
+    allowed-content-types:
+      - image/png
+      - image/jpeg
+      - image/jpg
+      - image/gif
+      - image/webp
