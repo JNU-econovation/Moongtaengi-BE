@@ -125,7 +125,7 @@ public class S3Service {
      * 파일 이름 정제 (특수문자 제거)
      */
     private String sanitizeFileName(String fileName) {
-        return fileName.replaceAll("[^a-zA-Z0-9._-]", "_");
+        return fileName.replaceAll("[^a-zA-Z0-9._-가-힣]", "_");
     }
 
     /**
