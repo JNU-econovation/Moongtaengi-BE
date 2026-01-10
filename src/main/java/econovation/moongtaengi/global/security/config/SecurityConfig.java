@@ -44,9 +44,14 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/kakao/callback",
                                 "/api/members/check-nickname",
+                                "/api/admin/auth/login",  // 관리자 로그인 API
+                                "/admin/login",           // 관리자 로그인 페이지
                                 "/h2-console/**",
                                 "/error"
                         ).permitAll()
+
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         // 나머지는 인증 필요
                         .anyRequest().authenticated()
