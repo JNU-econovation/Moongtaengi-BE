@@ -4,6 +4,7 @@ import econovation.moongtaengi.admin.api.dto.AdminLoginRequest;
 import econovation.moongtaengi.admin.api.dto.AdminLoginResponse;
 import econovation.moongtaengi.admin.application.AdminAuthService;
 import econovation.moongtaengi.admin.application.AdminMemberService;
+import econovation.moongtaengi.admin.application.AdminStudyService;
 import jakarta.servlet.http.HttpSession;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class AdminViewController {
 
     private final AdminAuthService adminAuthService;
     private final AdminMemberService adminMemberService;
+    private final AdminStudyService adminStudyService;
 
     /**
      * 로그인 페이지
@@ -137,7 +139,10 @@ public class AdminViewController {
         }
 
         long memberCount = adminMemberService.getMemberCount();
+        long studyCount = adminStudyService.getStudyCount();
+
         model.addAttribute("memberCount", memberCount);
+        model.addAttribute("studyCount", studyCount);
         model.addAttribute("adminNickname", session.getAttribute("ADMIN_NICKNAME"));
 
         return "admin/dashboard";
@@ -163,6 +168,28 @@ public class AdminViewController {
         }
 
         return "admin/member/list";
+    }
+
+    /**
+     * 스터디 관리 페이지
+     * GET /admin/studies
+     */
+    @GetMapping("/studies")
+    public String studyList(HttpSession session) {
+        log.info("스터디 관리 페이지 요청");
+
+        // 세션 체크
+        if (!isLoggedIn(session)) {
+            return "redirect:/admin/login";
+        }
+
+        // 관리자 권한 체크
+        if (!isAdmin(session)) {
+            session.invalidate();
+            return "redirect:/admin/login";
+        }
+
+        return "admin/study/list";
     }
 
     /**
