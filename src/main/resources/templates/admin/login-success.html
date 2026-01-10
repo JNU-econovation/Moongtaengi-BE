@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>로그인 처리 중...</title>
+</head>
+<body>
+<script th:inline="javascript">
+  // localStorage에 저장
+  localStorage.setItem('adminToken', [[${accessToken}]]);
+  localStorage.setItem('adminNickname', [[${nickname}]]);
+
+  // 대시보드로 리다이렉트
+  window.location.href = '/admin/dashboard';
+</script>
+</body>
+</html>

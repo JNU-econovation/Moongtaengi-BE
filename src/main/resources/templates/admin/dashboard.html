@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>뭉탱이 관리자 - 대시보드</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* 사이드바 */
+    .sidebar {
+      width: 250px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+    }
+
+    .sidebar h1 {
+      font-size: 24px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .sidebar nav a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      padding: 12px 15px;
+      margin-bottom: 5px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    .sidebar nav a:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .sidebar nav a.active {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* 메인 컨텐츠 */
+    .main-content {
+      flex: 1;
+      padding: 30px;
+    }
+
+    .header {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h2 {
+      color: #333;
+    }
+
+    .user-info {
+      color: #666;
+    }
+
+    .btn-logout {
+      padding: 8px 16px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .stat-card h3 {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .stat-card .number {
+      font-size: 36px;
+      font-weight: bold;
+      color: #667eea;
+    }
+
+    .quick-actions {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .quick-actions h3 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .action-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .action-btn {
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- 사이드바 -->
+  <aside class="sidebar">
+    <h1>🔐 뭉탱이 관리자</h1>
+    <nav>
+      <a href="/admin/dashboard" class="active">📊 대시보드</a>
+      <a href="/admin/members">👥 회원 관리</a>
+      <a href="/admin/studies">📚 스터디 관리</a>
+    </nav>
+  </aside>
+
+  <!-- 메인 컨텐츠 -->
+  <main class="main-content">
+    <div class="header">
+      <h2>대시보드</h2>
+      <div>
+        <span class="user-info" id="adminName">관리자</span>
+        <button class="btn-logout" onclick="logout()">로그아웃</button>
+      </div>
+    </div>
+
+    <!-- 통계 카드 -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>전체 회원</h3>
+        <div class="number" th:text="${memberCount}">0</div>
+      </div>
+      <div class="stat-card">
+        <h3>전체 스터디</h3>
+        <div class="number">0</div>
+      </div>
+      <div class="stat-card">
+        <h3>활성 회원</h3>
+        <div class="number">0</div>
+      </div>
+    </div>
+
+    <!-- 빠른 작업 -->
+    <div class="quick-actions">
+      <h3>빠른 작업</h3>
+      <div class="action-buttons">
+        <a href="/admin/members" class="action-btn">👥 회원 관리</a>
+        <a href="/admin/studies" class="action-btn">📚 스터디 관리</a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  // 페이지 로드 시 관리자 정보 표시
+  window.addEventListener('load', () => {
+    const adminNickname = localStorage.getItem('adminNickname');
+    if (adminNickname) {
+      document.getElementById('adminName').textContent = adminNickname;
+    }
+
+
+  });
+
+  // 로그아웃
+  function logout() {
+    if (confirm('로그아웃 하시겠습니까?')) {
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminNickname');
+      localStorage.removeItem('adminRole');
+      window.location.href = '/admin/logout';
+    }
+  }
+</script>
+</body>
+</html>

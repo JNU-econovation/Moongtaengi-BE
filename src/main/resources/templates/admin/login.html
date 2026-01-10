@@ -97,51 +97,7 @@
       padding: 12px;
       border-radius: 5px;
       margin-bottom: 20px;
-      display: none;
       text-align: center;
-    }
-
-    .error-message.show {
-      display: block;
-    }
-
-    .success-message {
-      background: #efe;
-      color: #3c3;
-      padding: 12px;
-      border-radius: 5px;
-      margin-bottom: 20px;
-      display: none;
-      text-align: center;
-    }
-
-    .success-message.show {
-      display: block;
-    }
-
-    .loading {
-      display: none;
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .loading.show {
-      display: block;
-    }
-
-    .spinner {
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #667eea;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -152,10 +108,11 @@
     <p>뭉탱이 관리자 페이지</p>
   </div>
 
-  <div id="errorMessage" class="error-message"></div>
-  <div id="successMessage" class="success-message"></div>
+  <!-- 에러 메시지 -->
+  <div th:if="${error}" class="error-message" th:text="${error}"></div>
 
-  <form id="loginForm">
+  <!-- ✅ 로그인 폼 -->
+  <form method="POST" th:action="@{/admin/do-login}">
     <div class="form-group">
       <label for="kakaoId">카카오 ID</label>
       <input
@@ -170,95 +127,6 @@
 
     <button type="submit" class="btn-login">로그인</button>
   </form>
-
-  <div class="loading" id="loading">
-    <div class="spinner"></div>
-    <p style="margin-top: 10px; color: #666;">로그인 중...</p>
-  </div>
 </div>
-
-<script>
-  const loginForm = document.getElementById('loginForm');
-  const errorMessage = document.getElementById('errorMessage');
-  const successMessage = document.getElementById('successMessage');
-  const loading = document.getElementById('loading');
-
-  loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const kakaoId = document.getElementById('kakaoId').value.trim();
-
-    if (!kakaoId) {
-      showError('카카오 ID를 입력하세요');
-      return;
-    }
-
-    // 로딩 시작
-    loading.classList.add('show');
-    loginForm.style.display = 'none';
-    hideMessages();
-
-    try {
-      const response = await fetch('/api/admin/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ kakaoId })
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // 로그인 성공
-        localStorage.setItem('adminToken', data.accessToken);
-        localStorage.setItem('adminNickname', data.nickname);
-        localStorage.setItem('adminRole', data.role);
-
-        showSuccess('로그인 성공! 대시보드로 이동합니다...');
-
-        // 2초 후 대시보드로 이동
-        setTimeout(() => {
-          window.location.href = '/admin/dashboard';
-        }, 2000);
-      } else {
-        // 로그인 실패
-        showError(data.message || '로그인에 실패했습니다');
-        loading.classList.remove('show');
-        loginForm.style.display = 'block';
-      }
-    } catch (error) {
-      console.error('로그인 에러:', error);
-      showError('서버 연결에 실패했습니다');
-      loading.classList.remove('show');
-      loginForm.style.display = 'block';
-    }
-  });
-
-  function showError(message) {
-    errorMessage.textContent = message;
-    errorMessage.classList.add('show');
-    successMessage.classList.remove('show');
-  }
-
-  function showSuccess(message) {
-    successMessage.textContent = message;
-    successMessage.classList.add('show');
-    errorMessage.classList.remove('show');
-  }
-
-  function hideMessages() {
-    errorMessage.classList.remove('show');
-    successMessage.classList.remove('show');
-  }
-
-  // 페이지 로드 시 이미 로그인되어 있으면 대시보드로 이동
-  window.addEventListener('load', () => {
-    const token = localStorage.getItem('adminToken');
-    if (token) {
-      window.location.href = '/admin/dashboard';
-    }
-  });
-</script>
 </body>
 </html>
