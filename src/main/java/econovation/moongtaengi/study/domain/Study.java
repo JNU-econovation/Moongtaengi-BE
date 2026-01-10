@@ -50,6 +50,14 @@ public class Study extends BaseEntity {
         members.add(studyMember);
     }
 
+    public void update(Long memberId, StudyName name, StudyPeriod period, StudyTopic topic) {
+        validateHost(memberId);
+
+        this.name = name;
+        this.period = period;
+        this.topic = topic;
+    }
+
     /**
      * 호스트 권한 검증
      */
@@ -61,7 +69,7 @@ public class Study extends BaseEntity {
                 );
 
         if (!isHost) {
-            throw new StudyException(StudyErrorCode.UNAUTHORIZED_PROCESS_ACCESS);
+            throw new StudyException(StudyErrorCode.NOT_STUDY_HOST);
         }
     }
 

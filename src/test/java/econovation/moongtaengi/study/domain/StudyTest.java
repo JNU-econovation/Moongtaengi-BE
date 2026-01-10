@@ -60,6 +60,46 @@ public class StudyTest {
                 .isEqualTo(StudyErrorCode.ALREADY_JOINED_MEMBER);
     }
 
+    @Test
+    @DisplayName("방장은 스터디 정보를 수정할 수 있다.")
+    void 스터디_수정_성공() {
+        //given
+        Long hostId = 1L;
+        Study study = createStudy(hostId);
+
+        StudyName newName = new StudyName("변경된 이름");
+        StudyTopic newTopic = new StudyTopic("변경된 주제");
+        StudyPeriod newPeriod = new StudyPeriod(LocalDate.of(2026, 2, 1), LocalDate.of(2026, 2, 28));
+
+        //when
+        study.update(hostId, newName, newPeriod, newTopic);
+
+        //then
+        assertThat(study.getName()).isEqualTo(newName);
+        assertThat(study.getTopic()).isEqualTo(newTopic);
+        assertThat(study.getPeriod()).isEqualTo(newPeriod);
+    }
+
+    @Test
+    @DisplayName("방장이 아닌 회원이 수정을 시도하면 예외가 발생한다.")
+    void 스터디_수정_실패_권한없음() {
+        //given
+        Long hostId = 1L;
+        Long guestId = 2L;
+        Study study = createStudy(hostId);
+        study.addGuest(guestId);
+
+        StudyName newName = new StudyName("변경된 이름");
+        StudyTopic newTopic = new StudyTopic("변경된 주제");
+        StudyPeriod newPeriod = new StudyPeriod(LocalDate.now(), LocalDate.now().plusDays(7));
+
+        //when&then
+        assertThatThrownBy(() -> study.update(guestId, newName, newPeriod, newTopic))
+                .isInstanceOf(StudyException.class)
+                .extracting("errorCode")
+                .isEqualTo(StudyErrorCode.NOT_STUDY_HOST);
+    }
+
     private Study createStudy(Long hostId) {
         return new Study(
                 new StudyName("테스트 스터디"),

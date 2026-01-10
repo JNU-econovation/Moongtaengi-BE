@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -15,15 +16,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import econovation.moongtaengi.global.config.WebConfig;
 import econovation.moongtaengi.global.security.CustomAuthentication;
-import econovation.moongtaengi.global.security.JwtTokenProvider;
 import econovation.moongtaengi.global.security.LoginMemberIdArgumentResolver;
 import econovation.moongtaengi.study.api.dto.StudyCreateRequest;
 import econovation.moongtaengi.study.api.dto.StudyDetailResponse;
 import econovation.moongtaengi.study.api.dto.StudyDetailResponse.StudyPeriodDto;
 import econovation.moongtaengi.study.api.dto.StudyJoinRequest;
+import econovation.moongtaengi.study.api.dto.StudyUpdateRequest;
 import econovation.moongtaengi.study.application.CreateStudyService;
 import econovation.moongtaengi.study.application.JoinStudyService;
 import econovation.moongtaengi.study.application.StudyDetailService;
+import econovation.moongtaengi.study.application.UpdateStudyCommand;
+import econovation.moongtaengi.study.application.UpdateStudyService;
 import econovation.moongtaengi.study.domain.StudyJoinValidator;
 import econovation.moongtaengi.study.domain.StudyRole;
 import java.time.LocalDate;
@@ -59,6 +62,8 @@ public class StudyControllerTest {
     private StudyJoinValidator studyJoinValidator;
     @MockitoBean
     private StudyDetailService studyDetailService;
+    @MockitoBean
+    private UpdateStudyService updateStudyService;
 
     @BeforeEach
     void setUp() {
@@ -166,5 +171,38 @@ public class StudyControllerTest {
                 .andExpect(jsonPath("$.studyPeriod.endDate").value("2026-03-21"));
 
         verify(studyDetailService).getStudyDetail(studyId, memberId);
+    }
+
+    @Test
+    @DisplayName("스터디 정보 수정 요청 시 Command로 변환하여 서비스를 호출하고 200 OK를 반환한다")
+    void 스터디_수정_성공() throws Exception {
+        //given
+        Long memberId = 1L;
+        Long studyId = 100L;
+
+        StudyUpdateRequest request = new StudyUpdateRequest(
+                "수정된 이름",
+                "수정된 주제",
+                LocalDate.of(2026, 1, 10),
+                LocalDate.of(2026, 1, 28)
+        );
+
+        //when&then
+        mvc.perform(patch("/api/studies/{studyId}", studyId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        UpdateStudyCommand expectedCommand = new UpdateStudyCommand(
+                memberId,
+                studyId,
+                request.name(),
+                request.topic(),
+                request.startDate(),
+                request.endDate()
+        );
+
+        verify(updateStudyService).updateStudy(eq(expectedCommand));
     }
 }

@@ -29,7 +29,7 @@ public enum StudyErrorCode implements ErrorCode {
     TOPIC_LENGTH_INVALID(HttpStatus.BAD_REQUEST, "STUDY_010", "스터디 주제는 최대 %d자까지만 가능합니다."),
 
     // 스터디 권한
-    UNAUTHORIZED_PROCESS_ACCESS(HttpStatus.FORBIDDEN, "STUDY_011", "프로세스 생성/수정/삭제 권한이 없습니다. 호스트만 가능합니다."),
+    NOT_STUDY_HOST(HttpStatus.FORBIDDEN, "STUDY_011", "스터디 방장 권한이 필요합니다."),
    
     //스터디 참여 중복
     ALREADY_JOINED_MEMBER(HttpStatus.CONFLICT, "STUDY_012", "이미 참여 중인 스터디입니다."),
@@ -56,7 +56,11 @@ public enum StudyErrorCode implements ErrorCode {
     STUDY_JOIN_DENIED_TEMP_MEMBER(HttpStatus.FORBIDDEN, "STUDY_022", "임시회원은 스터디를 참여할 수 없습니다."),
  
     // 프로세스
-    PROCESS_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY_019", "존재하지 않는 프로세스입니다.");
+    PROCESS_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY_019", "존재하지 않는 프로세스입니다."),
+
+    //스터디 기간 수정 제한
+    STUDY_START_DATE_TOO_LATE(HttpStatus.BAD_REQUEST, "STUDY_023","스터디 시작일은 첫 번째 프로세스 시작일보다 빨라야 합니다."),
+    STUDY_END_DATE_TOO_EARLY(HttpStatus.BAD_REQUEST, "STUDY_024","스터디 종료일은 마지막 프로세스 종료일보다 늦어야 합니다.");
 
     private final HttpStatus status;
     private final String code;

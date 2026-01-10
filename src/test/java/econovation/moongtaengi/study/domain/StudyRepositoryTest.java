@@ -9,11 +9,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @DataJpaTest
 public class StudyRepositoryTest {
     @Autowired
     private StudyRepository studyRepository;
+
+    @Autowired
+    private TestEntityManager entityManager;
 
     @Test
     @DisplayName("초대 코드로 스터디를 조회할 수 있다.")
@@ -42,6 +46,31 @@ public class StudyRepositoryTest {
 
         //then
         assertThat(result).isNotPresent();
+    }
+
+    @Test
+    @DisplayName("ID로 스터디 조회 시 멤버들도 Fetch Join으로 함께 조회한다.")
+    void 스터디_멤버_페치조인_조회() {
+        //given
+        InviteCode inviteCode = new InviteCode("12345678");
+        Study study = createStudyWithInviteCode(inviteCode);
+        studyRepository.save(study);
+
+        study.addGuest(2L);
+        studyRepository.save(study);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        //when
+        Optional<Study> result = studyRepository.findByIdWithMembers(study.getId());
+
+        //then
+        assertThat(result).isPresent();
+        assertThat(result.get().getMembers()).hasSize(2);
+        assertThat(result.get().getMembers())
+                .extracting("memberId")
+                .contains(1L, 2L);
     }
 
     private Study createStudyWithInviteCode(InviteCode inviteCode) {
