@@ -1,4 +1,4 @@
-package econovation.moongtaengi.admin;
+package econovation.moongtaengi.admin.domain;
 
 import econovation.moongtaengi.global.exception.BusinessException;
 import econovation.moongtaengi.global.exception.ErrorCode;
