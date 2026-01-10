@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>뭉탱이 관리자 - 스터디 관리</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* 사이드바 */
+    .sidebar {
+      width: 250px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+    }
+
+    .sidebar h1 {
+      font-size: 24px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .sidebar nav a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      padding: 12px 15px;
+      margin-bottom: 5px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    .sidebar nav a:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .sidebar nav a.active {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* 메인 컨텐츠 */
+    .main-content {
+      flex: 1;
+      padding: 30px;
+    }
+
+    .header {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h2 {
+      color: #333;
+    }
+
+    .btn-primary {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+    }
+
+    .content-card {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table th {
+      background: #f8f9fa;
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+      color: #333;
+      border-bottom: 2px solid #dee2e6;
+    }
+
+    table td {
+      padding: 15px;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    table tr:hover {
+      background: #f8f9fa;
+    }
+
+    .btn-danger {
+      padding: 6px 12px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .btn-danger:hover {
+      background: #c82333;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .pagination button {
+      padding: 8px 12px;
+      border: 1px solid #dee2e6;
+      background: white;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .pagination button:hover:not(:disabled) {
+      background: #f8f9fa;
+    }
+
+    .pagination button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .pagination .current-page {
+      padding: 8px 12px;
+      font-weight: 600;
+    }
+
+    /* 모달 */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+    }
+
+    .modal-content h3 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn-secondary {
+      padding: 10px 20px;
+      background: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- 사이드바 -->
+  <aside class="sidebar">
+    <h1>🔐 뭉탱이 관리자</h1>
+    <nav>
+      <a href="/admin/dashboard">📊 대시보드</a>
+      <a href="/admin/members">👥 회원 관리</a>
+      <a href="/admin/studies" class="active">📚 스터디 관리</a>
+    </nav>
+  </aside>
+
+  <!-- 메인 컨텐츠 -->
+  <main class="main-content">
+    <div class="header">
+      <h2>스터디 관리</h2>
+      <button class="btn-primary" onclick="openCreateModal()">+ 스터디 생성</button>
+    </div>
+
+    <div class="content-card">
+      <div id="loading" class="loading">
+        데이터를 불러오는 중...
+      </div>
+
+      <div id="studyTable" style="display: none;">
+        <table>
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>스터디명</th>
+            <th>주제</th>
+            <th>기간</th>
+            <th>멤버 수</th>
+            <th>초대 코드</th>
+            <th>생성일</th>
+            <th>작업</th>
+          </tr>
+          </thead>
+          <tbody id="studyList">
+          <!-- 데이터 동적 삽입 -->
+          </tbody>
+        </table>
+
+        <div class="pagination" id="pagination">
+          <!-- 페이지네이션 동적 삽입 -->
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- 스터디 생성 모달 -->
+<div class="modal" id="createModal">
+  <div class="modal-content">
+    <h3>스터디 생성</h3>
+    <form id="createForm">
+      <div class="form-group">
+        <label for="name">스터디명</label>
+        <input type="text" id="name" required>
+      </div>
+      <div class="form-group">
+        <label for="topic">주제</label>
+        <input type="text" id="topic" required>
+      </div>
+      <div class="form-group">
+        <label for="startDate">시작일</label>
+        <input type="date" id="startDate" required>
+      </div>
+      <div class="form-group">
+        <label for="endDate">종료일</label>
+        <input type="date" id="endDate" required>
+      </div>
+      <div class="form-group">
+        <label for="hostId">호스트 ID</label>
+        <input type="number" id="hostId" required>
+      </div>
+      <div class="modal-buttons">
+        <button type="submit" class="btn-primary">생성</button>
+        <button type="button" class="btn-secondary" onclick="closeCreateModal()">취소</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  let currentPage = 0;
+  let totalPages = 0;
+
+  // 페이지 로드 시 스터디 목록 조회
+  window.addEventListener('load', () => {
+    const token = localStorage.getItem('adminToken');
+    if (!token) {
+      window.location.href = '/admin/login';
+      return;
+    }
+
+    loadStudies(0);
+  });
+
+  // 스터디 목록 조회
+  async function loadStudies(page) {
+    try {
+      const token = localStorage.getItem('adminToken');
+
+      const response = await fetch(`/api/admin/studies?page=${page}&size=20&sort=createdAt,desc`, {
+        headers: token ? {
+          'Authorization': `Bearer ${token}`
+        } : {},
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        displayStudies(data);
+      } else if (response.status === 401 || response.status === 403) {
+        alert('로그인이 만료되었습니다');
+        window.location.href = '/admin/login';
+      } else {
+        alert('스터디 목록 조회에 실패했습니다');
+      }
+    } catch (error) {
+      console.error('스터디 목록 조회 에러:', error);
+      alert('서버 연결에 실패했습니다');
+    }
+  }
+
+  // 스터디 목록 표시
+  function displayStudies(data) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('studyTable').style.display = 'block';
+
+    const studyList = document.getElementById('studyList');
+    studyList.innerHTML = '';
+
+    currentPage = data.number;
+    totalPages = data.totalPages;
+
+    data.content.forEach(study => {
+      const row = document.createElement('tr');
+
+      row.innerHTML = `
+                <td>${study.id}</td>
+                <td>${study.name}</td>
+                <td>${study.topic}</td>
+                <td>${formatDate(study.startDate)} ~ ${formatDate(study.endDate)}</td>
+                <td>${study.memberCount}명</td>
+                <td>${study.inviteCode}</td>
+                <td>${formatDate(study.createdAt)}</td>
+                <td>
+                    ${study.memberCount <= 1
+          ? `<button class="btn-danger" onclick="deleteStudy(${study.id})">삭제</button>`
+          : '-'
+      }
+                </td>
+            `;
+
+      studyList.appendChild(row);
+    });
+
+    displayPagination();
+  }
+
+  // 페이지네이션 표시
+  function displayPagination() {
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = `
+            <button onclick="loadStudies(${currentPage - 1})" ${currentPage === 0 ? 'disabled' : ''}>
+                이전
+            </button>
+            <span class="current-page">${currentPage + 1} / ${totalPages}</span>
+            <button onclick="loadStudies(${currentPage + 1})" ${currentPage >= totalPages - 1 ? 'disabled' : ''}>
+                다음
+            </button>
+        `;
+  }
+
+  // 날짜 포맷
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ko-KR');
+  }
+
+  // 스터디 생성 모달 열기
+  function openCreateModal() {
+    document.getElementById('createModal').classList.add('show');
+    document.getElementById('createForm').reset();
+  }
+
+  // 스터디 생성 모달 닫기
+  function closeCreateModal() {
+    document.getElementById('createModal').classList.remove('show');
+  }
+
+  // 스터디 생성
+  document.getElementById('createForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const token = localStorage.getItem('adminToken');
+    const name = document.getElementById('name').value;
+    const topic = document.getElementById('topic').value;
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const hostId = parseInt(document.getElementById('hostId').value);
+
+    try {
+      const response = await fetch('/api/admin/studies', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name, topic, startDate, endDate, hostId })
+      });
+
+      if (response.ok) {
+        alert('스터디가 생성되었습니다');
+        closeCreateModal();
+        loadStudies(currentPage);
+      } else {
+        const error = await response.json();
+        alert(error.message || '스터디 생성에 실패했습니다');
+      }
+    } catch (error) {
+      console.error('스터디 생성 에러:', error);
+      alert('서버 연결에 실패했습니다');
+    }
+  });
+
+  // 스터디 삭제
+  async function deleteStudy(studyId) {
+    if (!confirm('정말 이 스터디를 삭제하시겠습니까?')) {
+      return;
+    }
+
+    const token = localStorage.getItem('adminToken');
+
+    try {
+      const response = await fetch(`/api/admin/studies/${studyId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        alert('스터디가 삭제되었습니다');
+        loadStudies(currentPage);
+      } else {
+        const error = await response.json();
+        alert(error.message || '스터디 삭제에 실패했습니다');
+      }
+    } catch (error) {
+      console.error('스터디 삭제 에러:', error);
+      alert('서버 연결에 실패했습니다');
+    }
+  }
+</script>
+</body>
+</html>
