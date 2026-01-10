@@ -1,4 +1,4 @@
-package econovation.moongtaengi.study.infra.s3.domain;
+package econovation.moongtaengi.study.infra.s3.exception;
 
 import econovation.moongtaengi.global.exception.BusinessException;
 import econovation.moongtaengi.global.exception.ErrorCode;
