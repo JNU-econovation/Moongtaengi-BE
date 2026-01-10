@@ -1,5 +1,8 @@
 package econovation.moongtaengi.study.infra.s3.application;
 
+import econovation.moongtaengi.study.domain.StudyErrorCode;
+import econovation.moongtaengi.study.domain.StudyException;
+import econovation.moongtaengi.study.domain.StudyMemberRepository;
 import econovation.moongtaengi.study.infra.s3.api.dto.PresignedUrlRequest;
 import econovation.moongtaengi.study.infra.s3.api.dto.PresignedUrlResponse;
 import econovation.moongtaengi.study.infra.s3.config.S3Properties;
@@ -27,6 +30,7 @@ public class S3Service {
     private final S3Client s3Client;
     private final S3Presigner s3Presigner;
     private final S3Properties s3Properties;
+    private final StudyMemberRepository studyMemberRepository;
 
     /**
      * Presigned URL 발급
@@ -35,6 +39,9 @@ public class S3Service {
             PresignedUrlRequest request,
             Long memberId
     ) {
+        // 스터디 멤버인지 검증
+        validateStudyMember(request.studyId(), memberId);
+
         // 1. 파일 검증
         validateFile(request.fileName(), request.fileSize(), request.contentType());
 
@@ -150,5 +157,17 @@ public class S3Service {
      */
     private String extractFileName(String s3Key) {
         return s3Key.substring(s3Key.lastIndexOf('/') + 1);
+    }
+
+    /**
+    * 스터디 멤버 검증
+    */
+    private void validateStudyMember(Long studyId, Long memberId) {
+        if (!studyMemberRepository.existsByStudyIdAndMemberId(studyId, memberId)) {
+            log.warn("스터디 멤버가 아님 - studyId: {}, memberId: {}", studyId, memberId);
+            throw new StudyException(StudyErrorCode.NOT_STUDY_MEMBER);
+        }
+
+        log.debug("스터디 멤버 검증 완료 - studyId: {}, memberId: {}", studyId, memberId);
     }
 }
