@@ -26,6 +26,10 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private MemberStatus status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "VARCHAR(255) DEFAULT 'USER'")
+    private Role role = Role.USER;
+
     // 카카오 로그인 시 임시 회원 생성
     public static Member createTemporaryMember(String kakaoId) {
         Member member = new Member();
@@ -52,5 +56,13 @@ public class Member extends BaseEntity {
 
     public boolean isActive() {
         return this.status == MemberStatus.ACTIVE;
+    }
+
+    public boolean isAdmin() {
+        return this.role == Role.ADMIN;
+    }
+
+    public boolean isUser() {
+        return this.role == Role.USER;
     }
 }
