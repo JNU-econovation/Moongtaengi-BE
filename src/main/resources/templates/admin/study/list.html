@@ -382,10 +382,9 @@
                 <td>${study.inviteCode}</td>
                 <td>${formatDate(study.createdAt)}</td>
                 <td>
-                    ${study.memberCount <= 1
-          ? `<button class="btn-danger" onclick="deleteStudy(${study.id})">삭제</button>`
-          : '-'
-      }
+                    <button class="btn-danger" onclick="deleteStudy(${study.id}, ${study.memberCount})">
+                        삭제
+                    </button>
                 </td>
             `;
 
@@ -462,8 +461,18 @@
   });
 
   // 스터디 삭제
-  async function deleteStudy(studyId) {
-    if (!confirm('정말 이 스터디를 삭제하시겠습니까?')) {
+  async function deleteStudy(studyId, memberCount) {
+    // 멤버 수에 따라 경고 메시지 변경
+    let message = '정말 이 스터디를 삭제하시겠습니까?';
+
+    if (memberCount > 1) {  // 호스트 포함 2명 이상
+      message = `⚠️ 경고: 이 스터디에는 ${memberCount}명의 멤버가 있습니다.\n\n` +
+          `스터디를 삭제하면 모든 멤버 정보와 프로세스, 과제 등\n` +
+          `관련된 모든 데이터가 함께 삭제됩니다.\n\n` +
+          `정말 삭제하시겠습니까?`;
+    }
+
+    if (!confirm(message)) {
       return;
     }
 
