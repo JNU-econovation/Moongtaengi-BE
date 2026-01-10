@@ -12,4 +12,7 @@ public interface StudyMemberRepository extends JpaRepository<StudyMember, Long> 
 
     @Query("select sm from StudyMember sm join fetch sm.study where sm.study.id = :studyId and sm.memberId = :memberId")
     Optional<StudyMember> findByStudyIdAndMemberId(@Param("studyId") Long studyId, @Param("memberId") Long memberId);
+
+    @Query("select count(sm) > 0 from StudyMember sm where sm.study.id = :studyId and sm.memberId = :memberId")
+    boolean existsByStudyIdAndMemberId(@Param("studyId") Long studyId, @Param("memberId") Long memberId);
 }
