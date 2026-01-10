@@ -20,7 +20,9 @@ public enum AdminErrorCode implements ErrorCode {
 
     // 스터디 관리
     STUDY_NOT_FOUND(HttpStatus.NOT_FOUND, "ADMIN_007", "존재하지 않는 스터디입니다."),
-    CANNOT_DELETE_STUDY_WITH_MEMBERS(HttpStatus.BAD_REQUEST, "ADMIN_008", "멤버가 있는 스터디는 삭제할 수 없습니다.");
+    CANNOT_DELETE_STUDY_WITH_MEMBERS(HttpStatus.BAD_REQUEST, "ADMIN_008", "멤버가 있는 스터디는 삭제할 수 없습니다."),
+    HOST_NOT_FOUND(HttpStatus.NOT_FOUND, "ADMIN_009", "존재하지 않는 호스트입니다.");
+
 
     private final HttpStatus status;
     private final String code;
