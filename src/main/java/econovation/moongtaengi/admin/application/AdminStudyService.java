@@ -85,17 +85,12 @@ public class AdminStudyService {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new AdminException(AdminErrorCode.STUDY_NOT_FOUND));
 
-        // 2. 멤버가 2명 이상이면 삭제 불가 (호스트 포함)
-        if (study.getMembers().size() > 1) {
-            log.warn("멤버가 있는 스터디 삭제 시도 - studyId: {}, memberCount: {}",
-                    studyId, study.getMembers().size());
-            throw new AdminException(AdminErrorCode.CANNOT_DELETE_STUDY_WITH_MEMBERS);
-        }
+        int memberCount = study.getMembers().size();
 
-        // 3. 삭제
+        // 2. 삭제 (내부에 멤버 존재해도 삭제)
         studyRepository.delete(study);
 
-        log.info("✅ 스터디 삭제 완료 - studyId: {}", studyId);
+        log.info("✅ 스터디 삭제 완료 - studyId: {}, 함께 삭제된 멤버: {}명", studyId, memberCount);
     }
 
     /**
