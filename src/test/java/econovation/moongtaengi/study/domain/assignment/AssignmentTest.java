@@ -34,4 +34,20 @@ public class AssignmentTest {
         assertThat(assignment.getContent())
                 .isEqualTo(AssignmentFixture.DEFAULT_CONTENT);
     }
+
+    @Test
+    @DisplayName("과제 제출 시 상태가 SUBMITTED로 변경되고, 지각 여부가 기록된다.")
+    void 과제_제출_상태_변경_지각_여부_기록_성공() {
+        //given
+        Assignment assignment = anAssignment()
+                .build();
+
+        //when
+        boolean isLate = true;
+        assignment.markAsSubmitted(isLate);
+
+        //then
+        assertThat(assignment.getStatus()).isEqualTo(AssignmentStatus.SUBMITTED);
+        assertThat(assignment.isLate()).isTrue();
+    }
 }
