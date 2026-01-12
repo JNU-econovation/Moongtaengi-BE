@@ -1,5 +1,6 @@
 package econovation.moongtaengi.study.domain.assignment;
 
+import econovation.moongtaengi.global.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -18,11 +19,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "assignments")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Assignment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Assignment extends BaseEntity {
     @Column(name = "process_id", nullable = false)
     private Long processId;
 
