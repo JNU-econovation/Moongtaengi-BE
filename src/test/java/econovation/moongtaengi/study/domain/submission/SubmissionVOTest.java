@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class SubmissionVOTest {
     @Nested
@@ -51,4 +52,44 @@ public class SubmissionVOTest {
                     .isEqualTo(SubmissionErrorCode.CONTENT_TOO_LONG);
         }
     }
+
+    @Nested
+    @DisplayName("첨부파일")
+    class SubmissionAttachmentTest {
+        @Test
+        @DisplayName("정상적인 URL로 첨부파일을 생성한다")
+        void 첨부파일_생성_성공() {
+            //given
+            String validUrl = "https://example.com/file.pdf";
+
+            //when
+            SubmissionAttachment attachment = new SubmissionAttachment(validUrl);
+
+            //then
+            assertThat(attachment.getUrl()).isEqualTo(validUrl);
+        }
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        @DisplayName("URL이 없으면 예외가 발생한다")
+        void 첨부파일_URL_없음_실패(String invalidUrl) {
+            //when&then
+            assertThatThrownBy(() -> new SubmissionAttachment(invalidUrl))
+                    .isInstanceOf(SubmissionException.class)
+                    .extracting("errorCode")
+                    .isEqualTo(SubmissionErrorCode.INVALID_ATTACHMENT_URL);
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"ftp://files.com", "not-url", "www.naver.com"})
+        @DisplayName("URL 형식이 올바르지 않으면 예외가 발생한다")
+        void 첨부파일_URL_형식_실패(String invalidUrl) {
+            //when&then
+            assertThatThrownBy(() -> new SubmissionAttachment(invalidUrl))
+                    .isInstanceOf(SubmissionException.class)
+                    .extracting("errorCode")
+                    .isEqualTo(SubmissionErrorCode.INVALID_ATTACHMENT_URL);
+        }
+    }
 }
+
