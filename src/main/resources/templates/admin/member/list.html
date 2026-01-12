@@ -276,7 +276,10 @@
   <main class="main-content">
     <div class="header">
       <h2>회원 관리</h2>
-      <button class="btn-primary" onclick="openCreateModal()">+ 회원 추가</button>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-secondary" onclick="createMockMembers()">🎲 Mock 10명 생성</button>
+        <button class="btn-primary" onclick="openCreateModal()">+ 회원 추가</button>
+      </div>
     </div>
 
     <div class="content-card">
@@ -475,6 +478,35 @@
       alert('서버 연결에 실패했습니다');
     }
   });
+
+  // Mock 회원 생성
+  async function createMockMembers() {
+    if (!confirm('Mock 회원 10명을 생성하시겠습니까?')) {
+      return;
+    }
+
+    const token = localStorage.getItem('adminToken');
+
+    try {
+      const response = await fetch('/api/admin/members/mock', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(`Mock 회원 ${data.createdCount}명이 생성되었습니다`);
+        loadMembers(0);  // 첫 페이지로 이동
+      } else {
+        alert('Mock 회원 생성에 실패했습니다');
+      }
+    } catch (error) {
+      console.error('Mock 회원 생성 에러:', error);
+      alert('서버 연결에 실패했습니다');
+    }
+  }
 
   // 회원 삭제
   async function deleteMember(memberId) {

@@ -4,6 +4,7 @@ import econovation.moongtaengi.admin.api.dto.AdminMemberResponse;
 import econovation.moongtaengi.admin.api.dto.CreateMemberRequest;
 import econovation.moongtaengi.admin.application.AdminMemberService;
 import jakarta.validation.Valid;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -91,5 +92,20 @@ public class AdminMemberController {
         log.info("✅ 회원 삭제 API 완료");
 
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Mock 회원 10명 생성
+     * POST /api/admin/members/mock
+     */
+    @PostMapping("/mock")
+    public ResponseEntity<Map<String, Integer>> createMockMembers() {
+        log.info("Mock 회원 생성 API 호출");
+
+        int createdCount = adminMemberService.createMockMembers();
+
+        log.info("✅ Mock 회원 생성 API 완료 - {}명", createdCount);
+
+        return ResponseEntity.ok(Map.of("createdCount", createdCount));
     }
 }
