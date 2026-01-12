@@ -7,15 +7,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class BaseEntity {
+public abstract class BaseEntity extends AbstractAggregateRoot<BaseEntity> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,4 +31,9 @@ public abstract class BaseEntity {
     @LastModifiedDate
     @Column(name = "updated_at", updatable = true)
     private LocalDateTime updatedAt;
+
+    @Override
+    public Collection<Object> domainEvents() {
+        return super.domainEvents();
+    }
 }

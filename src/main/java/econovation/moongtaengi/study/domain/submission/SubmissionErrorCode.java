@@ -12,7 +12,11 @@ public enum SubmissionErrorCode implements ErrorCode {
 
     CONTENT_TOO_LONG(HttpStatus.BAD_REQUEST, "SM_002", "제출 내용은 %d자를 초과할 수 없습니다."),
 
-    INVALID_ATTACHMENT_URL(HttpStatus.BAD_REQUEST, "SM_003", "잘못된 첨부파일 URL 형식입니다.");
+    INVALID_ATTACHMENT_URL(HttpStatus.BAD_REQUEST, "SM_003", "잘못된 첨부파일 URL 형식입니다."),
+
+    CREATE_ARGUMENT_MISSING(HttpStatus.BAD_REQUEST, "SM_004", "제출물 생성 과정에서 필수 인자가 누락되었습니다."),
+
+    ATTACHMENT_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "SM_005", "첨부파일은 최대 %d개까지만 업로드 가능합니다.");
 
     private final HttpStatus status;
     private final String code;
