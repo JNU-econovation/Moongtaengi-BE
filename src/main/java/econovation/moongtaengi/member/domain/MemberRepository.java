@@ -1,5 +1,6 @@
 package econovation.moongtaengi.member.domain;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
@@ -12,4 +13,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByKakaoId(String kakaoId);
 
     boolean existsByNicknameValue(String nickname);
+
+    List<Member> findAllByStatus(MemberStatus status);
+
+    long countByStatus(MemberStatus status);
 }

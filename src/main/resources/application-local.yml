@@ -13,9 +13,15 @@ spring:
     username: sa
     password:
 
+  sql:
+    init:
+      mode: embedded
+      data-locations: classpath:data-local.sql
+
   jpa:
     hibernate:
       ddl-auto: update
+    defer-datasource-initialization: true
     properties:
       hibernate:
         format_sql: true

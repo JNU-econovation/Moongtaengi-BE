@@ -32,9 +32,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())).csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/h2-console/**", "/api/**")
+                )
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
@@ -44,9 +47,15 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/kakao/callback",
                                 "/api/members/check-nickname",
+                                "/admin/login",           // 관리자 로그인 페이지
+                                "/admin/do-login",
+                                "/admin/login-success",
                                 "/h2-console/**",
                                 "/error"
                         ).permitAll()
+
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").authenticated()
 
                         // 나머지는 인증 필요
                         .anyRequest().authenticated()
