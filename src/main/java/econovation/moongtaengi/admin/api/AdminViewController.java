@@ -140,9 +140,11 @@ public class AdminViewController {
 
         long memberCount = adminMemberService.getMemberCount();
         long studyCount = adminStudyService.getStudyCount();
+        long activeMemberCount = adminMemberService.getActiveMemberCount();
 
         model.addAttribute("memberCount", memberCount);
         model.addAttribute("studyCount", studyCount);
+        model.addAttribute("activeMemberCount", activeMemberCount);
         model.addAttribute("adminNickname", session.getAttribute("ADMIN_NICKNAME"));
 
         return "admin/dashboard";

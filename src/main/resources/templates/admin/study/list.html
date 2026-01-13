@@ -173,6 +173,7 @@
       background: rgba(0, 0, 0, 0.5);
       justify-content: center;
       align-items: center;
+      z-index: 1000;
     }
 
     .modal.show {
@@ -230,6 +231,62 @@
       text-align: center;
       padding: 20px;
       color: #666;
+    }
+
+    /* ✅ 멤버 추가 모달 스타일 */
+    .member-item {
+      padding: 12px;
+      border: 1px solid #dee2e6;
+      border-radius: 5px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: background 0.2s;
+    }
+
+    .member-item:hover:not(.disabled) {
+      background: #f8f9fa;
+    }
+
+    .member-item.disabled {
+      background: #f8f9fa;
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .member-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .member-item.disabled input[type="checkbox"] {
+      cursor: not-allowed;
+    }
+
+    .member-info {
+      flex: 1;
+    }
+
+    .member-name {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 4px;
+    }
+
+    .member-kakao-id {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .badge-in-study {
+      background: #ffc107;
+      color: #856404;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
     }
   </style>
 </head>
@@ -317,9 +374,25 @@
   </div>
 </div>
 
+<!-- ✅ 멤버 추가 모달 -->
+<div class="modal" id="addMemberModal">
+  <div class="modal-content" style="max-width: 600px; max-height: 80vh;">
+    <h3>스터디에 멤버 추가</h3>
+    <div id="memberListContainer" style="max-height: 400px; overflow-y: auto; margin: 20px 0;">
+      <div class="loading">멤버 목록을 불러오는 중...</div>
+    </div>
+    <div class="modal-buttons">
+      <button type="button" class="btn-primary" onclick="addSelectedMembers()">추가</button>
+      <button type="button" class="btn-secondary" onclick="closeAddMemberModal()">취소</button>
+    </div>
+  </div>
+</div>
+
 <script>
   let currentPage = 0;
   let totalPages = 0;
+  let currentStudyId = null;  // ✅ 추가
+  let selectedMemberIds = [];  // ✅ 추가
 
   // 페이지 로드 시 스터디 목록 조회
   window.addEventListener('load', () => {
@@ -382,6 +455,11 @@
                 <td>${study.inviteCode}</td>
                 <td>${formatDate(study.createdAt)}</td>
                 <td>
+                    <button class="btn-primary"
+                            style="margin-right: 5px; padding: 6px 12px; font-size: 12px;"
+                            onclick="openAddMemberModal(${study.id})">
+                        + 멤버
+                    </button>
                     <button class="btn-danger" onclick="deleteStudy(${study.id}, ${study.memberCount})">
                         삭제
                     </button>
@@ -462,10 +540,9 @@
 
   // 스터디 삭제
   async function deleteStudy(studyId, memberCount) {
-    // 멤버 수에 따라 경고 메시지 변경
     let message = '정말 이 스터디를 삭제하시겠습니까?';
 
-    if (memberCount > 1) {  // 호스트 포함 2명 이상
+    if (memberCount > 1) {
       message = `⚠️ 경고: 이 스터디에는 ${memberCount}명의 멤버가 있습니다.\n\n` +
           `스터디를 삭제하면 모든 멤버 정보와 프로세스, 과제 등\n` +
           `관련된 모든 데이터가 함께 삭제됩니다.\n\n` +
@@ -495,6 +572,168 @@
       }
     } catch (error) {
       console.error('스터디 삭제 에러:', error);
+      alert('서버 연결에 실패했습니다');
+    }
+  }
+
+  // ✅ 멤버 추가 모달 열기
+  async function openAddMemberModal(studyId) {
+    currentStudyId = studyId;
+    selectedMemberIds = [];
+    document.getElementById('addMemberModal').classList.add('show');
+
+    await loadAvailableMembers(studyId);
+  }
+
+  // ✅ 멤버 추가 모달 닫기
+  function closeAddMemberModal() {
+    document.getElementById('addMemberModal').classList.remove('show');
+    currentStudyId = null;
+    selectedMemberIds = [];
+  }
+
+  // ✅ 추가 가능한 멤버 목록 로드
+  async function loadAvailableMembers(studyId) {
+    const token = localStorage.getItem('adminToken');
+    const container = document.getElementById('memberListContainer');
+
+    container.innerHTML = '<div class="loading">멤버 목록을 불러오는 중...</div>';
+
+    try {
+      const response = await fetch(`/api/admin/studies/${studyId}/available-members`, {
+        headers: token ? {
+          'Authorization': `Bearer ${token}`
+        } : {},
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        const members = await response.json();
+        displayAvailableMembers(members);
+      } else if (response.status === 401 || response.status === 403) {
+        alert('로그인이 만료되었습니다');
+        window.location.href = '/admin/login';
+      } else {
+        container.innerHTML = '<div class="loading" style="color: #dc3545;">멤버 목록 조회에 실패했습니다</div>';
+      }
+    } catch (error) {
+      console.error('멤버 목록 조회 에러:', error);
+      container.innerHTML = '<div class="loading" style="color: #dc3545;">서버 연결에 실패했습니다</div>';
+    }
+  }
+
+  // ✅ 멤버 목록 표시
+  function displayAvailableMembers(members) {
+    const container = document.getElementById('memberListContainer');
+
+    if (members.length === 0) {
+      container.innerHTML = '<div class="loading">추가 가능한 멤버가 없습니다</div>';
+      return;
+    }
+
+    // 이미 참여 중인 멤버와 그렇지 않은 멤버 분리
+    const availableMembers = members.filter(m => !m.isInStudy);
+    const existingMembers = members.filter(m => m.isInStudy);
+
+    container.innerHTML = '';
+
+    // 추가 가능한 멤버 먼저 표시
+    if (availableMembers.length > 0) {
+      const availableTitle = document.createElement('div');
+      availableTitle.style.cssText = 'font-weight: 600; color: #333; margin-bottom: 10px; padding: 5px 0; border-bottom: 2px solid #667eea;';
+      availableTitle.textContent = `추가 가능한 멤버 (${availableMembers.length}명)`;
+      container.appendChild(availableTitle);
+
+      availableMembers.forEach(member => {
+        container.appendChild(createMemberItem(member));
+      });
+    }
+
+    // 이미 참여 중인 멤버 표시
+    if (existingMembers.length > 0) {
+      const existingTitle = document.createElement('div');
+      existingTitle.style.cssText = 'font-weight: 600; color: #666; margin: 20px 0 10px 0; padding: 5px 0; border-bottom: 1px solid #dee2e6;';
+      existingTitle.textContent = `이미 참여 중 (${existingMembers.length}명)`;
+      container.appendChild(existingTitle);
+
+      existingMembers.forEach(member => {
+        container.appendChild(createMemberItem(member));
+      });
+    }
+  }
+
+  // ✅ 멤버 아이템 생성
+  function createMemberItem(member) {
+    const div = document.createElement('div');
+    div.className = `member-item ${member.isInStudy ? 'disabled' : ''}`;
+
+    div.innerHTML = `
+        <input
+            type="checkbox"
+            id="member-${member.id}"
+            value="${member.id}"
+            ${member.isInStudy ? 'disabled' : ''}
+            onchange="toggleMemberSelection(${member.id}, this.checked)"
+        >
+        <div class="member-info">
+            <div class="member-name">${member.nickname || '닉네임 없음'}</div>
+            <div class="member-kakao-id">${member.kakaoId}</div>
+        </div>
+        ${member.isInStudy ? '<span class="badge-in-study">참여 중</span>' : ''}
+    `;
+
+    return div;
+  }
+
+  // ✅ 멤버 선택 토글
+  function toggleMemberSelection(memberId, isChecked) {
+    if (isChecked) {
+      if (!selectedMemberIds.includes(memberId)) {
+        selectedMemberIds.push(memberId);
+      }
+    } else {
+      selectedMemberIds = selectedMemberIds.filter(id => id !== memberId);
+    }
+
+    console.log('선택된 멤버:', selectedMemberIds);
+  }
+
+  // ✅ 선택된 멤버 추가
+  async function addSelectedMembers() {
+    if (selectedMemberIds.length === 0) {
+      alert('추가할 멤버를 선택하세요');
+      return;
+    }
+
+    if (!confirm(`${selectedMemberIds.length}명의 멤버를 추가하시겠습니까?`)) {
+      return;
+    }
+
+    const token = localStorage.getItem('adminToken');
+
+    try {
+      const response = await fetch('/api/admin/studies/add-members', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          studyId: currentStudyId,
+          memberIds: selectedMemberIds
+        })
+      });
+
+      if (response.ok) {
+        alert('멤버가 추가되었습니다');
+        closeAddMemberModal();
+        loadStudies(currentPage);  // 스터디 목록 새로고침
+      } else {
+        const error = await response.json();
+        alert(error.message || '멤버 추가에 실패했습니다');
+      }
+    } catch (error) {
+      console.error('멤버 추가 에러:', error);
       alert('서버 연결에 실패했습니다');
     }
   }

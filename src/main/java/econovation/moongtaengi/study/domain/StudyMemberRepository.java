@@ -23,4 +23,7 @@ public interface StudyMemberRepository extends JpaRepository<StudyMember, Long> 
     @Modifying
     @Query("delete from StudyMember sm where sm.memberId = :memberId")
     void deleteAllByMemberId(@Param("memberId") Long memberId);
+
+    @Query("select sm from StudyMember sm where sm.study.id = :studyId")
+    List<StudyMember> findAllByStudyId(@Param("studyId") Long studyId);
 }

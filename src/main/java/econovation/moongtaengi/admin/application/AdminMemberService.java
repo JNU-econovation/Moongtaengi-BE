@@ -6,6 +6,7 @@ import econovation.moongtaengi.admin.domain.AdminErrorCode;
 import econovation.moongtaengi.admin.domain.AdminException;
 import econovation.moongtaengi.member.domain.Member;
 import econovation.moongtaengi.member.domain.MemberRepository;
+import econovation.moongtaengi.member.domain.MemberStatus;
 import econovation.moongtaengi.member.domain.Nickname;
 import econovation.moongtaengi.study.domain.StudyMemberRepository;
 import java.util.Random;
@@ -166,5 +167,12 @@ public class AdminMemberService {
      */
     public long getMemberCount() {
         return memberRepository.count();
+    }
+
+    /**
+     * 활성 회원 수 조회
+     */
+    public long getActiveMemberCount() {
+        return memberRepository.countByStatus(MemberStatus.ACTIVE);
     }
 }

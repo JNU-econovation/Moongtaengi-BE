@@ -1,9 +1,12 @@
 package econovation.moongtaengi.admin.api;
 
+import econovation.moongtaengi.admin.api.dto.AddStudyMemberRequest;
 import econovation.moongtaengi.admin.api.dto.AdminStudyResponse;
+import econovation.moongtaengi.admin.api.dto.AvailableMemberResponse;
 import econovation.moongtaengi.admin.api.dto.CreateStudyRequest;
 import econovation.moongtaengi.admin.application.AdminStudyService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -89,6 +92,40 @@ public class AdminStudyController {
         adminStudyService.deleteStudy(studyId);
 
         log.info("✅ 스터디 삭제 API 완료");
+
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 스터디에 추가 가능한 멤버 목록 조회
+     * GET /api/admin/studies/{studyId}/available-members
+     */
+    @GetMapping("/{studyId}/available-members")
+    public ResponseEntity<List<AvailableMemberResponse>> getAvailableMembers(
+            @PathVariable Long studyId
+    ) {
+        log.info("스터디 추가 가능 멤버 조회 API 호출 - studyId: {}", studyId);
+
+        List<AvailableMemberResponse> members = adminStudyService.getAvailableMembers(studyId);
+
+        log.info("✅ 스터디 추가 가능 멤버 조회 API 완료 - {}명", members.size());
+
+        return ResponseEntity.ok(members);
+    }
+
+    /**
+     * 스터디에 멤버 추가
+     * POST /api/admin/studies/add-members
+     */
+    @PostMapping("/add-members")
+    public ResponseEntity<Void> addMembersToStudy(
+            @Valid @RequestBody AddStudyMemberRequest request
+    ) {
+        log.info("스터디 멤버 추가 API 호출 - studyId: {}", request.studyId());
+
+        adminStudyService.addMembersToStudy(request);
+
+        log.info("✅ 스터디 멤버 추가 API 완료");
 
         return ResponseEntity.ok().build();
     }
