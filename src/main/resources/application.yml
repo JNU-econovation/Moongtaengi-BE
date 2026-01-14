@@ -40,3 +40,5 @@ aws:
       - image/jpg
       - image/gif
       - image/webp
+      - application/pdf
+      - image/svg+xml
