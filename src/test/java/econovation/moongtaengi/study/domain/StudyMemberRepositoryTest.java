@@ -83,4 +83,39 @@ public class StudyMemberRepositoryTest {
 
         assertThat(isLoaded).isTrue();
     }
+
+    @Test
+    @DisplayName("스터디 ID와 회원 ID, 그리고 역할로 존재 여부를 확인한다 (방장 권한 체크)")
+    void 방장_권한_체크_성공() {
+        //given
+        Long memberId = 1L;
+
+        Study study = new Study(
+                new StudyName("테스트 스터디"),
+                new StudyPeriod(LocalDate.now(), LocalDate.now().plusDays(7)),
+                new StudyTopic("테스트 주제"),
+                memberId,
+                new InviteCode("12345678")
+        );
+        entityManager.persist(study);
+        entityManager.flush();
+        entityManager.clear();
+
+        //when
+        boolean isHost = studyMemberRepository.existsByStudyIdAndMemberIdAndRole(
+                study.getId(),
+                memberId,
+                StudyRole.HOST
+        );
+
+        boolean isGuest = studyMemberRepository.existsByStudyIdAndMemberIdAndRole(
+                study.getId(),
+                memberId,
+                StudyRole.GUEST
+        );
+
+        //then
+        assertThat(isHost).isTrue();
+        assertThat(isGuest).isFalse();
+    }
 }

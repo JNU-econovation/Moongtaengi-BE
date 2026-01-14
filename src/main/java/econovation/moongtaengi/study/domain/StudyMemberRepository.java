@@ -26,4 +26,14 @@ public interface StudyMemberRepository extends JpaRepository<StudyMember, Long> 
 
     @Query("select sm from StudyMember sm where sm.study.id = :studyId")
     List<StudyMember> findAllByStudyId(@Param("studyId") Long studyId);
+
+    @Query("select count(sm) > 0 from StudyMember sm " +
+            "where sm.study.id = :studyId " +
+            "and sm.memberId = :memberId " +
+            "and sm.role = :role")
+    boolean existsByStudyIdAndMemberIdAndRole(
+            @Param("studyId") Long studyId,
+            @Param("memberId") Long memberId,
+            @Param("role") StudyRole role
+    );
 }
