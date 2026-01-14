@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class AdminMemberService {
 
     private final MemberRepository memberRepository;
@@ -111,6 +111,7 @@ public class AdminMemberService {
     /**
      * Mock 회원 10명 생성
      */
+    @Transactional
     public int createMockMembers() {
         log.info("Mock 회원 10명 생성 시작");
 
