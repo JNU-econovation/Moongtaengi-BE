@@ -16,7 +16,7 @@ oauth:
 
 jwt:
   secret: ${JWT_SECRET}
-  access-token-validity: 1800000
+  access-token-validity: 21600000
 
 gemini:
   api-key: ${GEMINI_API_KEY}
