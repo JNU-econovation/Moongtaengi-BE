@@ -1,6 +1,7 @@
 package econovation.moongtaengi.member.application;
 
 import econovation.moongtaengi.global.security.JwtTokenProvider;
+import econovation.moongtaengi.member.domain.QuestType;
 import econovation.moongtaengi.member.infra.oauth.KakaoOAuthClient;
 import econovation.moongtaengi.member.domain.Member;
 import econovation.moongtaengi.member.domain.MemberRepository;
@@ -18,6 +19,7 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final KakaoOAuthClient kakaoOAuthClient;
     private final JwtTokenProvider jwtTokenProvider;
+    private final ExperienceService experienceService;
 
     @Transactional
     public KakaoLoginResponse loginWithKakao(String code) {
@@ -29,6 +31,10 @@ public class AuthService {
                 .orElseGet(() -> createTemporaryMember(kakaoId));
 
         String accessToken = jwtTokenProvider.createAccessToken(member.getId());
+
+        if (member.isActive()) {
+            experienceService.completeQuest(member.getId(), QuestType.LOGIN);
+        }
 
         log.info("로그인 성공 - memberId: {}, needsInfo: {}",
                 member.getId(), member.isTemporary());
