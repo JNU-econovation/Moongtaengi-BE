@@ -9,8 +9,11 @@ import econovation.moongtaengi.study.domain.assignment.AssignmentUniquenessValid
 import econovation.moongtaengi.study.domain.assignment.ProcessInfoProvider;
 import econovation.moongtaengi.study.domain.assignment.ProcessInfoProvider.ProcessInfo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CreateAssignmentService {
@@ -20,6 +23,7 @@ public class CreateAssignmentService {
     private final AssignmentRepository repository;
     private final ProcessInfoProvider infoProvider;
 
+    @Transactional
     public Long createAssignment(CreateAssignmentCommand command) {
         ProcessInfo processInfo = infoProvider.getProcessInfo(command.processId());
 
@@ -44,6 +48,15 @@ public class CreateAssignmentService {
                 .deadline(deadline)
                 .build();
 
-        return repository.save(assignment).getId();
+        Assignment savedAssignment = repository.save(assignment);
+
+        log.info("과제 생성 성공 - assignmentId: {}, processId: {}, requesterId: {}, assigneeId: {}",
+                savedAssignment.getId(),
+                command.processId(),
+                command.requesterId(),
+                command.assigneeId()
+        );
+
+        return savedAssignment.getId();
     }
 }
