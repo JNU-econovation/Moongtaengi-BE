@@ -16,7 +16,9 @@ public enum SubmissionErrorCode implements ErrorCode {
 
     CREATE_ARGUMENT_MISSING(HttpStatus.BAD_REQUEST, "SM_004", "제출물 생성 과정에서 필수 인자가 누락되었습니다."),
 
-    ATTACHMENT_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "SM_005", "첨부파일은 최대 %d개까지만 업로드 가능합니다.");
+    ATTACHMENT_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "SM_005", "첨부파일은 최대 %d개까지만 업로드 가능합니다."),
+
+    ALREADY_SUBMITTED(HttpStatus.CONFLICT, "SM_006", "이미 제출한 내역이 존재합니다.");
 
     private final HttpStatus status;
     private final String code;
