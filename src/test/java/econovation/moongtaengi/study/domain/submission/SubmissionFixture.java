@@ -8,8 +8,8 @@ public class SubmissionFixture {
     public static final Long DEFAULT_ASSIGNMENT_ID = 1L;
     public static final Long DEFAULT_SUBMITTER_ID = 1L;
     public static final SubmissionContent DEFAULT_CONTENT = new SubmissionContent("테스트 제출 내용");
-    public static final LocalDateTime DEFAULT_CURRENT_TIME = LocalDateTime.now();
-    public static final LocalDateTime DEFAULT_DEADLINE = LocalDateTime.now().plusDays(5);
+    public static final LocalDateTime DEFAULT_CURRENT_TIME = LocalDateTime.of(2026, 1, 1, 0, 0);
+    public static final LocalDateTime DEFAULT_DEADLINE = DEFAULT_CURRENT_TIME.plusDays(5);
 
     public static Submission.SubmissionBuilder aSubmission() {
         return Submission.builder()
