@@ -1,5 +1,7 @@
 package econovation.moongtaengi.study.application;
 
+import econovation.moongtaengi.member.application.ExperienceService;
+import econovation.moongtaengi.member.domain.QuestType;
 import econovation.moongtaengi.study.domain.Study;
 import econovation.moongtaengi.study.domain.StudyCreationValidator;
 import econovation.moongtaengi.study.domain.StudyFactory;
@@ -17,6 +19,7 @@ public class CreateStudyService {
     private final StudyFactory studyFactory;
     private final StudyCreationValidator studyCreationValidator;
     private final StudyRepository studyRepository;
+    private final ExperienceService experienceService;
 
     @Transactional
     public Long createStudy(Long memberId,
@@ -37,6 +40,8 @@ public class CreateStudyService {
 
         log.info("스터디 생성 성공 - studyId: {}, memberId: {}, inviteCode: {}",
                 study.getId(), memberId, study.getInviteCode().getValue());
+
+        experienceService.completeQuest(memberId, QuestType.CREATE_STUDY);
 
         return study.getId();
     }
