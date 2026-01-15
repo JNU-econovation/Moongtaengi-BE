@@ -30,6 +30,9 @@ public class Member extends BaseEntity {
     @Column(nullable = false, columnDefinition = "VARCHAR(255) DEFAULT 'USER'")
     private Role role = Role.USER;
 
+    @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
+    private int totalExperience = 0;
+
     // 카카오 로그인 시 임시 회원 생성
     public static Member createTemporaryMember(String kakaoId) {
         Member member = new Member();
@@ -74,5 +77,16 @@ public class Member extends BaseEntity {
 
     public boolean isUser() {
         return this.role == Role.USER;
+    }
+
+    public Title getTitle() {
+        return Title.fromExperience(this.totalExperience);
+    }
+
+    public void addExperience(int experience) {
+        if (experience <= 0) {
+            throw new IllegalArgumentException("경험치는 0보다 커야 합니다.");
+        }
+        this.totalExperience += experience;
     }
 }
