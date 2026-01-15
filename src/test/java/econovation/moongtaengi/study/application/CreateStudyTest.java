@@ -8,6 +8,7 @@ import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+import econovation.moongtaengi.member.application.ExperienceService;
 import econovation.moongtaengi.study.api.dto.StudyCreateRequest;
 import econovation.moongtaengi.study.domain.InviteCode;
 import econovation.moongtaengi.study.domain.Study;
@@ -39,6 +40,9 @@ public class CreateStudyTest {
 
     @Mock
     private StudyRepository studyRepository;
+
+    @Mock
+    private ExperienceService experienceService;
 
     @InjectMocks
     private CreateStudyService createStudyService;
