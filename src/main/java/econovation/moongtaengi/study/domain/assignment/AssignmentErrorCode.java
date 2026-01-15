@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum AssignmentErrorCode implements ErrorCode {
-    INVALID_ASSIGNMENT_INFO(HttpStatus.BAD_REQUEST, "AS_001", "과제 정보가 올바르지 않습니다.");
+    INVALID_ASSIGNMENT_INFO(HttpStatus.BAD_REQUEST, "AS_001", "과제 정보가 올바르지 않습니다."),
+
+    NO_MANAGEMENT_PERMISSION(HttpStatus.FORBIDDEN, "AS_002", "과제 관리 권한이 없습니다.");
 
     private final HttpStatus status;
     private final String code;
