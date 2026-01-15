@@ -18,7 +18,9 @@ public enum SubmissionErrorCode implements ErrorCode {
 
     ATTACHMENT_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "SM_005", "첨부파일은 최대 %d개까지만 업로드 가능합니다."),
 
-    ALREADY_SUBMITTED(HttpStatus.CONFLICT, "SM_006", "이미 제출한 내역이 존재합니다.");
+    ALREADY_SUBMITTED(HttpStatus.CONFLICT, "SM_006", "이미 제출한 내역이 존재합니다."),
+
+    INVALID_ASSIGNMENT_ID(HttpStatus.NOT_FOUND, "SM_007", "유효하지 않은 과제 ID 입니다.");
 
     private final HttpStatus status;
     private final String code;
