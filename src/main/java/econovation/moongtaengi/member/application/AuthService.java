@@ -1,12 +1,13 @@
 package econovation.moongtaengi.member.application;
 
 import econovation.moongtaengi.global.security.JwtTokenProvider;
-import econovation.moongtaengi.member.domain.QuestType;
+import econovation.moongtaengi.member.domain.event.LoginSuccessEvent;
 import econovation.moongtaengi.member.infra.oauth.KakaoOAuthClient;
 import econovation.moongtaengi.member.domain.Member;
 import econovation.moongtaengi.member.domain.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +20,7 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final KakaoOAuthClient kakaoOAuthClient;
     private final JwtTokenProvider jwtTokenProvider;
-    private final ExperienceService experienceService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public KakaoLoginResponse loginWithKakao(String code) {
@@ -33,7 +34,7 @@ public class AuthService {
         String accessToken = jwtTokenProvider.createAccessToken(member.getId());
 
         if (member.isActive()) {
-            experienceService.completeQuest(member.getId(), QuestType.LOGIN);
+            eventPublisher.publishEvent(new LoginSuccessEvent(member.getId()));
         }
 
         log.info("로그인 성공 - memberId: {}, needsInfo: {}",
