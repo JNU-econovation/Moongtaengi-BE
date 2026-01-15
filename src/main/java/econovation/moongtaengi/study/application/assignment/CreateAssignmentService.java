@@ -6,8 +6,8 @@ import econovation.moongtaengi.study.domain.assignment.AssignmentDeadline;
 import econovation.moongtaengi.study.domain.assignment.AssignmentManagementPolicy;
 import econovation.moongtaengi.study.domain.assignment.AssignmentRepository;
 import econovation.moongtaengi.study.domain.assignment.AssignmentUniquenessValidator;
-import econovation.moongtaengi.study.domain.assignment.ProcessDateRangeProvider;
-import econovation.moongtaengi.study.domain.assignment.ProcessDateRangeProvider.DateRange;
+import econovation.moongtaengi.study.domain.assignment.ProcessInfoProvider;
+import econovation.moongtaengi.study.domain.assignment.ProcessInfoProvider.ProcessInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,20 +18,21 @@ public class CreateAssignmentService {
     private final AssignmentManagementPolicy policy;
     private final AssignmentUniquenessValidator validator;
     private final AssignmentRepository repository;
-    private final ProcessDateRangeProvider dateRangeProvider;
+    private final ProcessInfoProvider infoProvider;
 
     public Long createAssignment(CreateAssignmentCommand command) {
+        ProcessInfo processInfo = infoProvider.getProcessInfo(command.processId());
 
-        policy.validate(command.studyId(), command.requesterId());
+        policy.validate(processInfo.studyId(), command.requesterId());
 
         validator.validate(command.processId(), command.assigneeId());
 
-        DateRange dateRange = dateRangeProvider.getDateRange(command.processId());
+
 
         AssignmentDeadline deadline = AssignmentDeadline.create(
                 command.deadline(),
-                dateRange.startDate(),
-                dateRange.endDate()
+                processInfo.startDate(),
+                processInfo.endDate()
         );
 
         AssignmentContent content = new AssignmentContent(command.content());

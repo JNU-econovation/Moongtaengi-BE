@@ -5,7 +5,6 @@ import lombok.Builder;
 
 @Builder
 public record CreateAssignmentCommand(
-        Long studyId,
         Long processId,
         Long requesterId,
         Long assigneeId,
