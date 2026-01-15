@@ -6,7 +6,7 @@ import static org.mockito.BDDMockito.given;
 
 import econovation.moongtaengi.study.domain.assignment.AssignmentErrorCode;
 import econovation.moongtaengi.study.domain.assignment.AssignmentException;
-import econovation.moongtaengi.study.domain.assignment.ProcessDateRangeProvider.DateRange;
+import econovation.moongtaengi.study.domain.assignment.ProcessInfoProvider.ProcessInfo;
 import econovation.moongtaengi.study.domain.process.StudyProcess;
 import econovation.moongtaengi.study.domain.process.StudyProcessRepository;
 import java.time.LocalDate;
@@ -20,13 +20,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
-public class ProcessDateRangeProviderImplTest {
+public class ProcessInfoProviderImplTest {
 
     @Mock
     private StudyProcessRepository studyProcessRepository;
 
     @InjectMocks
-    private ProcessDateRangeProviderImpl provider;
+    private ProcessInfoProviderImpl provider;
 
 
     @Test
@@ -51,7 +51,7 @@ public class ProcessDateRangeProviderImplTest {
                 .willReturn(Optional.of(process));
 
         //when
-        DateRange result = provider.getDateRange(processId);
+        ProcessInfo result = provider.getProcessInfo(processId);
 
         //then
         assertThat(result.startDate()).isEqualTo(startDate);
@@ -66,7 +66,7 @@ public class ProcessDateRangeProviderImplTest {
         given(studyProcessRepository.findById(invalidId)).willReturn(Optional.empty());
 
         //when&then
-        assertThatThrownBy(() -> provider.getDateRange(invalidId))
+        assertThatThrownBy(() -> provider.getProcessInfo(invalidId))
                 .isInstanceOf(AssignmentException.class)
                 .extracting("errorCode")
                 .isEqualTo(AssignmentErrorCode.INVALID_ASSIGNMENT_INFO);
