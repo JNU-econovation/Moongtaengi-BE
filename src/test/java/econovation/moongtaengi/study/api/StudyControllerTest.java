@@ -116,7 +116,7 @@ public class StudyControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andDo(print())
-                .andExpect(status().isInternalServerError()); // 아직 MethodArgumentException 처리를 못함..
+                .andExpect(status().isBadRequest());
     }
 
     @Test
