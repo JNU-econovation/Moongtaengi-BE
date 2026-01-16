@@ -5,8 +5,11 @@ import econovation.moongtaengi.member.domain.event.LoginSuccessEvent;
 import econovation.moongtaengi.study.domain.event.StudyCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Slf4j
 @Component
@@ -14,13 +17,15 @@ import org.springframework.stereotype.Component;
 public class ExperienceEventListener {
     private final ExperienceService experienceService;
 
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void handleLoginSuccess(LoginSuccessEvent event) {
         log.info("LoginSuccessEvent 수신 - memberId: {}", event.memberId());
         experienceService.completeQuest(event.memberId(), QuestType.LOGIN);
     }
 
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void handleStudyCreated(StudyCreatedEvent event) {
         log.info("StudyCreatedEvent 수신 - studyId: {}, memberId: {}", event.studyId(), event.memberId());
         experienceService.completeQuest(event.memberId(), QuestType.CREATE_STUDY);
