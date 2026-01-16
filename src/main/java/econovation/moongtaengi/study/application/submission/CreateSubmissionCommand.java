@@ -1,5 +1,6 @@
 package econovation.moongtaengi.study.application.submission;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public record CreateSubmissionCommand(
@@ -8,4 +9,9 @@ public record CreateSubmissionCommand(
         String content,
         List<String> attachmentUrls
 ) {
+    public CreateSubmissionCommand {
+        if (attachmentUrls == null) {
+            attachmentUrls = new ArrayList<>();
+        }
+    }
 }
