@@ -54,7 +54,7 @@ public class CreateSubmissionServiceTest {
         ReflectionTestUtils.setField(savedSubmission, "id", 1L);
 
         given(assignmentInfoProvider.getAssignmentInfo(DEFAULT_ASSIGNMENT_ID))
-                .willReturn(new AssignmentInfo(DEFAULT_SUBMITTER_ID, DEFAULT_DEADLINE));
+                .willReturn(new AssignmentInfo(DEFAULT_SUBMITTER_ID, BASE_TIME));
 
         given(submissionRepository.save(any(Submission.class))).willReturn(savedSubmission);
 

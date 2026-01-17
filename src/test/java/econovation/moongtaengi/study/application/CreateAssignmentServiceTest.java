@@ -58,7 +58,7 @@ public class CreateAssignmentServiceTest {
                 .processId(DEFAULT_PROCESS_ID)
                 .requesterId(10L)
                 .assigneeId(DEFAULT_ASSIGNEE_ID)
-                .content(DEFAULT_CONTENT_VALUE)
+                .content(DEFAULT_CONTENT.getValue())
                 .deadline(requestDeadline)
                 .build();
 

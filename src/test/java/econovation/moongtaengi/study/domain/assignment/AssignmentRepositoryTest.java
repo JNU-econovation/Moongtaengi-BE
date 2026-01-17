@@ -5,16 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import econovation.moongtaengi.member.domain.Member;
 import econovation.moongtaengi.member.domain.Nickname;
 import econovation.moongtaengi.study.application.assignment.AssignmentSummary;
-import econovation.moongtaengi.study.domain.InviteCode;
 import econovation.moongtaengi.study.domain.Study;
-import econovation.moongtaengi.study.domain.StudyName;
-import econovation.moongtaengi.study.domain.StudyPeriod;
-import econovation.moongtaengi.study.domain.StudyTopic;
-import econovation.moongtaengi.study.domain.submission.Submission;
+import econovation.moongtaengi.study.domain.StudyFixture;
 import econovation.moongtaengi.study.domain.submission.SubmissionAttachment;
-import econovation.moongtaengi.study.domain.submission.SubmissionContent;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import econovation.moongtaengi.study.domain.submission.SubmissionFixture;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,18 +57,23 @@ public class AssignmentRepositoryTest {
         Member host = createMember("방장");
         Member guest = createMember("게스트");
 
-        Study myStudy = createStudy(host.getId());
-
+        Study myStudy = em.persistAndFlush(StudyFixture.aStudy(host.getId()));
         myStudy.addGuest(guest.getId());
-        em.persistAndFlush(myStudy);
+        em.flush();
 
-        Assignment assignment1 = createAssignment(processId, host.getId());
+        Assignment assignment1 = em.persistAndFlush(AssignmentFixture.anAssignment()
+                .processId(processId)
+                .assigneeId(host.getId())
+                .build());
 
-        createSubmission(assignment1, host);
+        em.persistAndFlush(SubmissionFixture.aSubmission()
+                .assignmentId(assignment1.getId())
+                .submitterId(host.getId())
+                .attachments(List.of(new SubmissionAttachment("http://url.com")))
+                .build());
 
         assignment1.markAsSubmitted(false);
-        em.persistAndFlush(assignment1);
-
+        em.flush();
         em.clear();
 
         //when
@@ -85,13 +84,17 @@ public class AssignmentRepositoryTest {
         assertThat(result).hasSize(2);
 
         AssignmentSummary dto1 = result.stream()
-                .filter(d -> d.nickname().equals("방장")) // ✨ 닉네임 일치!
+                .filter(d -> d.nickname().equals("방장"))
                 .findFirst().get();
+
         assertThat(dto1.status()).isEqualTo(AssignmentStatus.SUBMITTED);
+        assertThat(dto1.submissionId()).isNotNull();
+        assertThat(dto1.fileUrl()).isEqualTo("http://url.com");
 
         AssignmentSummary dto2 = result.stream()
-                .filter(d -> d.nickname().equals("게스트")) // ✨ 닉네임 일치!
+                .filter(d -> d.nickname().equals("게스트"))
                 .findFirst().get();
+
         assertThat(dto2.assignmentId()).isNull();
     }
 
@@ -99,40 +102,6 @@ public class AssignmentRepositoryTest {
     private Member createMember(String nickname) {
         Member member = Member.createMember("kakao_" + nickname, new Nickname(nickname));
         return em.persistAndFlush(member);
-    }
-
-    private Study createStudy(Long hostId) {
-        Study study = new Study(
-                new StudyName("테스트 스터디"),
-                new StudyPeriod(LocalDate.now(), LocalDate.now().plusDays(30)),
-                new StudyTopic("테스트 주제"),
-                hostId,
-                new InviteCode("12345678")
-        );
-        return em.persistAndFlush(study);
-    }
-
-    private Assignment createAssignment(Long processId, Long memberId) {
-        LocalDateTime now = LocalDateTime.now();
-        Assignment assignment = Assignment.create(
-                processId,
-                memberId,
-                new AssignmentContent("과제"),
-                AssignmentDeadline.create(now, now.toLocalDate(), now.plusDays(1).toLocalDate())
-        );
-        return em.persistAndFlush(assignment);
-    }
-
-    private void createSubmission(Assignment assignment, Member member) {
-        Submission submission = Submission.create(
-                assignment.getId(),
-                member.getId(),
-                new SubmissionContent("내용"),
-                LocalDateTime.now(),
-                assignment.getDeadline().getValue(),
-                List.of(new SubmissionAttachment("http://url.com"))
-        );
-        em.persistAndFlush(submission);
     }
 
 }
