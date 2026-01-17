@@ -8,6 +8,7 @@ import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+import econovation.moongtaengi.member.application.ExperienceService;
 import econovation.moongtaengi.study.api.dto.StudyCreateRequest;
 import econovation.moongtaengi.study.domain.InviteCode;
 import econovation.moongtaengi.study.domain.Study;
@@ -27,6 +28,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,6 +41,9 @@ public class CreateStudyTest {
 
     @Mock
     private StudyRepository studyRepository;
+
+    @Mock
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @InjectMocks
     private CreateStudyService createStudyService;

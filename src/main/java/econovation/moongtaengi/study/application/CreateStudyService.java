@@ -4,9 +4,11 @@ import econovation.moongtaengi.study.domain.Study;
 import econovation.moongtaengi.study.domain.StudyCreationValidator;
 import econovation.moongtaengi.study.domain.StudyFactory;
 import econovation.moongtaengi.study.domain.StudyRepository;
+import econovation.moongtaengi.study.domain.event.StudyCreatedEvent;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,7 @@ public class CreateStudyService {
     private final StudyFactory studyFactory;
     private final StudyCreationValidator studyCreationValidator;
     private final StudyRepository studyRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public Long createStudy(Long memberId,
@@ -37,6 +40,8 @@ public class CreateStudyService {
 
         log.info("스터디 생성 성공 - studyId: {}, memberId: {}, inviteCode: {}",
                 study.getId(), memberId, study.getInviteCode().getValue());
+
+        eventPublisher.publishEvent(new StudyCreatedEvent(study.getId(), memberId));
 
         return study.getId();
     }
