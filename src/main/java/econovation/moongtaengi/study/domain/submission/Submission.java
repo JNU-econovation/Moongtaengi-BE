@@ -61,7 +61,9 @@ public class Submission extends BaseEntity {
 
         boolean isLate = currentDateTime.isAfter(assignmentDeadline);
 
-        List<SubmissionAttachment> safeAttachments = (attachments != null) ? attachments : new ArrayList<>();
+        List<SubmissionAttachment> safeAttachments = (attachments != null)
+                ? new ArrayList<>(attachments)
+                : new ArrayList<>();
 
         Submission submission = new Submission(assignmentId, submitterId, content, safeAttachments, isLate);
 

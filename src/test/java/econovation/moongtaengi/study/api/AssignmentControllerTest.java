@@ -110,14 +110,13 @@ public class AssignmentControllerTest {
         given(createAssignmentService.createAssignment(any(CreateAssignmentCommand.class)))
                 .willReturn(createdAssignmentId);
 
-        //when
+        //when&then
         mvc.perform(post("/api/assignments")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isCreated());
 
-        //then
         ArgumentCaptor<CreateAssignmentCommand> captor = ArgumentCaptor.forClass(CreateAssignmentCommand.class);
         verify(createAssignmentService).createAssignment(captor.capture());
 
