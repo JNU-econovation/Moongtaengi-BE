@@ -28,6 +28,7 @@ public class JoinStudyService {
         studyJoinValidator.validate(memberId, study);
 
         study.addGuest(memberId);
+        studyRepository.save(study); // 도메인 이벤트 발행을 위해 명시적 저장 필요
 
         log.info("스터디 참가 완료 - memberId: {}, studyId: {}, studyName: {}",
                 memberId, study.getId(), study.getName().getValue());
