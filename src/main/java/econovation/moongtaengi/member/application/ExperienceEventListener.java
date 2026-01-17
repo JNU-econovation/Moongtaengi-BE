@@ -3,6 +3,7 @@ package econovation.moongtaengi.member.application;
 import econovation.moongtaengi.member.domain.QuestType;
 import econovation.moongtaengi.member.domain.event.LoginSuccessEvent;
 import econovation.moongtaengi.study.domain.event.StudyCreatedEvent;
+import econovation.moongtaengi.study.domain.submission.SubmissionCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -29,5 +30,12 @@ public class ExperienceEventListener {
     public void handleStudyCreated(StudyCreatedEvent event) {
         log.info("StudyCreatedEvent 수신 - studyId: {}, memberId: {}", event.studyId(), event.memberId());
         experienceService.completeQuest(event.memberId(), QuestType.CREATE_STUDY);
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void handleSubmissionCreated(SubmissionCreatedEvent event) {
+        log.info("SubmissionCreatedEvent 수신 - assignmentId: {}, submitterId: {}", event.assignmentId(), event.submitterId());
+        experienceService.completeQuest(event.submitterId(), QuestType.SUBMIT_ASSIGNMENT);
     }
 }

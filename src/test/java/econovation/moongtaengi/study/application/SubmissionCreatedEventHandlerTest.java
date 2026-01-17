@@ -33,9 +33,10 @@ public class SubmissionCreatedEventHandlerTest {
     void 과제_상태_변경_성공() {
         //given
         Long assignmentId = 1L;
+        Long submitterId = 2L;
         boolean isLate = true;
 
-        SubmissionCreatedEvent event = new SubmissionCreatedEvent(assignmentId, isLate);
+        SubmissionCreatedEvent event = new SubmissionCreatedEvent(assignmentId, submitterId, isLate);
 
         Assignment assignment = anAssignment().build();
         ReflectionTestUtils.setField(assignment, "id", assignmentId);
