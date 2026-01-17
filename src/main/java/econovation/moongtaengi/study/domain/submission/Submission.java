@@ -67,7 +67,7 @@ public class Submission extends BaseEntity {
 
         Submission submission = new Submission(assignmentId, submitterId, content, safeAttachments, isLate);
 
-        submission.registerEvent(new SubmissionCreatedEvent(assignmentId, isLate));
+        submission.registerEvent(new SubmissionCreatedEvent(assignmentId, submitterId, isLate));
 
         return submission;
     }
