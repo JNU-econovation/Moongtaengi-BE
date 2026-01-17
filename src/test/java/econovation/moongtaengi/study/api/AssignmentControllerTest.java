@@ -10,16 +10,22 @@ import econovation.moongtaengi.global.config.WebConfig;
 import econovation.moongtaengi.global.security.CustomAuthentication;
 import econovation.moongtaengi.global.security.LoginMemberIdArgumentResolver;
 import econovation.moongtaengi.study.api.dto.AssignmentCreateRequest;
+import econovation.moongtaengi.study.application.assignment.AssignmentQueryService;
+import econovation.moongtaengi.study.application.assignment.AssignmentSummary;
 import econovation.moongtaengi.study.application.assignment.CreateAssignmentCommand;
 import econovation.moongtaengi.study.application.assignment.CreateAssignmentService;
 
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import econovation.moongtaengi.study.domain.assignment.AssignmentStatus;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -51,6 +57,9 @@ public class AssignmentControllerTest {
 
     @MockitoBean
     private CreateAssignmentService createAssignmentService;
+
+    @MockitoBean
+    private AssignmentQueryService assignmentQueryService;
 
     @BeforeEach
     void setUp() {
@@ -153,5 +162,46 @@ public class AssignmentControllerTest {
                 Arguments.of("내용 누락(빈 문자열)", 99L, 1L, ""),
                 Arguments.of("내용 누락(공백)", 99L, 1L, "   ")
         );
+    }
+
+    @Test
+    @DisplayName("과제 목록 조회 요청 시, 서비스 호출 후 과제 요약 리스트를 반환한다")
+    void 과제_목록_조회_성공() throws Exception {
+        //given
+        Long memberId = 1L;
+        Long processId = 100L;
+
+        List<AssignmentSummary> summaries = List.of(
+                new AssignmentSummary(
+                        10L,
+                        1L,
+                        memberId,
+                        "알고리즘 과제",
+                        "지환", AssignmentStatus.SUBMITTED,
+                        "http://file.url"),
+                new AssignmentSummary(11L,
+                        null,
+                        2L,
+                        "JPA 과제",
+                        "철수",
+                        AssignmentStatus.WAITING,
+                        null)
+        );
+
+        given(assignmentQueryService.getAssignmentSummaries(memberId, processId))
+                .willReturn(summaries);
+
+        //when&then
+        mvc.perform(get("/api/assignments")
+                        .param("processId", String.valueOf(processId)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(2))
+                .andExpect(jsonPath("$[0].nickname").value("지환"))
+                .andExpect(jsonPath("$[0].status").value("SUBMITTED"))
+                .andExpect(jsonPath("$[1].nickname").value("철수"))
+                .andExpect(jsonPath("$[1].status").value("WAITING"));
+
+        verify(assignmentQueryService).getAssignmentSummaries(memberId, processId);
     }
 }
