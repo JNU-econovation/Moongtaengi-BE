@@ -15,6 +15,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
         SELECT new econovation.moongtaengi.study.application.assignment.AssignmentSummary(
             a.id,
             s.id,
+            m.id,
             a.content.value,
             m.nickname.value,
             a.status,

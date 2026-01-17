@@ -89,6 +89,7 @@ public class AssignmentRepositoryTest {
 
         assertThat(dto1.status()).isEqualTo(AssignmentStatus.SUBMITTED);
         assertThat(dto1.submissionId()).isNotNull();
+        assertThat(dto1.memberId()).isEqualTo(host.getId());
         assertThat(dto1.fileUrl()).isEqualTo("http://url.com");
 
         AssignmentSummary dto2 = result.stream()
