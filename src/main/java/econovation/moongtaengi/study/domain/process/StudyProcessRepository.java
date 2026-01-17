@@ -1,5 +1,6 @@
 package econovation.moongtaengi.study.domain.process;
 
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -40,4 +41,7 @@ public interface StudyProcessRepository extends JpaRepository<StudyProcess, Long
         WHERE sp.studyId = :studyId
     """)
     StudyProcessPeriodBound findProcessPeriodBound(@Param("studyId") Long studyId);
+
+    @Query("SELECT p.studyId FROM StudyProcess p WHERE p.id = :processId")
+    Optional<Long> findStudyIdById(@Param("processId") Long processId);
 }
