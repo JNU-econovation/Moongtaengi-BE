@@ -9,6 +9,7 @@ public record AssignmentSummary(
         String assignmentContent,
         String nickname,
         AssignmentStatus status,
+        Boolean isLate,
         String fileUrl
 ) {
 

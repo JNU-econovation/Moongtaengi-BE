@@ -178,6 +178,7 @@ public class AssignmentControllerTest {
                         memberId,
                         "알고리즘 과제",
                         "지환", AssignmentStatus.SUBMITTED,
+                        false,
                         "http://file.url"),
                 new AssignmentSummary(11L,
                         null,
@@ -185,6 +186,7 @@ public class AssignmentControllerTest {
                         "JPA 과제",
                         "철수",
                         AssignmentStatus.WAITING,
+                        true,
                         null)
         );
 
@@ -199,8 +201,10 @@ public class AssignmentControllerTest {
                 .andExpect(jsonPath("$.size()").value(2))
                 .andExpect(jsonPath("$[0].nickname").value("지환"))
                 .andExpect(jsonPath("$[0].status").value("SUBMITTED"))
+                .andExpect(jsonPath("$[0].isLate").value(false))
                 .andExpect(jsonPath("$[1].nickname").value("철수"))
-                .andExpect(jsonPath("$[1].status").value("WAITING"));
+                .andExpect(jsonPath("$[1].status").value("WAITING"))
+                .andExpect(jsonPath("$[1].isLate").value(true));
 
         verify(assignmentQueryService).getAssignmentSummaries(memberId, processId);
     }

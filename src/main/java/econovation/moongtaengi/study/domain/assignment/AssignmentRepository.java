@@ -19,6 +19,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
             a.content.value,
             m.nickname.value,
             a.status,
+            a.isLate,
             sa.url
         )
         FROM StudyMember sm
