@@ -104,5 +104,4 @@ public class AssignmentRepositoryTest {
         Member member = Member.createMember("kakao_" + nickname, new Nickname(nickname));
         return em.persistAndFlush(member);
     }
-
 }
