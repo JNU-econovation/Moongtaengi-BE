@@ -2,15 +2,21 @@ package econovation.moongtaengi.study.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
+import econovation.moongtaengi.member.domain.Title;
+import econovation.moongtaengi.study.application.assignment.AssignmentDetail;
 import econovation.moongtaengi.study.application.assignment.AssignmentQueryService;
 import econovation.moongtaengi.study.application.assignment.AssignmentSummary;
 import econovation.moongtaengi.study.domain.StudyErrorCode;
 import econovation.moongtaengi.study.domain.StudyException;
 import econovation.moongtaengi.study.domain.StudyMemberRepository;
+import econovation.moongtaengi.study.domain.assignment.AssignmentDetailRaw;
+import econovation.moongtaengi.study.domain.assignment.AssignmentErrorCode;
+import econovation.moongtaengi.study.domain.assignment.AssignmentException;
 import econovation.moongtaengi.study.domain.assignment.AssignmentRepository;
 import econovation.moongtaengi.study.domain.process.StudyProcessRepository;
 import java.util.List;
@@ -96,4 +102,127 @@ class AssignmentQueryServiceTest {
                 .extracting("errorCode")
                 .isEqualTo(StudyErrorCode.NOT_STUDY_MEMBER);
     }
+
+    @Test
+    @DisplayName("과제 상세 조회 성공 및 칭호 변환과 본인 여부가 정확해야 한다")
+    void 과제_상세_조회_성공() {
+        //given
+        Long loginMemberId = 1L;
+        Long assignmentId = 10L;
+        Long assigneeId = 1L;
+        Long studyId = 100L;
+        int experience = 100;
+
+        AssignmentDetailRaw raw = new AssignmentDetailRaw(
+                studyId,
+                "테스트 스터디",
+                "테스트 과제",
+                "지환",
+                assigneeId,
+                experience,
+                null,
+                null
+        );
+
+        given(assignmentRepository.findDetailRawById(assignmentId))
+                .willReturn(Optional.of(raw));
+
+        given(studyMemberRepository.existsByStudyIdAndMemberId(studyId, loginMemberId))
+                .willReturn(true);
+
+        // when
+        AssignmentDetail result = assignmentQueryService.getAssignmentDetail(loginMemberId, assignmentId);
+
+        // then
+        assertThat(result.memberTitle()).isEqualTo(Title.fromExperience(experience).getDisplayName());
+        assertThat(result.isOwner()).isTrue();
+        assertThat(result.studyName()).isEqualTo("테스트 스터디");
+        assertThat(result.assignmentContent()).isEqualTo("테스트 과제");
+    }
+
+    @Test
+    @DisplayName("타인의 과제를 조회하면 isOwner는 false여야 한다")
+    void 타인의_과제는_isOwner_false() {
+        //given
+        Long loginMemberId = 999L;
+        Long assignmentId = 10L;
+        Long assigneeId = 1L;
+        Long studyId = 100L;
+
+        AssignmentDetailRaw raw = new AssignmentDetailRaw(
+                studyId,
+                "스터디",
+                "내용",
+                "닉네임",
+                assigneeId,
+                0,
+                null,
+                null
+        );
+
+        given(assignmentRepository.findDetailRawById(assignmentId))
+                .willReturn(Optional.of(raw));
+
+        given(studyMemberRepository.existsByStudyIdAndMemberId(studyId, loginMemberId))
+                .willReturn(true);
+
+        //when
+        AssignmentDetail result = assignmentQueryService.getAssignmentDetail(loginMemberId, assignmentId);
+
+        //then
+        assertThat(result.isOwner()).isFalse();
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 과제 조회 시 예외가 발생해야 한다")
+    void 존재하지_않는_과제_조회_실패() {
+        // given
+        given(assignmentRepository.findDetailRawById(any()))
+                .willReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() ->
+                assignmentQueryService.getAssignmentDetail(1L, 999L)
+        )
+                .isInstanceOf(AssignmentException.class)
+                .extracting("errorCode")
+                .isEqualTo(AssignmentErrorCode.ASSIGNMENT_NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("스터디의 멤버가 아닐 시 과제 조회를 할 경우 예외가 발생한다.")
+    void 스터디_멤버_아닐_시_단건_조회_실패() {
+        //given
+        Long studyId = 1L;
+        Long loginMemberId = 999L;
+        Long assignmentId = 10L;
+        Long assigneeId = 1L;
+
+        AssignmentDetailRaw raw = new AssignmentDetailRaw(
+                studyId,
+                "테스트 스터디",
+                "테스트 내용",
+                "지환",
+                assigneeId,
+                0,
+                null,
+                null
+        );
+
+        given(assignmentRepository.findDetailRawById(assignmentId))
+                .willReturn(Optional.of(raw));
+        given(studyMemberRepository.existsByStudyIdAndMemberId(studyId, loginMemberId))
+                .willReturn(false);
+
+        //when&then
+        assertThatThrownBy(() ->
+                assignmentQueryService.getAssignmentDetail(loginMemberId, assignmentId)
+        )
+                .isInstanceOf(StudyException.class)
+                .extracting("errorCode")
+                .isEqualTo(StudyErrorCode.NOT_STUDY_MEMBER);
+
+
+    }
+
 }
