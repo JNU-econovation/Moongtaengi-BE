@@ -31,6 +31,8 @@ public class MemberService {
 
         member.completeRegistration(nickname);
 
+        memberRepository.save(member);
+
         log.info("최종 회원가입 완료 - memberId: {}, nickname: {}",
                 memberId, nickname.getValue());
     }
