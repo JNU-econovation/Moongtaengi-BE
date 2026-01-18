@@ -3,6 +3,7 @@ package econovation.moongtaengi.study.domain.assignment;
 import java.time.LocalDateTime;
 
 public record AssignmentDetailRaw(
+        Long studyId,
         String studyName,
         String assignmentContent,
         String nickname,

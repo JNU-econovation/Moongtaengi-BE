@@ -49,6 +49,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
 
     @Query("""
         SELECT new econovation.moongtaengi.study.domain.assignment.AssignmentDetailRaw(
+            s.id,
             s.name.value,
             a.content.value,
             m.nickname.value,
