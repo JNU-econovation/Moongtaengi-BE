@@ -1,6 +1,7 @@
 package econovation.moongtaengi.study.domain;
 
 import econovation.moongtaengi.global.entity.BaseEntity;
+import econovation.moongtaengi.study.domain.event.StudyJoinedEvent;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -42,6 +43,7 @@ public class Study extends BaseEntity {
 
     public void addGuest(Long memberId) {
         addMember(memberId, StudyRole.GUEST);
+        registerEvent(new StudyJoinedEvent(this.getId(), memberId));
     }
 
     public void addMember(Long memberId, StudyRole studyRole) {

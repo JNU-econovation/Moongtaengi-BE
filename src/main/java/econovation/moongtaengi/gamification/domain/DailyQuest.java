@@ -1,4 +1,4 @@
-package econovation.moongtaengi.member.domain;
+package econovation.moongtaengi.gamification.domain;
 
 import econovation.moongtaengi.global.entity.BaseEntity;
 import jakarta.persistence.Column;

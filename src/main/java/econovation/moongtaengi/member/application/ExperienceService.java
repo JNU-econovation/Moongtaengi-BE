@@ -1,10 +1,10 @@
 package econovation.moongtaengi.member.application;
 
-import econovation.moongtaengi.member.domain.DailyQuest;
-import econovation.moongtaengi.member.domain.DailyQuestRepository;
+import econovation.moongtaengi.gamification.domain.DailyQuest;
+import econovation.moongtaengi.gamification.domain.DailyQuestRepository;
+import econovation.moongtaengi.gamification.domain.QuestType;
 import econovation.moongtaengi.member.domain.Member;
 import econovation.moongtaengi.member.domain.MemberRepository;
-import econovation.moongtaengi.member.domain.QuestType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
