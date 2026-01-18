@@ -3,6 +3,7 @@ package econovation.moongtaengi.study.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,6 +11,7 @@ import econovation.moongtaengi.global.config.WebConfig;
 import econovation.moongtaengi.global.security.CustomAuthentication;
 import econovation.moongtaengi.global.security.LoginMemberIdArgumentResolver;
 import econovation.moongtaengi.study.api.dto.AssignmentCreateRequest;
+import econovation.moongtaengi.study.application.assignment.AssignmentDetail;
 import econovation.moongtaengi.study.application.assignment.AssignmentQueryService;
 import econovation.moongtaengi.study.application.assignment.AssignmentSummary;
 import econovation.moongtaengi.study.application.assignment.CreateAssignmentCommand;
@@ -23,6 +25,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import econovation.moongtaengi.study.domain.StudyErrorCode;
+import econovation.moongtaengi.study.domain.StudyException;
+import econovation.moongtaengi.study.domain.assignment.AssignmentErrorCode;
+import econovation.moongtaengi.study.domain.assignment.AssignmentException;
 import econovation.moongtaengi.study.domain.assignment.AssignmentStatus;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -207,5 +213,72 @@ public class AssignmentControllerTest {
                 .andExpect(jsonPath("$[1].isLate").value(true));
 
         verify(assignmentQueryService).getAssignmentSummaries(memberId, processId);
+    }
+
+    @Test
+    @DisplayName("과제 상세 조회 성공 시 200 OK와 함께 상세 정보를 반환한다")
+    void 과제_상세_조회_성공() throws Exception {
+        //given
+        Long loginMemberId = 1L;
+        Long assignmentId = 10L;
+
+        AssignmentDetail response = new AssignmentDetail(
+                100L,
+                "테스트 스터디",
+                "테스트 과제",
+                "지환",
+                "비기너",
+                null,
+                null,
+                true
+        );
+
+        given(assignmentQueryService.getAssignmentDetail(loginMemberId, assignmentId))
+                .willReturn(response);
+
+        //when&then
+        mvc.perform(get("/api/assignments/{assignmentId}", assignmentId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.studyId").value(100L))
+                .andExpect(jsonPath("$.studyName").value("테스트 스터디"))
+                .andExpect(jsonPath("$.assignmentContent").value("테스트 과제"))
+                .andExpect(jsonPath("$.nickname").value("지환"))
+                .andExpect(jsonPath("$.memberTitle").value("비기너"))
+                .andExpect(jsonPath("$.isOwner").value(true))
+                .andExpect(jsonPath("$.submissionId").isEmpty());
+
+        verify(assignmentQueryService).getAssignmentDetail(loginMemberId, assignmentId);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 과제 조회 시 404 Not Found를 반환한다")
+    void 과제_상세_조회_실패_미존재() throws Exception {
+        //given
+        Long invalidId = 999L;
+
+        given(assignmentQueryService.getAssignmentDetail(any(), eq(invalidId)))
+                .willThrow(new AssignmentException(AssignmentErrorCode.ASSIGNMENT_NOT_FOUND));
+
+        //when&then
+        mvc.perform(get("/api/assignments/{assignmentId}", invalidId))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("스터디 멤버가 아닌 경우 403 Forbidden을 반환한다")
+    void 과제_상세_조회_실패_권한없음() throws Exception {
+        //given
+        Long assignmentId = 10L;
+
+        given(assignmentQueryService.getAssignmentDetail(any(), eq(assignmentId)))
+                .willThrow(new StudyException(StudyErrorCode.NOT_STUDY_MEMBER));
+
+        //when&then
+        mvc.perform(get("/api/assignments/{assignmentId}", assignmentId))
+                .andDo(print())
+                .andExpect(status().isForbidden());
     }
 }
