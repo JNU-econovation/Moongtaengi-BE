@@ -1,16 +1,39 @@
 package econovation.moongtaengi.study.domain.assignment;
 
+import econovation.moongtaengi.study.application.assignment.AssignmentSummary;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
     boolean existsByProcessIdAndAssigneeId(Long processId, Long assigneeId);
 
+    @Query("""
+        SELECT new econovation.moongtaengi.study.application.assignment.AssignmentSummary(
+            a.id,
+            s.id,
+            m.id,
+            a.content.value,
+            m.nickname.value,
+            a.status,
+            a.isLate,
+            sa.url
+        )
+        FROM StudyMember sm
+        JOIN Member m ON sm.memberId = m.id
+        LEFT JOIN Assignment a ON a.assigneeId = m.id AND a.processId = :processId
+        LEFT JOIN Submission s ON s.assignmentId = a.id AND s.submitterId = m.id
+        LEFT JOIN s.attachments sa
+        WHERE sm.study.id = :studyId
+    """)
+    List<AssignmentSummary> findSummaryByProcessIdAndStudyId(
+            @Param("processId") Long processId,
+            @Param("studyId") Long studyId
+    );
+           
     /**
      * 특정 프로세스의 특정 상태인 과제 조회 (알림 스케줄러 최적화)
      */

@@ -6,10 +6,12 @@ import econovation.moongtaengi.study.domain.process.StudyProcess;
 import econovation.moongtaengi.study.domain.process.StudyProcessPeriodBound;
 import econovation.moongtaengi.study.domain.process.StudyProcessRepository;
 import java.time.LocalDate;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @DataJpaTest
 public class StudyProcessRepositoryTest {
@@ -60,7 +62,24 @@ public class StudyProcessRepositoryTest {
         assertThat(bound.maxEndDate()).isNull();
     }
 
-    private void createAndSaveProcess(Long studyId, LocalDate startDate, LocalDate endDate) {
+    @Test
+    @DisplayName("Process ID로 Study ID를 찾아온다.")
+    void 프로세스_ID_스터디_ID_조회_성공() {
+        //given
+        Study study = StudyFixture.aStudy(1L);
+        studyRepository.save(study);
+
+        StudyProcess process = createAndSaveProcess(study.getId(), LocalDate.of(2026, 1, 1), LocalDate.of(2026, 1, 10));
+
+        // when
+        Optional<Long> result = studyProcessRepository.findStudyIdById(process.getId());
+
+        // then
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(study.getId());
+    }
+
+    private StudyProcess createAndSaveProcess(Long studyId, LocalDate startDate, LocalDate endDate) {
         StudyProcess studyProcess = StudyProcess.create(
                 studyId,
                 1,
@@ -70,6 +89,6 @@ public class StudyProcessRepositoryTest {
                 "테스트 과제 설명"
         );
 
-        studyProcessRepository.save(studyProcess);
+        return studyProcessRepository.save(studyProcess);
     }
 }
