@@ -2,6 +2,7 @@ package econovation.moongtaengi.study.domain.assignment;
 
 import econovation.moongtaengi.study.application.assignment.AssignmentSummary;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -45,4 +46,23 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
      */
     @Query("SELECT a FROM Assignment a WHERE a.processId IN :processIds AND a.status = :status")
     List<Assignment> findByProcessIdInAndStatus(@Param("processIds") List<Long> processIds, @Param("status") AssignmentStatus status);
+
+    @Query("""
+        SELECT new econovation.moongtaengi.study.domain.assignment.AssignmentDetailRaw(
+            s.name.value,
+            a.content.value,
+            m.nickname.value,
+            a.assigneeId,
+            m.totalExperience,
+            sub.id,
+            sub.createdAt
+        )
+        FROM Assignment a
+        JOIN StudyProcess p ON a.processId = p.id
+        JOIN Study s ON p.studyId = s.id
+        JOIN Member m ON m.id = a.assigneeId
+        LEFT JOIN Submission sub ON sub.assignmentId = a.id AND sub.submitterId = m.id
+        WHERE a.id = :assignmentId
+    """)
+    Optional<AssignmentDetailRaw> findDetailRawById(@Param("assignmentId") Long assignmentId);
 }

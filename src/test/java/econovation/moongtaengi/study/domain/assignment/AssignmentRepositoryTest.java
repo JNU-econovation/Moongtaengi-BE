@@ -7,6 +7,9 @@ import econovation.moongtaengi.member.domain.Nickname;
 import econovation.moongtaengi.study.application.assignment.AssignmentSummary;
 import econovation.moongtaengi.study.domain.Study;
 import econovation.moongtaengi.study.domain.StudyFixture;
+import econovation.moongtaengi.study.domain.StudyProcessFixture;
+import econovation.moongtaengi.study.domain.process.StudyProcess;
+import econovation.moongtaengi.study.domain.submission.Submission;
 import econovation.moongtaengi.study.domain.submission.SubmissionAttachment;
 import econovation.moongtaengi.study.domain.submission.SubmissionFixture;
 import java.util.List;
@@ -97,6 +100,72 @@ public class AssignmentRepositoryTest {
                 .findFirst().get();
 
         assertThat(dto2.assignmentId()).isNull();
+    }
+
+    @Test
+    @DisplayName("과제 상세 정보 조회 시 Member의 경험치와 Submission 정보(LEFT JOIN)가 포함되어야 한다")
+    void 과제_상세_조회_제출물_정보_성공() {
+        //given
+        Member member = createMember("지환");
+        member.addExperience(500);
+        em.persistAndFlush(member);
+
+        Study study = StudyFixture.aStudy(member.getId());
+        em.persistAndFlush(study);
+
+        StudyProcess process = StudyProcessFixture.aStudyProcess(study.getId());
+        em.persistAndFlush(process);
+
+        Assignment assignment = AssignmentFixture.anAssignment()
+                .processId(process.getId())
+                .assigneeId(member.getId())
+                .build();
+        em.persistAndFlush(assignment);
+
+        Submission submission = SubmissionFixture.aSubmission()
+                .assignmentId(assignment.getId())
+                .submitterId(member.getId())
+                .build();
+        em.persistAndFlush(submission);
+
+        //when
+        AssignmentDetailRaw result = assignmentRepository.findDetailRawById(assignment.getId())
+                .orElseThrow();
+
+        //then
+        assertThat(result.studyName()).isEqualTo(study.getName().getValue());
+        assertThat(result.assignmentContent()).isEqualTo("테스트 과제");
+        assertThat(result.nickname()).isEqualTo("지환");
+        assertThat(result.totalExperience()).isEqualTo(500);
+        assertThat(result.submissionId()).isEqualTo(submission.getId());
+        assertThat(result.assigneeId()).isEqualTo(member.getId());
+    }
+
+    @Test
+    @DisplayName("제출하지 않은 과제를 조회하면 submission 관련 필드는 null이어야 한다")
+    void 과제_상세_조회_제출물_없음_성공() {
+        Member member = createMember("철수");
+        em.persistAndFlush(member);
+
+        Study study = StudyFixture.aStudy(member.getId());
+        em.persistAndFlush(study);
+
+        StudyProcess process = StudyProcessFixture.aStudyProcess(study.getId());
+        em.persistAndFlush(process);
+
+        Assignment assignment = AssignmentFixture.anAssignment()
+                .processId(process.getId())
+                .build();
+        em.persistAndFlush(assignment);
+
+        //when
+        AssignmentDetailRaw result = assignmentRepository.findDetailRawById(assignment.getId())
+                .orElseThrow();
+
+        //then
+        assertThat(result.submissionId()).isNull();
+        assertThat(result.submitTime()).isNull();
+        assertThat(result.assignmentContent()).isEqualTo("테스트 과제");
     }
 
 
