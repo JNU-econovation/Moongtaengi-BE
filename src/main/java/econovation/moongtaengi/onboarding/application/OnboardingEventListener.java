@@ -1,5 +1,6 @@
 package econovation.moongtaengi.onboarding.application;
 
+import econovation.moongtaengi.collection.domain.event.CollectionEquippedEvent;
 import econovation.moongtaengi.onboarding.domain.OnboardingMissionType;
 import econovation.moongtaengi.study.domain.event.StudyJoinedEvent;
 import econovation.moongtaengi.study.domain.submission.SubmissionCreatedEvent;
@@ -48,6 +49,21 @@ public class OnboardingEventListener {
         } catch (Exception e) {
             log.error("과제 제출 온보딩 미션 업데이트 실패 - submitterId: {}, error: {}",
                     event.submitterId(), e.getMessage());
+        }
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void handleCollectionEquipped(CollectionEquippedEvent event) {
+        log.info("CollectionEquippedEvent 수신 (온보딩) - memberId: {}, collectionType: {}",
+                event.memberId(), event.collectionType());
+
+        try {
+            // 온보딩 미션 진행도 업데이트 (CHANGE_COLLECTION)
+            onboardingService.updateOnboardingMission(event.memberId(), OnboardingMissionType.CHANGE_COLLECTION);
+        } catch (Exception e) {
+            log.error("컬렉션 변경 온보딩 미션 업데이트 실패 - memberId: {}, error: {}",
+                    event.memberId(), e.getMessage());
         }
     }
 }

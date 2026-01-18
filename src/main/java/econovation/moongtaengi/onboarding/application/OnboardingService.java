@@ -58,6 +58,9 @@ public class OnboardingService {
                     log.info("온보딩 미션 진행 - memberId: {}, completedMission: {}, nextMission: {}",
                             memberId, targetMission, mission.getCurrentMission());
                 } else {
+                    // 마지막 미션 완료
+                    mission.markAsCompleted();
+                    onboardingMissionRepository.save(mission);
                     log.info("온보딩 미션 전체 완료 - memberId: {}", memberId);
                 }
             }
