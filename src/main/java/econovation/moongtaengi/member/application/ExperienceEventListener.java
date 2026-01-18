@@ -1,6 +1,6 @@
 package econovation.moongtaengi.member.application;
 
-import econovation.moongtaengi.member.domain.QuestType;
+import econovation.moongtaengi.gamification.domain.QuestType;
 import econovation.moongtaengi.member.domain.event.LoginSuccessEvent;
 import econovation.moongtaengi.study.domain.event.StudyCreatedEvent;
 import econovation.moongtaengi.study.domain.submission.SubmissionCreatedEvent;

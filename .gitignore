@@ -38,3 +38,5 @@ out/
 
 ### 환경변수 파일 ###
 .env
+CLAUDE.md
+/docs/specs.md

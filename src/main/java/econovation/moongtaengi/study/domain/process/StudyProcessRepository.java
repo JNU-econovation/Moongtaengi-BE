@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -44,4 +45,16 @@ public interface StudyProcessRepository extends JpaRepository<StudyProcess, Long
 
     @Query("SELECT p.studyId FROM StudyProcess p WHERE p.id = :processId")
     Optional<Long> findStudyIdById(@Param("processId") Long processId);
+
+    /**
+     * 특정 마감일인 프로세스 조회 (알림 스케줄러 최적화)
+     */
+    @Query("SELECT sp FROM StudyProcess sp WHERE sp.period.endDate = :endDate")
+    List<StudyProcess> findByEndDate(@Param("endDate") LocalDate endDate);
+
+    /**
+     * 여러 마감일에 해당하는 프로세스 조회 (알림 스케줄러 최적화)
+     */
+    @Query("SELECT sp FROM StudyProcess sp WHERE sp.period.endDate IN :endDates")
+    List<StudyProcess> findByEndDateIn(@Param("endDates") List<LocalDate> endDates);
 }
