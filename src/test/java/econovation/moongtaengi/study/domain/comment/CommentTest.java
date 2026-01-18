@@ -50,7 +50,7 @@ public class CommentTest {
             //given
             Long submissionId = 1L;
             Long memberId = 100L;
-            CommentContent content = new CommentContent("댓글 내용입니다.");
+            CommentContent content = new CommentContent("테스트 댓글 내용");
 
             //when
             Comment comment = Comment.create(submissionId, memberId, content);
@@ -58,14 +58,14 @@ public class CommentTest {
             //then
             assertThat(comment.getSubmissionId()).isEqualTo(submissionId);
             assertThat(comment.getMemberId()).isEqualTo(memberId);
-            assertThat(comment.getContent().getValue()).isEqualTo("댓글 내용입니다.");
+            assertThat(comment.getContent().getValue()).isEqualTo("테스트 댓글 내용");
         }
 
         @Test
         @DisplayName("필수 정보가 누락되면 생성할 수 없다")
         void 필수_정보_누락_댓글_생성_실패() {
             //given
-            CommentContent content = new CommentContent("내용");
+            CommentContent content = new CommentContent("테스트 댓글 내용");
 
             //when&then
             assertThatThrownBy(() -> Comment.create(null, 1L, content))
@@ -73,6 +73,37 @@ public class CommentTest {
 
             assertThatThrownBy(() -> Comment.create(1L, null, content))
                     .isInstanceOf(CommentException.class);
+        }
+
+        @Test
+        @DisplayName("작성자 본인만 댓글 수정이 가능하다")
+        void 댓글_본인_수정_성공() {
+            //given
+            Long memberId = 100L;
+            Comment comment = Comment.create(1L, memberId, new CommentContent("원본"));
+            CommentContent newContent = new CommentContent("수정 내용");
+
+            //when
+            comment.updateContent(memberId, newContent);
+
+            //then
+            assertThat(comment.getContent().getValue()).isEqualTo("수정 내용");
+        }
+
+        @Test
+        @DisplayName("댓글 작성자가 아닌 멤버가 수정을 시도하면 예외가 발생한다")
+        void 댓글_본인_아님_수정_실패() {
+            //given
+            Long ownerId = 100L;
+            Long otherId = 999L;
+            Comment comment = Comment.create(1L, ownerId, new CommentContent("원본"));
+            CommentContent newContent = new CommentContent("수정 내용");
+
+            //when&then
+            assertThatThrownBy(() -> comment.updateContent(otherId, newContent))
+                    .isInstanceOf(CommentException.class)
+                    .extracting("errorCode")
+                    .isEqualTo(CommentErrorCode.NOT_COMMENT_OWNER);
         }
     }
 }

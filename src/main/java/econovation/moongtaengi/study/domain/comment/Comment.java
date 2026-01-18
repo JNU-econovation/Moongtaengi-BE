@@ -30,12 +30,30 @@ public class Comment extends BaseEntity {
     }
 
     public static Comment create(Long submissionId, Long memberId, CommentContent content) {
-        validate(submissionId, memberId, content);
+        validateCreation(submissionId, memberId, content);
         return new Comment(submissionId, memberId, content);
     }
 
-    private static void validate(Long submissionId, Long memberId, CommentContent content) {
+    public void updateContent(Long requestMemberId, CommentContent content) {
+        validateOwner(requestMemberId);
+        validateContent(content);
+        this.content = content;
+    }
+
+    private static void validateCreation(Long submissionId, Long memberId, CommentContent content) {
         if (submissionId == null || memberId == null || content == null) {
+            throw new CommentException(CommentErrorCode.INVALID_COMMENT_INFO);
+        }
+    }
+
+    public void validateOwner(Long requestMemberId) {
+        if (!this.memberId.equals(requestMemberId)) {
+            throw new CommentException(CommentErrorCode.NOT_COMMENT_OWNER);
+        }
+    }
+
+    private void validateContent(CommentContent content) {
+        if (content == null) {
             throw new CommentException(CommentErrorCode.INVALID_COMMENT_INFO);
         }
     }
