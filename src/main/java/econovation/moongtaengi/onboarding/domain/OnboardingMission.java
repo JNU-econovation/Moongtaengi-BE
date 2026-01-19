@@ -25,13 +25,18 @@ public class OnboardingMission extends BaseEntity {
     @Column(nullable = false)
     private OnboardingMissionType currentMission;
 
-    private OnboardingMission(Long memberId, OnboardingMissionType currentMission) {
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private OnboardingMissionStatus status;
+
+    private OnboardingMission(Long memberId, OnboardingMissionType currentMission, OnboardingMissionStatus status) {
         this.memberId = memberId;
         this.currentMission = currentMission;
+        this.status = status;
     }
 
     public static OnboardingMission create(Long memberId) {
-        return new OnboardingMission(memberId, OnboardingMissionType.JOIN_STUDY);
+        return new OnboardingMission(memberId, OnboardingMissionType.JOIN_STUDY, OnboardingMissionStatus.WAITING);
     }
 
     public void completeCurrentAndMoveToNext() {
@@ -54,6 +59,7 @@ public class OnboardingMission extends BaseEntity {
      * 완료 이벤트를 발행하여 보상 지급
      */
     public void markAsCompleted() {
+        this.status = OnboardingMissionStatus.COMPLETED;
         registerEvent(new OnboardingMissionCompletedEvent(this.memberId));
     }
 }
