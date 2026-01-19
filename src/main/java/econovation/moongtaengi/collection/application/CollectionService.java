@@ -1,5 +1,6 @@
 package econovation.moongtaengi.collection.application;
 
+import econovation.moongtaengi.collection.api.dto.CollectionInfo;
 import econovation.moongtaengi.collection.api.dto.CollectionResponse;
 import econovation.moongtaengi.collection.domain.Collection;
 import econovation.moongtaengi.collection.domain.CollectionErrorCode;
@@ -53,12 +54,12 @@ public class CollectionService {
                 .collect(Collectors.toMap(Collection::getType, c -> c));
 
         // 모든 컬렉션 타입에 대해 응답 생성
-        List<CollectionResponse.CollectionInfo> collectionInfos = Arrays.stream(CollectionType.values())
+        List<CollectionInfo> collectionInfos = Arrays.stream(CollectionType.values())
                 .map(type -> {
                     Collection collection = unlockedMap.get(type);
                     boolean unlocked = collection != null;
 
-                    return new CollectionResponse.CollectionInfo(
+                    return new CollectionInfo(
                             type,
                             type.getDisplayName(),
                             type.getRarity(),
@@ -72,6 +73,37 @@ public class CollectionService {
 
         log.info("회원 {}의 컬렉션 {} 개를 조회했습니다", memberId, collectionInfos.size());
         return new CollectionResponse(member.getProfileIcon(), collectionInfos);
+    }
+
+    /**
+     * 특정 컬렉션 단건 상세 조회
+     * @param memberId 회원 ID
+     * @param collectionType 조회할 컬렉션 타입
+     * @return 컬렉션 상세 정보 (획득 여부 포함)
+     */
+    public CollectionInfo getCollectionDetails(Long memberId, CollectionType collectionType) {
+        // 회원 존재 여부 확인
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundException();
+        }
+
+        // 특정 컬렉션 보유 여부 조회 (없으면 null)
+        Collection collection = collectionRepository.findByMemberIdAndType(memberId, collectionType)
+                .orElse(null);
+
+        boolean unlocked = collection != null;
+
+        log.info("회원 {}의 컬렉션 {} 상세 정보를 조회했습니다", memberId, collectionType);
+
+        return new CollectionInfo(
+                collectionType,
+                collectionType.getDisplayName(),
+                collectionType.getRarity(),
+                collectionType.getDescription(),
+                unlocked,
+                unlocked ? collection.getUnlockedAt() : null,
+                collectionType.getImageUrl()
+        );
     }
 
     /**

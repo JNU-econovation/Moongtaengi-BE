@@ -1,14 +1,17 @@
 package econovation.moongtaengi.collection.api;
 
+import econovation.moongtaengi.collection.api.dto.CollectionInfo;
 import econovation.moongtaengi.collection.api.dto.CollectionResponse;
 import econovation.moongtaengi.collection.api.dto.EquipCollectionRequest;
 import econovation.moongtaengi.collection.application.CollectionService;
+import econovation.moongtaengi.collection.domain.CollectionType;
 import econovation.moongtaengi.global.annotation.LoginMemberId;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +39,15 @@ public class CollectionController {
         log.info("컬렉션 목록 조회 API 호출 - memberId: {}", memberId);
 
         CollectionResponse response = collectionService.getCollections(memberId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{type}")
+    public ResponseEntity<CollectionInfo> getCollection(@LoginMemberId Long memberId, @PathVariable("type")
+            CollectionType type) {
+        log.info("컬렉션 단건 조회 API 호출 - memberId: {}, collectionType: {}", memberId, type);
+
+        CollectionInfo response = collectionService.getCollectionDetails(memberId, type);
         return ResponseEntity.ok(response);
     }
 
