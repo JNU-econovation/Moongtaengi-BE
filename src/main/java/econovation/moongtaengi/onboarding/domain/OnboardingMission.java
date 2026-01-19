@@ -1,6 +1,7 @@
 package econovation.moongtaengi.onboarding.domain;
 
 import econovation.moongtaengi.global.entity.BaseEntity;
+import econovation.moongtaengi.onboarding.domain.event.OnboardingMissionCompletedEvent;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -24,13 +25,18 @@ public class OnboardingMission extends BaseEntity {
     @Column(nullable = false)
     private OnboardingMissionType currentMission;
 
-    private OnboardingMission(Long memberId, OnboardingMissionType currentMission) {
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private OnboardingMissionStatus status;
+
+    private OnboardingMission(Long memberId, OnboardingMissionType currentMission, OnboardingMissionStatus status) {
         this.memberId = memberId;
         this.currentMission = currentMission;
+        this.status = status;
     }
 
     public static OnboardingMission create(Long memberId) {
-        return new OnboardingMission(memberId, OnboardingMissionType.JOIN_STUDY);
+        return new OnboardingMission(memberId, OnboardingMissionType.JOIN_STUDY, OnboardingMissionStatus.WAITING);
     }
 
     public void completeCurrentAndMoveToNext() {
@@ -46,5 +52,14 @@ public class OnboardingMission extends BaseEntity {
     public boolean isLastMission() {
         OnboardingMissionType[] missions = OnboardingMissionType.values();
         return this.currentMission == missions[missions.length - 1];
+    }
+
+    /**
+     * 마지막 온보딩 미션 완료
+     * 완료 이벤트를 발행하여 보상 지급
+     */
+    public void markAsCompleted() {
+        this.status = OnboardingMissionStatus.COMPLETED;
+        registerEvent(new OnboardingMissionCompletedEvent(this.memberId));
     }
 }

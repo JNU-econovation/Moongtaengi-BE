@@ -1,6 +1,7 @@
 package econovation.moongtaengi.notification.api.dto;
 
 import econovation.moongtaengi.onboarding.domain.OnboardingMission;
+import econovation.moongtaengi.onboarding.domain.OnboardingMissionStatus;
 import econovation.moongtaengi.onboarding.domain.OnboardingMissionType;
 import lombok.Builder;
 
@@ -9,7 +10,8 @@ public record OnboardingMissionResponse(
         OnboardingMissionType missionType,
         String message,
         int order,
-        int totalMissions
+        int totalMissions,
+        OnboardingMissionStatus status
 ) {
     public static OnboardingMissionResponse from(OnboardingMission mission) {
         OnboardingMissionType type = mission.getCurrentMission();
@@ -23,6 +25,7 @@ public record OnboardingMissionResponse(
                 .message(message)
                 .order(type.getOrder())
                 .totalMissions(OnboardingMissionType.getTotalMissions())
+                .status(mission.getStatus())
                 .build();
     }
 }

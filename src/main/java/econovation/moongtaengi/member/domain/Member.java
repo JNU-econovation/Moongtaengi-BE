@@ -1,6 +1,10 @@
 package econovation.moongtaengi.member.domain;
 
+import econovation.moongtaengi.collection.domain.CollectionType;
 import econovation.moongtaengi.global.entity.BaseEntity;
+import econovation.moongtaengi.member.domain.event.ExperienceAddedEvent;
+import econovation.moongtaengi.member.domain.event.LoginSuccessEvent;
+import econovation.moongtaengi.member.domain.event.MemberRegisteredEvent;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -33,6 +37,10 @@ public class Member extends BaseEntity {
     @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
     private int totalExperience = 0;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CollectionType profileIcon = CollectionType.DEFAULT;
+
     // 카카오 로그인 시 임시 회원 생성
     public static Member createTemporaryMember(String kakaoId) {
         Member member = new Member();
@@ -45,6 +53,8 @@ public class Member extends BaseEntity {
         validateCanComplete();
         this.nickname = nickname;
         this.status = MemberStatus.ACTIVE;
+        registerEvent(new MemberRegisteredEvent(this.getId()));
+        registerEvent(new LoginSuccessEvent(this.getId()));
     }
 
     private void validateCanComplete() {
@@ -88,5 +98,13 @@ public class Member extends BaseEntity {
             throw new IllegalArgumentException("경험치는 0보다 커야 합니다.");
         }
         this.totalExperience += experience;
+        registerEvent(new ExperienceAddedEvent(this.getId(), experience, this.totalExperience));
+    }
+
+    public void changeProfileIcon(CollectionType type) {
+        if (type == null) {
+            throw new IllegalArgumentException("프로필 아이콘은 null일 수 없습니다.");
+        }
+        this.profileIcon = type;
     }
 }
