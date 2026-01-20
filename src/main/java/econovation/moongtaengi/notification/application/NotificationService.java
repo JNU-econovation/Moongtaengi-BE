@@ -26,6 +26,7 @@ public class NotificationService {
     private final OnboardingService onboardingService;
     private final DailyQuestRepository dailyQuestRepository;
 
+    @Transactional
     public List<NotificationResponse> getNotifications(Long memberId) {
         List<Notification> notifications = notificationRepository.findAll().stream()
                 .filter(n -> n.getMemberId().equals(memberId))
@@ -36,10 +37,12 @@ public class NotificationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public OnboardingMissionResponse getOnboardingMission(Long memberId) {
         return onboardingService.getOnboardingMission(memberId);
     }
 
+    @Transactional
     public List<DailyQuestResponse> getDailyQuests(Long memberId) {
         List<QuestType> displayTypes = List.of(
                 QuestType.COMMENT,
