@@ -54,6 +54,8 @@ public class AssignmentController {
             @LoginMemberId Long memberId,
             @RequestParam Long processId
     ) {
+        log.info("과제 목록 조회 API 호출 - requesterId: {}, processId: {}", memberId, processId);
+
         List<AssignmentSummary> response = assignmentQueryService.getAssignmentSummaries(memberId, processId);
 
         return ResponseEntity.ok(response);
@@ -64,6 +66,8 @@ public class AssignmentController {
             @LoginMemberId Long memberId,
             @PathVariable Long assignmentId
     ) {
+        log.info("과제 상세 조회 API 호출 - requesterId: {}, assignmentId: {}", memberId, assignmentId);
+
         AssignmentDetail response = assignmentQueryService.getAssignmentDetail(memberId, assignmentId);
 
         return ResponseEntity.ok(response);
