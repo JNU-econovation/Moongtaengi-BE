@@ -6,13 +6,13 @@ import lombok.Builder;
 
 @Builder
 public record DailyQuestResponse(
-        QuestType type,
+        String message,
         int current,
         int max
 ) {
     public static DailyQuestResponse from(DailyQuest dailyQuest) {
         return DailyQuestResponse.builder()
-                .type(dailyQuest.getQuestType())
+                .message(dailyQuest.getQuestType().getDisplayName())
                 .current(dailyQuest.getCompletedCount())
                 .max(dailyQuest.getQuestType().getDailyLimit())
                 .build();
