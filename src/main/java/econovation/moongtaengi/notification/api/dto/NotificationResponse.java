@@ -9,18 +9,12 @@ import java.time.LocalDateTime;
 @Builder
 public record NotificationResponse(
         Long id,
-        NotificationType type,
-        String message,
-        String referenceType,
-        LocalDateTime createdAt
+        String message
 ) {
     public static NotificationResponse from(Notification notification) {
         return NotificationResponse.builder()
                 .id(notification.getId())
-                .type(notification.getType())
                 .message(notification.getMessage())
-                .referenceType(notification.getReferenceType())
-                .createdAt(notification.getCreatedAt())
                 .build();
     }
 }

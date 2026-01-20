@@ -51,7 +51,7 @@ public class NotificationService {
                 .map(type -> dailyQuestRepository.findByMemberIdAndQuestType(memberId, type)
                         .map(DailyQuestResponse::from)
                         .orElse(DailyQuestResponse.builder()
-                                .type(type)
+                                .message(type.getDisplayName())
                                 .current(0)
                                 .max(type.getDailyLimit())
                                 .build()))
