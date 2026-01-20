@@ -99,7 +99,7 @@ public class CollectionEventListener {
                 event.memberId(), event.collectionType());
 
         // TREASURE_BAG 자기 자신 해금 방지
-        if (event.collectionType() == CollectionType.TREASURE_BAG) {
+        if (event.collectionType() == CollectionType.TREASURE) {
             return;
         }
 
@@ -108,7 +108,7 @@ public class CollectionEventListener {
 
         // 7개 이상이면 TREASURE_BAG 해금
         if (collectionCount >= 7) {
-            collectionService.unlockCollection(event.memberId(), CollectionType.TREASURE_BAG);
+            collectionService.unlockCollection(event.memberId(), CollectionType.TREASURE);
             log.info("회원 {}에게 TREASURE_BAG 컬렉션이 해금되었습니다 (총 컬렉션: {}개)",
                     event.memberId(), collectionCount);
         }
@@ -116,16 +116,16 @@ public class CollectionEventListener {
 
     /**
      * 온보딩 미션 전체 완료 이벤트 처리
-     * WOODEN_PICKAXE 컬렉션 해금 (보상)
+     * WOOD 컬렉션 해금 (보상)
      */
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void handleOnboardingMissionCompleted(OnboardingMissionCompletedEvent event) {
         log.info("온보딩 미션 전체 완료 이벤트 수신 - memberId: {}", event.memberId());
 
-        // WOODEN_PICKAXE 컬렉션 해금 (온보딩 완료 보상)
-        collectionService.unlockCollection(event.memberId(), CollectionType.WOODEN_PICKAXE);
-        log.info("회원 {}에게 WOODEN_PICKAXE 컬렉션이 해금되었습니다 (온보딩 완료 보상)",
+        // WOOD 컬렉션 해금 (온보딩 완료 보상)
+        collectionService.unlockCollection(event.memberId(), CollectionType.WOOD);
+        log.info("회원 {}에게 나무곡괭이 뭉탱이 컬렉션이 해금되었습니다 (온보딩 완료 보상)",
                 event.memberId());
     }
 }

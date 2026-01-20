@@ -59,6 +59,9 @@ public class CollectionService {
                     Collection collection = unlockedMap.get(type);
                     boolean unlocked = collection != null;
 
+                    // 해금 여부에 따라 적절한 이미지 URL 선택
+                    String imageUrl = unlocked ? type.getUnlockedImageUrl() : type.getLockedImageUrl();
+
                     return new CollectionInfo(
                             type,
                             type.getDisplayName(),
@@ -66,7 +69,7 @@ public class CollectionService {
                             type.getDescription(),
                             unlocked,
                             unlocked ? collection.getUnlockedAt() : null,
-                            type.getImageUrl()
+                            imageUrl
                     );
                 })
                 .toList();
@@ -93,6 +96,9 @@ public class CollectionService {
 
         boolean unlocked = collection != null;
 
+        // 해금 여부에 따라 적절한 이미지 URL 선택
+        String imageUrl = unlocked ? collectionType.getUnlockedImageUrl() : collectionType.getLockedImageUrl();
+
         log.info("회원 {}의 컬렉션 {} 상세 정보를 조회했습니다", memberId, collectionType);
 
         return new CollectionInfo(
@@ -102,7 +108,7 @@ public class CollectionService {
                 collectionType.getDescription(),
                 unlocked,
                 unlocked ? collection.getUnlockedAt() : null,
-                collectionType.getImageUrl()
+                imageUrl
         );
     }
 
