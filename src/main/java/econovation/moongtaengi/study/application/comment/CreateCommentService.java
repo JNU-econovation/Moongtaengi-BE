@@ -27,6 +27,9 @@ public class CreateCommentService {
 
         commentRepository.save(comment);
 
+        log.info("댓글 생성 성공 - commentId: {}, memberId: {}, submissionId: {}",
+                comment.getId(), command.memberId(), command.submissionId());
+
         return comment.getId();
     }
 

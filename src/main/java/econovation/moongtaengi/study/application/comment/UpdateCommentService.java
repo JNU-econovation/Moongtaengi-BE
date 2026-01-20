@@ -23,5 +23,7 @@ public class UpdateCommentService {
         CommentContent content = new CommentContent(command.content());
 
         comment.updateContent(command.memberId(), content);
+
+        log.info("댓글 수정 성공 - commentId: {}, memberId: {}", command.commentId(), command.memberId());
     }
 }
