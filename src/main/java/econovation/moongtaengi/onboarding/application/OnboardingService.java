@@ -30,6 +30,7 @@ public class OnboardingService {
      * @param memberId 회원 ID
      * @return 온보딩 미션 (항상 반환, null 아님)
      */
+    @Transactional
     public OnboardingMissionResponse getOnboardingMission(Long memberId) {
         // existingMission: 상태와 무관하게 회원에게 할당된 미션이 존재하는지 확인
         // WAITING 또는 COMPLETED 상태 모두 반환
