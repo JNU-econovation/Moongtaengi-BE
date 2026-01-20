@@ -2,6 +2,7 @@ package econovation.moongtaengi.study.api;
 
 import econovation.moongtaengi.global.annotation.LoginMemberId;
 import econovation.moongtaengi.study.api.dto.AssignmentCreateRequest;
+import econovation.moongtaengi.study.application.assignment.ApproveAssignmentService;
 import econovation.moongtaengi.study.application.assignment.AssignmentDetail;
 import econovation.moongtaengi.study.application.assignment.AssignmentQueryService;
 import econovation.moongtaengi.study.application.assignment.AssignmentSummary;
@@ -29,6 +30,7 @@ public class AssignmentController {
 
     private final CreateAssignmentService createAssignmentService;
     private final AssignmentQueryService assignmentQueryService;
+    private final ApproveAssignmentService approveAssignmentService;
 
     @PostMapping
     public ResponseEntity<Void> createAssignment(
@@ -71,5 +73,16 @@ public class AssignmentController {
         AssignmentDetail response = assignmentQueryService.getAssignmentDetail(memberId, assignmentId);
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{assignmentId}/approve")
+    public ResponseEntity<Void> approveAssignment(
+            @LoginMemberId Long memberId,
+            @PathVariable Long assignmentId
+    ) {
+        log.info("과제 승인 API 호출 - requesterId: {}, assignmentId: {}", memberId, assignmentId);
+
+        approveAssignmentService.approveAssignment(assignmentId, memberId);
+        return ResponseEntity.ok().build();
     }
 }
