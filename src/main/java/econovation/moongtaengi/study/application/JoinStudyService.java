@@ -54,7 +54,7 @@ public class JoinStudyService {
      */
     private void checkAndUnlockSpecialCollection(Long memberId, String inviteCode) {
         if (ECONO_CODE.equals(inviteCode)) {
-            collectionService.unlockCollection(memberId, CollectionType.ECONO_SPECIAL);
+            collectionService.unlockCollection(memberId, CollectionType.ECONO);
             log.info("회원 {}에게 특별 코드로 ECONO_SPECIAL 컬렉션이 해금되었습니다", memberId);
         } else if (SPECIAL_CODE.equals(inviteCode)) {
             collectionService.unlockCollection(memberId, CollectionType.SPECIAL);
