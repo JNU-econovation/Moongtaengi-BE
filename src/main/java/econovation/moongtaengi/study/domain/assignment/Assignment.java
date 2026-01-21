@@ -57,6 +57,13 @@ public class Assignment extends BaseEntity {
         this.isLate = isLate;
     }
 
+    public void approve() {
+        if (this.status != AssignmentStatus.SUBMITTED) {
+            throw new AssignmentException(AssignmentErrorCode.CANNOT_APPROVE_NOT_SUBMITTED);
+        }
+        this.status = AssignmentStatus.APPROVED;
+    }
+
     private static void validate(Long processId, Long assigneeId, AssignmentContent content, AssignmentDeadline deadline) {
         if (processId == null || assigneeId == null || content == null || deadline == null) {
             throw new AssignmentException(AssignmentErrorCode.INVALID_ASSIGNMENT_INFO);

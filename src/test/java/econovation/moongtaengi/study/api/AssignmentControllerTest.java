@@ -11,6 +11,7 @@ import econovation.moongtaengi.global.config.WebConfig;
 import econovation.moongtaengi.global.security.CustomAuthentication;
 import econovation.moongtaengi.global.security.LoginMemberIdArgumentResolver;
 import econovation.moongtaengi.study.api.dto.AssignmentCreateRequest;
+import econovation.moongtaengi.study.application.assignment.ApproveAssignmentService;
 import econovation.moongtaengi.study.application.assignment.AssignmentDetail;
 import econovation.moongtaengi.study.application.assignment.AssignmentQueryService;
 import econovation.moongtaengi.study.application.assignment.AssignmentSummary;
@@ -66,6 +67,9 @@ public class AssignmentControllerTest {
 
     @MockitoBean
     private AssignmentQueryService assignmentQueryService;
+
+    @MockitoBean
+    private ApproveAssignmentService approveAssignmentService;
 
     @BeforeEach
     void setUp() {
@@ -280,5 +284,21 @@ public class AssignmentControllerTest {
         mvc.perform(get("/api/assignments/{assignmentId}", assignmentId))
                 .andDo(print())
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("과제 승인 요청 시 서비스를 호출하고 200 OK를 반환한다")
+    void 과제_승인_성공() throws Exception {
+        //given
+        Long assignmentId = 100L;
+        Long requesterId = 1L;
+
+        //when&then
+        mvc.perform(post("/api/assignments/{assignmentId}/approve", assignmentId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        verify(approveAssignmentService).approveAssignment(assignmentId, requesterId);
     }
 }

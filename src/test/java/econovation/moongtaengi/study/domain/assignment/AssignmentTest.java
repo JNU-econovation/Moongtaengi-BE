@@ -2,6 +2,7 @@ package econovation.moongtaengi.study.domain.assignment;
 
 import static econovation.moongtaengi.study.domain.assignment.AssignmentFixture.anAssignment;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,5 +50,32 @@ public class AssignmentTest {
         //then
         assertThat(assignment.getStatus()).isEqualTo(AssignmentStatus.SUBMITTED);
         assertThat(assignment.isLate()).isTrue();
+    }
+
+    @Test
+    @DisplayName("제출된 과제는 승인 상태로 변경할 수 있다.")
+    void 과제_승인_성공() {
+        //given
+        Assignment assignment = anAssignment().build();
+        assignment.markAsSubmitted(false);
+
+        //when
+        assignment.approve();
+
+        //then
+        assertThat(assignment.getStatus()).isEqualTo(AssignmentStatus.APPROVED);
+    }
+
+    @Test
+    @DisplayName("제출되지 않은 과제는 승인할 수 없다.")
+    void 과제_승인_미제출_상태_실패() {
+        //given
+        Assignment assignment = anAssignment().build();
+
+        //when&then
+        assertThatThrownBy(() -> assignment.approve())
+                .isInstanceOf(AssignmentException.class)
+                .extracting("errorCode")
+                .isEqualTo(AssignmentErrorCode.CANNOT_APPROVE_NOT_SUBMITTED);
     }
 }
