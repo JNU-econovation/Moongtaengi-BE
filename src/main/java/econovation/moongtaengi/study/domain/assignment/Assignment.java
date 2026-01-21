@@ -65,9 +65,28 @@ public class Assignment extends BaseEntity {
         registerEvent(new AssignmentApprovedEvent(this.getId(), this.assigneeId));
     }
 
+    public void updateDescription(AssignmentDescription newDescription) {
+        validateDescription(newDescription);
+        validateUpdatable();
+
+        this.description = newDescription;
+    }
+
     private static void validate(Long processId, Long assigneeId, AssignmentDescription description, AssignmentDeadline deadline) {
         if (processId == null || assigneeId == null || description == null || deadline == null) {
             throw new AssignmentException(AssignmentErrorCode.INVALID_ASSIGNMENT_INFO);
+        }
+    }
+
+    private void validateDescription(AssignmentDescription newDescription) {
+        if (newDescription == null) {
+            throw new AssignmentException(AssignmentErrorCode.INVALID_ASSIGNMENT_INFO);
+        }
+    }
+
+    private void validateUpdatable() {
+        if (this.status != AssignmentStatus.WAITING) {
+            throw new AssignmentException(AssignmentErrorCode.UPDATE_ALLOWED_ONLY_IN_WAITING);
         }
     }
 }

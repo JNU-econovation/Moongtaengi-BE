@@ -18,7 +18,9 @@ public enum AssignmentErrorCode implements ErrorCode {
 
     ASSIGNMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "AS_005", "존재하지 않는 과제입니다."),
 
-    CANNOT_APPROVE_NOT_SUBMITTED(HttpStatus.BAD_REQUEST, "AS_006", "제출되지 않은 과제는 승인할 수 없습니다.");
+    CANNOT_APPROVE_NOT_SUBMITTED(HttpStatus.BAD_REQUEST, "AS_006", "제출되지 않은 과제는 승인할 수 없습니다."),
+
+    UPDATE_ALLOWED_ONLY_IN_WAITING(HttpStatus.BAD_REQUEST, "AS_007","과제 내용은 WAITING 상태에서만 수정 가능합니다.");
 
     private final HttpStatus status;
     private final String code;

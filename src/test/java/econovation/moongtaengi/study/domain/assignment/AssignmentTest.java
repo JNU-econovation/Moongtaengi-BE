@@ -78,4 +78,64 @@ public class AssignmentTest {
                 .extracting("errorCode")
                 .isEqualTo(AssignmentErrorCode.CANNOT_APPROVE_NOT_SUBMITTED);
     }
+
+    @Test
+    @DisplayName("과제 상태가 WAITING일 때, 과제 설명을 수정할 수 있다.")
+    void 과제_설명_수정_성공() {
+        //given
+        Assignment assignment = anAssignment().build();
+        AssignmentDescription newDescription = new AssignmentDescription("수정된 설명");
+
+        //when
+        assignment.updateDescription(newDescription);
+
+        //then
+        assertThat(assignment.getDescription()).isEqualTo(newDescription);
+    }
+
+    @Test
+    @DisplayName("이미 제출된 과제는 설명을 수정할 수 없다.")
+    void 과제_설명_수정_실패_이미_제출됨() {
+        //given
+        Assignment assignment = anAssignment().build();
+        assignment.markAsSubmitted(false);
+
+        AssignmentDescription newDescription = new AssignmentDescription("수정된 설명");
+
+        //when&then
+        assertThatThrownBy(() -> assignment.updateDescription(newDescription))
+                .isInstanceOf(AssignmentException.class)
+                .extracting("errorCode")
+                .isEqualTo(AssignmentErrorCode.UPDATE_ALLOWED_ONLY_IN_WAITING);
+    }
+
+    @Test
+    @DisplayName("이미 승인된 과제도 설명을 수정할 수 없다.")
+    void 과제_설명_수정_실패_이미_승인됨() {
+        // given
+        Assignment assignment = anAssignment().build();
+        assignment.markAsSubmitted(false);
+        assignment.approve();
+
+        AssignmentDescription newDescription = new AssignmentDescription("수정된 설명");
+
+        //when&then
+        assertThatThrownBy(() -> assignment.updateDescription(newDescription))
+                .isInstanceOf(AssignmentException.class)
+                .extracting("errorCode")
+                .isEqualTo(AssignmentErrorCode.UPDATE_ALLOWED_ONLY_IN_WAITING);
+    }
+
+    @Test
+    @DisplayName("수정할 설명이 null이면 예외가 발생한다.")
+    void 과제_설명_수정_실패_Null_입력() {
+        // given
+        Assignment assignment = anAssignment().build();
+
+        //when&then
+        assertThatThrownBy(() -> assignment.updateDescription(null))
+                .isInstanceOf(AssignmentException.class)
+                .extracting("errorCode")
+                .isEqualTo(AssignmentErrorCode.INVALID_ASSIGNMENT_INFO);
+    }
 }
