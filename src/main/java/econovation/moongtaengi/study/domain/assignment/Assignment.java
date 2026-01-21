@@ -62,6 +62,7 @@ public class Assignment extends BaseEntity {
             throw new AssignmentException(AssignmentErrorCode.CANNOT_APPROVE_NOT_SUBMITTED);
         }
         this.status = AssignmentStatus.APPROVED;
+        registerEvent(new AssignmentApprovedEvent(this.getId(), this.assigneeId));
     }
 
     private static void validate(Long processId, Long assigneeId, AssignmentContent content, AssignmentDeadline deadline) {
