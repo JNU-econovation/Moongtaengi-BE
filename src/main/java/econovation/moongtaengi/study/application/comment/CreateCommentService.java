@@ -7,6 +7,7 @@ import econovation.moongtaengi.study.domain.comment.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -16,6 +17,7 @@ public class CreateCommentService {
     private final CommentRepository commentRepository;
     private final CommentMemberValidator commentMemberValidator;
 
+    @Transactional
     public Long createComment(CreateCommentCommand command) {
         commentMemberValidator.validate(command.memberId(), command.submissionId());
 
@@ -26,6 +28,7 @@ public class CreateCommentService {
         );
 
         commentRepository.save(comment);
+        comment.publishCreatedEvent();
 
         log.info("댓글 생성 성공 - commentId: {}, memberId: {}, submissionId: {}",
                 comment.getId(), command.memberId(), command.submissionId());
