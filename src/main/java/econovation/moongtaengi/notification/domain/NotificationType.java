@@ -13,8 +13,8 @@ public enum NotificationType {
     DAILY_QUEST_RESET("일일 퀘스트 초기화"),
     ASSIGNMENT_OVERDUE("과제 미제출"),
     ASSIGNMENT_DEADLINE_SOON("마감 임박"),
-    COMMENT_RECEIVED("댓글 받음");
-    // 추후: ASSIGNMENT_APPROVED
+    COMMENT_RECEIVED("댓글 받음"),
+    ASSIGNMENT_APPROVED("과제 승인됨");
 
     private final String description;
 }

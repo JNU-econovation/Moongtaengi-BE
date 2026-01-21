@@ -26,6 +26,7 @@ public class ApproveAssignmentService {
         assignmentManagementPolicy.validate(processInfo.studyId(), requesterId);
 
         assignment.approve();
+        assignmentRepository.save(assignment);
 
         log.info("과제 승인 성공 - assignmentId: {}, requesterId: {}, studyId: {}",
                 assignmentId,

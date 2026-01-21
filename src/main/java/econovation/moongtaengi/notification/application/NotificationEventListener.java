@@ -8,6 +8,7 @@ import econovation.moongtaengi.study.domain.StudyMemberRepository;
 import econovation.moongtaengi.study.domain.assignment.Assignment;
 import econovation.moongtaengi.study.domain.assignment.AssignmentRepository;
 import econovation.moongtaengi.study.domain.assignment.ProcessInfoProvider;
+import econovation.moongtaengi.study.domain.assignment.AssignmentApprovedEvent;
 import econovation.moongtaengi.study.domain.comment.CommentCreatedEvent;
 import econovation.moongtaengi.study.domain.submission.Submission;
 import econovation.moongtaengi.study.domain.submission.SubmissionCreatedEvent;
@@ -116,6 +117,29 @@ public class NotificationEventListener {
         } catch (Exception e) {
             log.error("댓글 알림 생성 실패 - commentId: {}, error: {}",
                     event.commentId(), e.getMessage());
+        }
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void handleAssignmentApproved(AssignmentApprovedEvent event) {
+        log.info("AssignmentApprovedEvent 수신 - assignmentId: {}, assigneeId: {}",
+                event.assignmentId(), event.assigneeId());
+
+        try {
+            // 과제 제출자에게 알림 생성
+            String message = "제출하신 과제가 승인되었습니다.";
+            notificationService.createNotification(
+                    event.assigneeId(),
+                    NotificationType.ASSIGNMENT_APPROVED,
+                    message,
+                    "ASSIGNMENT"
+            );
+
+            log.info("과제 승인 알림 생성 완료 - assigneeId: {}", event.assigneeId());
+        } catch (Exception e) {
+            log.error("과제 승인 알림 생성 실패 - assignmentId: {}, error: {}",
+                    event.assignmentId(), e.getMessage());
         }
     }
 }
