@@ -7,7 +7,11 @@ import econovation.moongtaengi.member.domain.event.MemberRegisteredEvent;
 import econovation.moongtaengi.onboarding.domain.event.OnboardingMissionCompletedEvent;
 import econovation.moongtaengi.study.domain.Study;
 import econovation.moongtaengi.study.domain.StudyRepository;
+import econovation.moongtaengi.study.domain.comment.CommentCreatedEvent;
+import econovation.moongtaengi.study.domain.comment.CommentRepository;
 import econovation.moongtaengi.study.domain.event.StudyJoinedEvent;
+import econovation.moongtaengi.study.domain.reaction.ReactionAddedEvent;
+import econovation.moongtaengi.study.domain.reaction.ReactionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -27,6 +31,8 @@ public class CollectionEventListener {
 
     private final CollectionService collectionService;
     private final StudyRepository studyRepository;
+    private final ReactionRepository reactionRepository;
+    private final CommentRepository commentRepository;
 
     /**
      * 회원 등록 완료 이벤트 처리
@@ -127,5 +133,46 @@ public class CollectionEventListener {
         collectionService.unlockCollection(event.memberId(), CollectionType.WOOD);
         log.info("회원 {}에게 나무곡괭이 뭉탱이 컬렉션이 해금되었습니다 (온보딩 완료 보상)",
                 event.memberId());
+    }
+
+    /**
+     * 감정표현 추가 이벤트 처리
+     * STICKER 컬렉션 해금 조건 체크 (첫 감정표현 사용)
+     */
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void handleReactionAdded(ReactionAddedEvent event) {
+        log.info("감정표현 추가 이벤트 수신 - reactionId: {}, memberId: {}", event.reactionId(), event.memberId());
+
+        // 첫 감정표현 사용 시 STICKER 컬렉션 해금
+        long reactionCount = reactionRepository.countByMemberId(event.memberId());
+        if (reactionCount == 1) {
+            collectionService.unlockCollection(event.memberId(), CollectionType.STICKER);
+        }
+    }
+
+    /**
+     * 댓글 작성 이벤트 처리
+     * GRADUATION(10개), KANE(100개) 컬렉션 해금 조건 체크
+     */
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void handleCommentCreated(CommentCreatedEvent event) {
+        log.info("댓글 작성 이벤트 수신 - commentId: {}, commenterId: {}", event.commentId(), event.commenterId());
+
+        // 댓글 작성 횟수 조회
+        long commentCount = commentRepository.countByMemberId(event.commenterId());
+
+        // GRADUATION 컬렉션 해금 (10개)
+        if (commentCount == 10) {
+            collectionService.unlockCollection(event.commenterId(), CollectionType.GRADUATION);
+            log.info("회원 {}의 댓글 10개 작성으로 GRADUATION 컬렉션이 해금되었습니다", event.commenterId());
+        }
+
+        // KANE 컬렉션 해금 (100개)
+        if (commentCount == 100) {
+            collectionService.unlockCollection(event.commenterId(), CollectionType.KANE);
+            log.info("회원 {}의 댓글 100개 작성으로 KANE 컬렉션이 해금되었습니다", event.commenterId());
+        }
     }
 }
