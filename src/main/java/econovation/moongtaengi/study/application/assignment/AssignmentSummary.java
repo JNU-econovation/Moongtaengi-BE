@@ -6,7 +6,7 @@ public record AssignmentSummary(
         Long assignmentId,
         Long submissionId,
         Long memberId,
-        String assignmentContent,
+        String assignmentDescription,
         String nickname,
         AssignmentStatus status,
         Boolean isLate,
@@ -14,7 +14,7 @@ public record AssignmentSummary(
         String fileUrl
 ) {
     public AssignmentSummary {
-        assignmentContent = (assignmentContent == null) ? "" : assignmentContent;
+        assignmentDescription = (assignmentDescription == null) ? "" : assignmentDescription;
         nickname = (nickname == null) ? "" : nickname;
         isLate = (isLate != null) && isLate;
         fileName = (fileName == null) ? "" : fileName;

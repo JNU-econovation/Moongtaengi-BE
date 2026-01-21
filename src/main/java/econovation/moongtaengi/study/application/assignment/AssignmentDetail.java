@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 public record AssignmentDetail(
         Long studyId,
         String studyName,
-        String assignmentContent,
+        String assignmentDescription,
         String nickname,
         String memberTitle,
         Long submissionId,
@@ -18,7 +18,7 @@ public record AssignmentDetail(
         return new AssignmentDetail(
                 raw.studyId(),
                 raw.studyName(),
-                raw.assignmentContent(),
+                raw.assignmentDescription(),
                 raw.nickname(),
                 Title.fromExperience(raw.totalExperience()).getDisplayName(),
                 raw.submissionId(),

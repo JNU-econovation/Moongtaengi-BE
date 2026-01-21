@@ -1,7 +1,7 @@
 package econovation.moongtaengi.study.application.assignment;
 
 import econovation.moongtaengi.study.domain.assignment.Assignment;
-import econovation.moongtaengi.study.domain.assignment.AssignmentContent;
+import econovation.moongtaengi.study.domain.assignment.AssignmentDescription;
 import econovation.moongtaengi.study.domain.assignment.AssignmentDeadline;
 import econovation.moongtaengi.study.domain.assignment.AssignmentManagementPolicy;
 import econovation.moongtaengi.study.domain.assignment.AssignmentRepository;
@@ -39,12 +39,12 @@ public class CreateAssignmentService {
                 processInfo.endDate()
         );
 
-        AssignmentContent content = new AssignmentContent(command.content());
+        AssignmentDescription description = new AssignmentDescription(command.description());
 
         Assignment assignment = Assignment.builder()
                 .processId(command.processId())
                 .assigneeId(command.assigneeId())
-                .content(content)
+                .description(description)
                 .deadline(deadline)
                 .build();
 

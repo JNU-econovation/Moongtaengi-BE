@@ -8,7 +8,7 @@ public record CreateAssignmentCommand(
         Long processId,
         Long requesterId,
         Long assigneeId,
-        String content,
+        String description,
         LocalDateTime deadline
 ) {
 }

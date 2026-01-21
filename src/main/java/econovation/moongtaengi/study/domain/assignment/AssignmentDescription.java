@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode
-public class AssignmentContent {
+public class AssignmentDescription {
     private static final int MAX_LENGTH = 300;
 
-    @Column(name = "content", nullable = false, length = MAX_LENGTH)
+    @Column(name = "description", nullable = false, length = MAX_LENGTH)
     private String value;
 
-    public AssignmentContent(String value) {
+    public AssignmentDescription(String value) {
         validate(value);
         this.value = value.trim();
     }

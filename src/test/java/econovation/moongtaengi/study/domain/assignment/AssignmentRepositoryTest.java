@@ -135,7 +135,7 @@ public class AssignmentRepositoryTest {
 
         //then
         assertThat(result.studyName()).isEqualTo(study.getName().getValue());
-        assertThat(result.assignmentContent()).isEqualTo("테스트 과제");
+        assertThat(result.assignmentDescription()).isEqualTo("테스트 과제");
         assertThat(result.nickname()).isEqualTo("지환");
         assertThat(result.totalExperience()).isEqualTo(500);
         assertThat(result.submissionId()).isEqualTo(submission.getId());
@@ -166,7 +166,7 @@ public class AssignmentRepositoryTest {
         //then
         assertThat(result.submissionId()).isNull();
         assertThat(result.submitTime()).isNull();
-        assertThat(result.assignmentContent()).isEqualTo("테스트 과제");
+        assertThat(result.assignmentDescription()).isEqualTo("테스트 과제");
     }
 
 
