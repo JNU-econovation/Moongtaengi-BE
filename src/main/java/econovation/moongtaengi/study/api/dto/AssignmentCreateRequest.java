@@ -13,7 +13,7 @@ public record AssignmentCreateRequest(
         Long assigneeId,
 
         @NotBlank(message = "과제 내용은 필수입니다.")
-        String content,
+        String description,
 
         LocalDateTime deadLine
 ) {
@@ -22,7 +22,7 @@ public record AssignmentCreateRequest(
                         .processId(this.processId)
                         .requesterId(requesterId)
                         .assigneeId(this.assigneeId)
-                        .description(this.content)
+                        .description(this.description)
                         .deadline(this.deadLine)
                         .build();
         }

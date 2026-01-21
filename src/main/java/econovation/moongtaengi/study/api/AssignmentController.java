@@ -2,12 +2,15 @@ package econovation.moongtaengi.study.api;
 
 import econovation.moongtaengi.global.annotation.LoginMemberId;
 import econovation.moongtaengi.study.api.dto.AssignmentCreateRequest;
+import econovation.moongtaengi.study.api.dto.AssignmentUpdateRequest;
 import econovation.moongtaengi.study.application.assignment.ApproveAssignmentService;
 import econovation.moongtaengi.study.application.assignment.AssignmentDetail;
 import econovation.moongtaengi.study.application.assignment.AssignmentQueryService;
 import econovation.moongtaengi.study.application.assignment.AssignmentSummary;
 import econovation.moongtaengi.study.application.assignment.CreateAssignmentCommand;
 import econovation.moongtaengi.study.application.assignment.CreateAssignmentService;
+import econovation.moongtaengi.study.application.assignment.UpdateAssignmentService;
+import econovation.moongtaengi.study.application.assignment.UpdateDescriptionCommand;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -15,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +35,7 @@ public class AssignmentController {
     private final CreateAssignmentService createAssignmentService;
     private final AssignmentQueryService assignmentQueryService;
     private final ApproveAssignmentService approveAssignmentService;
+    private final UpdateAssignmentService updateAssignmentService;
 
     @PostMapping
     public ResponseEntity<Void> createAssignment(
@@ -83,6 +88,20 @@ public class AssignmentController {
         log.info("과제 승인 API 호출 - requesterId: {}, assignmentId: {}", memberId, assignmentId);
 
         approveAssignmentService.approveAssignment(assignmentId, memberId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{assignmentId}")
+    public ResponseEntity<Void> updateAssignmentDescription(
+            @LoginMemberId Long requesterId,
+            @PathVariable Long assignmentId,
+            @RequestBody @Valid AssignmentUpdateRequest request
+    ) {
+        log.info("과제 설명 수정 API 호출 - requesterId: {}, assignmentId: {}", requesterId, assignmentId);
+
+        UpdateDescriptionCommand command = request.toCommand(assignmentId, requesterId);
+        updateAssignmentService.updateDescription(command);
+
         return ResponseEntity.ok().build();
     }
 }

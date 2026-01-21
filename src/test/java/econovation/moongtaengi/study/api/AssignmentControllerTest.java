@@ -11,6 +11,7 @@ import econovation.moongtaengi.global.config.WebConfig;
 import econovation.moongtaengi.global.security.CustomAuthentication;
 import econovation.moongtaengi.global.security.LoginMemberIdArgumentResolver;
 import econovation.moongtaengi.study.api.dto.AssignmentCreateRequest;
+import econovation.moongtaengi.study.api.dto.AssignmentUpdateRequest;
 import econovation.moongtaengi.study.application.assignment.ApproveAssignmentService;
 import econovation.moongtaengi.study.application.assignment.AssignmentDetail;
 import econovation.moongtaengi.study.application.assignment.AssignmentQueryService;
@@ -20,12 +21,15 @@ import econovation.moongtaengi.study.application.assignment.CreateAssignmentServ
 
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import econovation.moongtaengi.study.application.assignment.UpdateAssignmentService;
+import econovation.moongtaengi.study.application.assignment.UpdateDescriptionCommand;
 import econovation.moongtaengi.study.domain.StudyErrorCode;
 import econovation.moongtaengi.study.domain.StudyException;
 import econovation.moongtaengi.study.domain.assignment.AssignmentErrorCode;
@@ -71,6 +75,9 @@ public class AssignmentControllerTest {
     @MockitoBean
     private ApproveAssignmentService approveAssignmentService;
 
+    @MockitoBean
+    private UpdateAssignmentService updateAssignmentService;
+
     @BeforeEach
     void setUp() {
         SecurityContextHolder.getContext().setAuthentication(new CustomAuthentication(1L));
@@ -109,7 +116,7 @@ public class AssignmentControllerTest {
 
         assertThat(command.processId()).isEqualTo(request.processId());
         assertThat(command.requesterId()).isEqualTo(1L);
-        assertThat(command.description()).isEqualTo(request.content());
+        assertThat(command.description()).isEqualTo(request.description());
         assertThat(command.deadline()).isEqualTo(deadline);
     }
 
@@ -302,5 +309,47 @@ public class AssignmentControllerTest {
                 .andExpect(status().isOk());
 
         verify(approveAssignmentService).approveAssignment(assignmentId, requesterId);
+    }
+
+    @Test
+    @DisplayName("과제 설명 수정 요청 시 서비스를 호출하고 200 OK를 반환한다")
+    void 과제_설명_수정_성공() throws Exception {
+        //given
+        Long assignmentId = 1L;
+        Long requesterId = 1L;
+        String newDescription = "수정된 과제 내용";
+
+        AssignmentUpdateRequest request = new AssignmentUpdateRequest(newDescription);
+
+        //when&then
+        mvc.perform(patch("/api/assignments/{assignmentId}", assignmentId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        ArgumentCaptor<UpdateDescriptionCommand> captor = ArgumentCaptor.forClass(
+                UpdateDescriptionCommand.class);
+        verify(updateAssignmentService).updateDescription(captor.capture());
+
+        UpdateDescriptionCommand capturedCommand = captor.getValue();
+        assertThat(capturedCommand.assignmentId()).isEqualTo(assignmentId);
+        assertThat(capturedCommand.requesterId()).isEqualTo(requesterId);
+        assertThat(capturedCommand.description()).isEqualTo(newDescription);
+    }
+
+    @Test
+    @DisplayName("수정할 내용이 비어있으면 400 Bad Request를 반환한다")
+    void 과제_설명_수정_실패_유효성검사() throws Exception {
+        //given
+        Long assignmentId = 1L;
+        AssignmentUpdateRequest badRequest = new AssignmentUpdateRequest("");
+
+        //when&then
+        mvc.perform(patch("/api/assignments/{assignmentId}", assignmentId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(badRequest)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 }
