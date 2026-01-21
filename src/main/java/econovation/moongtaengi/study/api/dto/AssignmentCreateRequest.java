@@ -22,7 +22,7 @@ public record AssignmentCreateRequest(
                         .processId(this.processId)
                         .requesterId(requesterId)
                         .assigneeId(this.assigneeId)
-                        .content(this.content)
+                        .description(this.content)
                         .deadline(this.deadLine)
                         .build();
         }

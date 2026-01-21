@@ -137,7 +137,7 @@ class AssignmentQueryServiceTest {
         assertThat(result.memberTitle()).isEqualTo(Title.fromExperience(experience).getDisplayName());
         assertThat(result.isOwner()).isTrue();
         assertThat(result.studyName()).isEqualTo("테스트 스터디");
-        assertThat(result.assignmentContent()).isEqualTo("테스트 과제");
+        assertThat(result.assignmentDescription()).isEqualTo("테스트 과제");
     }
 
     @Test

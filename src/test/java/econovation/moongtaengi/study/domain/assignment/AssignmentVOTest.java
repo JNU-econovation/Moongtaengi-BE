@@ -19,7 +19,7 @@ public class AssignmentVOTest {
         @DisplayName("과제 내용을 성공적으로 생성한다.")
         void 과제_내용_성공() {
             String value = "테스트 내용";
-            AssignmentContent description = new AssignmentContent(value);
+            AssignmentDescription description = new AssignmentDescription(value);
 
             assertThat(description.getValue()).isEqualTo(value);
         }
@@ -28,16 +28,16 @@ public class AssignmentVOTest {
         @DisplayName("앞뒤 공백은 자동으로 제거된다.")
         void 과제_내용_공백_제거() {
             String value = "  공백이 많은 내용  ";
-            AssignmentContent title = new AssignmentContent(value);
+            AssignmentDescription description = new AssignmentDescription(value);
 
-            assertThat(title.getValue()).isEqualTo("공백이 많은 내용");
+            assertThat(description.getValue()).isEqualTo("공백이 많은 내용");
         }
 
         @ParameterizedTest
         @NullAndEmptySource
         @DisplayName("과제 내용은 null이거나 비어있을 수 없다")
         void 과제_내용_비었음_실패(String invalidInput) {
-            assertThatThrownBy(() -> new AssignmentContent(invalidInput))
+            assertThatThrownBy(() -> new AssignmentDescription(invalidInput))
                     .isInstanceOf(AssignmentException.class)
                     .extracting("errorCode")
                     .isEqualTo(AssignmentErrorCode.INVALID_ASSIGNMENT_INFO);
@@ -48,7 +48,7 @@ public class AssignmentVOTest {
         void 과제_내용_초과_실패() {
             String longContent = "뭉".repeat(400);
 
-            assertThatThrownBy(() -> new AssignmentContent(longContent))
+            assertThatThrownBy(() -> new AssignmentDescription(longContent))
                     .isInstanceOf(AssignmentException.class)
                     .extracting("errorCode")
                     .isEqualTo(AssignmentErrorCode.INVALID_ASSIGNMENT_INFO);

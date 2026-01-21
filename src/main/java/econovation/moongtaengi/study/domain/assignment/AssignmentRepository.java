@@ -17,7 +17,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
             a.id,
             s.id,
             m.id,
-            a.content.value,
+            a.description.value,
             m.nickname.value,
             a.status,
             a.isLate,
@@ -51,7 +51,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
         SELECT new econovation.moongtaengi.study.domain.assignment.AssignmentDetailRaw(
             s.id,
             s.name.value,
-            a.content.value,
+            a.description.value,
             m.nickname.value,
             a.assigneeId,
             m.totalExperience,

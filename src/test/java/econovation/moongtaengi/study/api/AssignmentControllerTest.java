@@ -109,7 +109,7 @@ public class AssignmentControllerTest {
 
         assertThat(command.processId()).isEqualTo(request.processId());
         assertThat(command.requesterId()).isEqualTo(1L);
-        assertThat(command.content()).isEqualTo(request.content());
+        assertThat(command.description()).isEqualTo(request.content());
         assertThat(command.deadline()).isEqualTo(deadline);
     }
 
@@ -249,7 +249,7 @@ public class AssignmentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.studyId").value(100L))
                 .andExpect(jsonPath("$.studyName").value("테스트 스터디"))
-                .andExpect(jsonPath("$.assignmentContent").value("테스트 과제"))
+                .andExpect(jsonPath("$.assignmentDescription").value("테스트 과제"))
                 .andExpect(jsonPath("$.nickname").value("지환"))
                 .andExpect(jsonPath("$.memberTitle").value("비기너"))
                 .andExpect(jsonPath("$.isOwner").value(true))

@@ -15,8 +15,8 @@ public class AssignmentTest {
         Assignment assignment = anAssignment().build();
 
         //then
-        assertThat(assignment.getContent())
-                .isEqualTo(AssignmentFixture.DEFAULT_CONTENT);
+        assertThat(assignment.getDescription())
+                .isEqualTo(AssignmentFixture.DEFAULT_DESCRIPTION);
     }
 
     @Test
@@ -32,8 +32,8 @@ public class AssignmentTest {
 
         //then
         assertThat(assignment.getAssigneeId()).isEqualTo(newAssigneeId);
-        assertThat(assignment.getContent())
-                .isEqualTo(AssignmentFixture.DEFAULT_CONTENT);
+        assertThat(assignment.getDescription())
+                .isEqualTo(AssignmentFixture.DEFAULT_DESCRIPTION);
     }
 
     @Test

@@ -24,7 +24,7 @@ public class Assignment extends BaseEntity {
     private Long assigneeId;
 
     @Embedded
-    private AssignmentContent content;
+    private AssignmentDescription description;
 
     @Embedded
     private AssignmentDeadline deadline;
@@ -36,20 +36,20 @@ public class Assignment extends BaseEntity {
     @Column(name = "is_late", nullable = false)
     private boolean isLate;
 
-    private Assignment(Long processId, Long assigneeId, AssignmentContent content, AssignmentDeadline deadline) {
+    private Assignment(Long processId, Long assigneeId, AssignmentDescription description, AssignmentDeadline deadline) {
         this.processId = processId;
         this.assigneeId = assigneeId;
-        this.content = content;
+        this.description = description;
         this.deadline = deadline;
         this.status = AssignmentStatus.WAITING;
         this.isLate = false;
     }
 
     @Builder
-    public static Assignment create(Long processId, Long assigneeId, AssignmentContent content, AssignmentDeadline deadline) {
-        validate(processId, assigneeId, content, deadline);
+    public static Assignment create(Long processId, Long assigneeId, AssignmentDescription description, AssignmentDeadline deadline) {
+        validate(processId, assigneeId, description, deadline);
 
-        return new Assignment(processId, assigneeId, content, deadline);
+        return new Assignment(processId, assigneeId, description, deadline);
     }
 
     public void markAsSubmitted(boolean isLate) {
@@ -65,8 +65,8 @@ public class Assignment extends BaseEntity {
         registerEvent(new AssignmentApprovedEvent(this.getId(), this.assigneeId));
     }
 
-    private static void validate(Long processId, Long assigneeId, AssignmentContent content, AssignmentDeadline deadline) {
-        if (processId == null || assigneeId == null || content == null || deadline == null) {
+    private static void validate(Long processId, Long assigneeId, AssignmentDescription description, AssignmentDeadline deadline) {
+        if (processId == null || assigneeId == null || description == null || deadline == null) {
             throw new AssignmentException(AssignmentErrorCode.INVALID_ASSIGNMENT_INFO);
         }
     }

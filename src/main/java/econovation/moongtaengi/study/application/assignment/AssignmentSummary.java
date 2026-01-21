@@ -6,7 +6,7 @@ public record AssignmentSummary(
         Long assignmentId,
         Long submissionId,
         Long memberId,
-        String assignmentContent,
+        String assignmentDescription,
         String nickname,
         AssignmentStatus status,
         Boolean isLate,
