@@ -20,6 +20,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 @ExtendWith(MockitoExtension.class)
 public class ToggleReactionServiceTest {
@@ -34,6 +35,9 @@ public class ToggleReactionServiceTest {
 
     @Captor
     private ArgumentCaptor<Reaction> reactionCaptor;
+
+    @Mock
+    ApplicationEventPublisher applicationEventPublisher;
 
     @Test
     @DisplayName("기존에 감정표현이 없으면 권한 검사 후 저장한다.")
