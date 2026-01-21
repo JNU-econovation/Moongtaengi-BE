@@ -13,5 +13,11 @@ public record AssignmentSummary(
         String fileName,
         String fileUrl
 ) {
-
+    public AssignmentSummary {
+        assignmentContent = (assignmentContent == null) ? "" : assignmentContent;
+        nickname = (nickname == null) ? "" : nickname;
+        isLate = (isLate != null) && isLate;
+        fileName = (fileName == null) ? "" : fileName;
+        fileUrl = (fileUrl == null) ? "" : fileUrl;
+    }
 }
