@@ -189,6 +189,7 @@ public class AssignmentControllerTest {
                         "알고리즘 과제",
                         "지환", AssignmentStatus.SUBMITTED,
                         false,
+                        "파일명.pdf",
                         "http://file.url"),
                 new AssignmentSummary(11L,
                         null,
@@ -197,6 +198,7 @@ public class AssignmentControllerTest {
                         "철수",
                         AssignmentStatus.WAITING,
                         true,
+                        null,
                         null)
         );
 

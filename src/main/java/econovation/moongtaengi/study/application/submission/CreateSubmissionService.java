@@ -34,16 +34,17 @@ public class CreateSubmissionService {
 
         SubmissionContent content = new SubmissionContent(command.content());
 
-        List<SubmissionAttachment> attachments = command.attachmentUrls().stream()
-                .map(SubmissionAttachment::new)
-                .toList();
+        SubmissionAttachment attachment = null;
+        if (command.hasAttachment()) {
+            attachment = SubmissionAttachment.of(command.fileName(), command.fileUrl());
+        }
 
         Submission submission = Submission.builder()
                 .assignmentId(command.assignmentId())
                 .submitterId(command.submitterId())
                 .content(content)
                 .currentDateTime(LocalDateTime.now())
-                .attachments(attachments)
+                .attachment(attachment)
                 .assignmentDeadline(assignmentInfo.deadline())
                 .build();
 

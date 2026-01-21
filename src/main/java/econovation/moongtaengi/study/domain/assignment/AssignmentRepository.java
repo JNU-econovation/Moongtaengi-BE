@@ -21,13 +21,13 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
             m.nickname.value,
             a.status,
             a.isLate,
-            sa.url
+            s.attachment.name,
+            s.attachment.url
         )
         FROM StudyMember sm
         JOIN Member m ON sm.memberId = m.id
         LEFT JOIN Assignment a ON a.assigneeId = m.id AND a.processId = :processId
         LEFT JOIN Submission s ON s.assignmentId = a.id AND s.submitterId = m.id
-        LEFT JOIN s.attachments sa
         WHERE sm.study.id = :studyId
     """)
     List<AssignmentSummary> findSummaryByProcessIdAndStudyId(

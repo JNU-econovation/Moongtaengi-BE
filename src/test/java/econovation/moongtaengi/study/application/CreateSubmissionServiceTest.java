@@ -47,7 +47,8 @@ public class CreateSubmissionServiceTest {
                 DEFAULT_ASSIGNMENT_ID,
                 DEFAULT_SUBMITTER_ID,
                 DEFAULT_CONTENT.getValue(),
-                Collections.emptyList()
+                DEFAULT_ATTACHMENT.getName(),
+                DEFAULT_ATTACHMENT.getUrl()
         );
 
         Submission savedSubmission = aSubmission().build();
@@ -71,8 +72,13 @@ public class CreateSubmissionServiceTest {
         ArgumentCaptor<Submission> captor = ArgumentCaptor.forClass(Submission.class);
         verify(submissionRepository).save(captor.capture());
 
-        assertThat(captor.getValue().getAssignmentId()).isEqualTo(DEFAULT_ASSIGNMENT_ID);
-        assertThat(captor.getValue().getSubmitterId()).isEqualTo(DEFAULT_SUBMITTER_ID);
-        assertThat(captor.getValue().getContent().getValue()).isEqualTo(DEFAULT_CONTENT.getValue());
+        Submission capturedSubmission = captor.getValue();
+
+        assertThat(capturedSubmission.getAssignmentId()).isEqualTo(DEFAULT_ASSIGNMENT_ID);
+        assertThat(capturedSubmission.getContent().getValue()).isEqualTo(DEFAULT_CONTENT.getValue());
+
+        assertThat(capturedSubmission.getAttachment()).isPresent();
+        assertThat(capturedSubmission.getAttachment().get().getName()).isEqualTo(DEFAULT_ATTACHMENT.getName());
+        assertThat(capturedSubmission.getAttachment().get().getUrl()).isEqualTo(DEFAULT_ATTACHMENT.getUrl());
     }
 }

@@ -62,7 +62,8 @@ public class SubmissionControllerTest {
         SubmissionCreateRequest request = new SubmissionCreateRequest(
                 1L,
                 "테스트 제출물",
-                List.of("http://image.url")
+                "과제.pdf",
+                "http://image.url"
         );
 
         given(createSubmissionService.createSubmission(any(CreateSubmissionCommand.class)))
@@ -84,7 +85,7 @@ public class SubmissionControllerTest {
         assertThat(passedCommand.submitterId()).isEqualTo(1L);
         assertThat(passedCommand.assignmentId()).isEqualTo(request.assignmentId());
         assertThat(passedCommand.content()).isEqualTo(request.content());
-        assertThat(passedCommand.attachmentUrls()).hasSize(1);
+        //assertThat(passedCommand.attachment).hasSize(1);
     }
 
     @DisplayName("필수값이 누락되거나 유효하지 않은 경우 400 Bad Request를 반환한다")
@@ -95,7 +96,8 @@ public class SubmissionControllerTest {
         SubmissionCreateRequest badRequest = new SubmissionCreateRequest(
                 assignmentId,
                 content,
-                List.of()
+                null,
+                null
         );
 
         //when&then

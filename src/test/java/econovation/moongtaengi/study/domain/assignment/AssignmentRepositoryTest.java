@@ -72,7 +72,7 @@ public class AssignmentRepositoryTest {
         em.persistAndFlush(SubmissionFixture.aSubmission()
                 .assignmentId(assignment1.getId())
                 .submitterId(host.getId())
-                .attachments(List.of(new SubmissionAttachment("http://url.com")))
+                .attachment(SubmissionAttachment.of("파일명.pdf", "http://url.com"))
                 .build());
 
         assignment1.markAsSubmitted(false);
@@ -93,6 +93,7 @@ public class AssignmentRepositoryTest {
         assertThat(dto1.status()).isEqualTo(AssignmentStatus.SUBMITTED);
         assertThat(dto1.submissionId()).isNotNull();
         assertThat(dto1.memberId()).isEqualTo(host.getId());
+        assertThat(dto1.fileName()).isEqualTo("파일명.pdf");
         assertThat(dto1.fileUrl()).isEqualTo("http://url.com");
 
         AssignmentSummary dto2 = result.stream()

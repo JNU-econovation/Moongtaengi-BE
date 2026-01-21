@@ -10,13 +10,14 @@ public class SubmissionFixture {
     public static final Long DEFAULT_SUBMITTER_ID = 1L;
     public static final SubmissionContent DEFAULT_CONTENT = new SubmissionContent("제출 완료");
     public static final LocalDateTime BASE_TIME = StudyFixture.FIXED_DATE.atStartOfDay();
+    public static final SubmissionAttachment DEFAULT_ATTACHMENT = SubmissionAttachment.of("파일명", "http://url.com");
 
     public static Submission.SubmissionBuilder aSubmission() {
         return Submission.builder()
                 .assignmentId(DEFAULT_ASSIGNMENT_ID)
                 .submitterId(DEFAULT_SUBMITTER_ID)
                 .content(DEFAULT_CONTENT)
-                .attachments(new ArrayList<>())
+                .attachment(DEFAULT_ATTACHMENT)
                 .currentDateTime(BASE_TIME.plusDays(1))
                 .assignmentDeadline(BASE_TIME.plusDays(7));
     }
