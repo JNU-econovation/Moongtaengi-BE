@@ -31,16 +31,7 @@ public class Comment extends BaseEntity {
 
     public static Comment create(Long submissionId, Long memberId, CommentContent content) {
         validateCreation(submissionId, memberId, content);
-        Comment comment = new Comment(submissionId, memberId, content);
-        // 이벤트 등록은 ID가 할당된 후에 발생해야 하므로, 서비스 레이어에서 save 후 처리
-        return comment;
-    }
-
-    /**
-     * 댓글 생성 후 이벤트 등록 (save 후 호출)
-     */
-    public void publishCreatedEvent() {
-        registerEvent(new CommentCreatedEvent(this.getId(), this.submissionId, this.memberId));
+        return new Comment(submissionId, memberId, content);
     }
 
     public void updateContent(Long requestMemberId, CommentContent content) {
