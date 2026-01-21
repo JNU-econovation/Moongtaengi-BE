@@ -14,7 +14,7 @@ public record AssignmentSummary(
         String fileUrl
 ) {
     public AssignmentSummary {
-        assignmentContent = (assignmentContent == null) ? "" : assignmentContent;
+        assignmentDescription = (assignmentDescription == null) ? "" : assignmentDescription;
         nickname = (nickname == null) ? "" : nickname;
         isLate = (isLate != null) && isLate;
         fileName = (fileName == null) ? "" : fileName;
