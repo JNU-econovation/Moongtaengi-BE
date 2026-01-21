@@ -27,7 +27,7 @@ public class ExperienceService {
                 .orElseGet(() -> DailyQuest.create(memberId, questType));
 
         if (!dailyQuest.canComplete()) {
-            log.info("Member {} has already completed quest {} for today", memberId, questType);
+            log.info("멤버 ID {}는 이미 {} 퀘스트를 완료했습니다. ", memberId, questType);
             return;
         }
 
@@ -37,7 +37,7 @@ public class ExperienceService {
         dailyQuestRepository.save(dailyQuest);
         memberRepository.save(member);
 
-        log.info("Member {} completed quest {} and earned {} XP. Total XP: {}",
+        log.info("멤버 ID {} 는 {} 퀘스트를 완료했고, {} XP를 획득했습니다. 전체 경험치: {}",
                 memberId, questType, questType.getExperiencePoint(), member.getTotalExperience());
     }
 }
