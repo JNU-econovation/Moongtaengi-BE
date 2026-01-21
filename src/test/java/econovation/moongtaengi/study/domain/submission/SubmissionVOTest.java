@@ -60,10 +60,11 @@ public class SubmissionVOTest {
         @DisplayName("정상적인 URL로 첨부파일을 생성한다")
         void 첨부파일_생성_성공() {
             //given
+            String fileName = "파일명";
             String validUrl = "https://example.com/file.pdf";
 
             //when
-            SubmissionAttachment attachment = new SubmissionAttachment(validUrl);
+            SubmissionAttachment attachment = SubmissionAttachment.of(fileName, validUrl);
 
             //then
             assertThat(attachment.getUrl()).isEqualTo(validUrl);
@@ -74,7 +75,7 @@ public class SubmissionVOTest {
         @DisplayName("URL이 없으면 예외가 발생한다")
         void 첨부파일_URL_없음_실패(String invalidUrl) {
             //when&then
-            assertThatThrownBy(() -> new SubmissionAttachment(invalidUrl))
+            assertThatThrownBy(() -> SubmissionAttachment.of("파일명", invalidUrl))
                     .isInstanceOf(SubmissionException.class)
                     .extracting("errorCode")
                     .isEqualTo(SubmissionErrorCode.INVALID_ATTACHMENT_URL);
@@ -85,7 +86,7 @@ public class SubmissionVOTest {
         @DisplayName("URL 형식이 올바르지 않으면 예외가 발생한다")
         void 첨부파일_URL_형식_실패(String invalidUrl) {
             //when&then
-            assertThatThrownBy(() -> new SubmissionAttachment(invalidUrl))
+            assertThatThrownBy(() -> SubmissionAttachment.of("파일명", invalidUrl))
                     .isInstanceOf(SubmissionException.class)
                     .extracting("errorCode")
                     .isEqualTo(SubmissionErrorCode.INVALID_ATTACHMENT_URL);

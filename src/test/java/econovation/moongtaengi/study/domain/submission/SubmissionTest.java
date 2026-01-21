@@ -16,13 +16,34 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 public class SubmissionTest {
     @Test
-    @DisplayName("모든 필수 값이 정상일 때 Submission이 생성된다")
-    void 제출물_생성_성공() {
-        //given&when
-        Submission submission = aSubmission().build();
+    @DisplayName("첨부파일이 포함된 Submission이 정상 생성되고, Optional로 조회된다")
+    void 제출물_생성_성공_첨부파일_있음() {
+        //given
+        SubmissionAttachment attachment = SubmissionAttachment.of("과제.pdf", "https://url.com");
+
+        //when
+        Submission submission = aSubmission()
+                .attachment(attachment)
+                .build();
 
         //then
         assertThat(submission).isNotNull();
+        assertThat(submission.getAttachment()).isPresent();
+        assertThat(submission.getAttachment().get().getName()).isEqualTo("과제.pdf");
+        assertThat(submission.isLate()).isFalse();
+    }
+
+    @Test
+    @DisplayName("첨부파일이 없는 Submission도 정상 생성되며, 빈 Optional이 조회된다")
+    void 제출물_생성_성공_첨부파일_없음() {
+        //given&when
+        Submission submission = aSubmission()
+                .attachment(null)
+                .build();
+
+        //then
+        assertThat(submission).isNotNull();
+        assertThat(submission.getAttachment()).isEmpty();
         assertThat(submission.isLate()).isFalse();
     }
 
@@ -47,23 +68,6 @@ public class SubmissionTest {
         );
     }
 
-    @Test
-    @DisplayName("첨부파일이 2개 이상이면 예외가 발생한다")
-    void 첨부파일_2개_이상_실패() {
-        //given
-        List<SubmissionAttachment> twoAttachments = List.of(
-                new SubmissionAttachment("http://url1"),
-                new SubmissionAttachment("http://url2")
-        );
-
-        //when&then
-        assertThatThrownBy(() -> aSubmission()
-                .attachments(twoAttachments)
-                .build())
-                .isInstanceOf(SubmissionException.class)
-                .extracting("errorCode")
-                .isEqualTo(SubmissionErrorCode.ATTACHMENT_LIMIT_EXCEEDED);
-    }
 
     @Test
     @DisplayName("마감 기한을 넘기면 '지각' 상태가 되고 이벤트가 발행된다")

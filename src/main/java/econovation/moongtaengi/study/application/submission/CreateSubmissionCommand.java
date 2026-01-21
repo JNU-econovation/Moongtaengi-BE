@@ -1,17 +1,15 @@
 package econovation.moongtaengi.study.application.submission;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.util.StringUtils;
 
 public record CreateSubmissionCommand(
         Long assignmentId,
         Long submitterId,
         String content,
-        List<String> attachmentUrls
+        String fileName,
+        String fileUrl
 ) {
-    public CreateSubmissionCommand {
-        if (attachmentUrls == null) {
-            attachmentUrls = new ArrayList<>();
-        }
+    public boolean hasAttachment() {
+        return StringUtils.hasText(fileName) && StringUtils.hasText(fileUrl);
     }
 }

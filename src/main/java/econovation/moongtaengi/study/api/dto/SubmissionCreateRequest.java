@@ -12,14 +12,16 @@ public record SubmissionCreateRequest(
         @NotBlank
         String content,
 
-        List<String> attachmentUrls
+        String fileName,
+        String fileUrl
 ) {
     public CreateSubmissionCommand toCommand(Long submitterId) {
         return new CreateSubmissionCommand(
                 assignmentId,
                 submitterId,
                 content,
-                attachmentUrls
+                fileName,
+                fileUrl
         );
     }
 }
