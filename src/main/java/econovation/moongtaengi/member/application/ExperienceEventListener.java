@@ -2,6 +2,7 @@ package econovation.moongtaengi.member.application;
 
 import econovation.moongtaengi.gamification.domain.QuestType;
 import econovation.moongtaengi.member.domain.event.LoginSuccessEvent;
+import econovation.moongtaengi.study.domain.comment.CommentCreatedEvent;
 import econovation.moongtaengi.study.domain.event.StudyCreatedEvent;
 import econovation.moongtaengi.study.domain.submission.SubmissionCreatedEvent;
 import lombok.RequiredArgsConstructor;
@@ -37,5 +38,12 @@ public class ExperienceEventListener {
     public void handleSubmissionCreated(SubmissionCreatedEvent event) {
         log.info("SubmissionCreatedEvent 수신 - assignmentId: {}, submitterId: {}", event.assignmentId(), event.submitterId());
         experienceService.completeQuest(event.submitterId(), QuestType.SUBMIT_ASSIGNMENT);
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void handleCommentCreated(CommentCreatedEvent event) {
+        log.info("CommentCreatedEvent 수신 - commentId: {}, commenterId: {}", event.commentId(), event.commenterId());
+        experienceService.completeQuest(event.commenterId(), QuestType.COMMENT);
     }
 }

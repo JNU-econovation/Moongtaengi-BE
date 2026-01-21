@@ -8,7 +8,10 @@ import econovation.moongtaengi.study.domain.StudyMemberRepository;
 import econovation.moongtaengi.study.domain.assignment.Assignment;
 import econovation.moongtaengi.study.domain.assignment.AssignmentRepository;
 import econovation.moongtaengi.study.domain.assignment.ProcessInfoProvider;
+import econovation.moongtaengi.study.domain.comment.CommentCreatedEvent;
+import econovation.moongtaengi.study.domain.submission.Submission;
 import econovation.moongtaengi.study.domain.submission.SubmissionCreatedEvent;
+import econovation.moongtaengi.study.domain.submission.SubmissionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -33,6 +36,7 @@ public class NotificationEventListener {
     private final ProcessInfoProvider processInfoProvider;
     private final StudyMemberRepository studyMemberRepository;
     private final MemberRepository memberRepository;
+    private final SubmissionRepository submissionRepository;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -73,6 +77,45 @@ public class NotificationEventListener {
         } catch (Exception e) {
             log.error("과제 제출 알림 생성 실패 - assignmentId: {}, error: {}",
                     event.assignmentId(), e.getMessage());
+        }
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void handleCommentCreated(CommentCreatedEvent event) {
+        log.info("CommentCreatedEvent 수신 - commentId: {}, submissionId: {}, commenterId: {}",
+                event.commentId(), event.submissionId(), event.commenterId());
+
+        try {
+            // 1. Submission 조회 → submitterId 획득
+            Submission submission = submissionRepository.findById(event.submissionId())
+                    .orElseThrow(() -> new IllegalArgumentException("제출물을 찾을 수 없습니다."));
+
+            // 2. 댓글 작성자가 제출물 소유자인 경우 알림 생성하지 않음
+            if (submission.getSubmitterId().equals(event.commenterId())) {
+                log.info("댓글 작성자가 제출물 소유자와 동일하여 알림을 생성하지 않습니다.");
+                return;
+            }
+
+            // 3. 댓글 작성자 정보 조회 (닉네임)
+            Member commenter = memberRepository.findById(event.commenterId())
+                    .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+            String commenterNickname = commenter.getNickname().getValue();
+
+            // 4. 제출물 소유자에게 알림 생성
+            String message = String.format("%s님이 회원님의 과제에 댓글을 남겼습니다.", commenterNickname);
+            notificationService.createNotification(
+                    submission.getSubmitterId(),
+                    NotificationType.COMMENT_RECEIVED,
+                    message,
+                    "COMMENT"
+            );
+
+            log.info("댓글 알림 생성 완료 - submitterId: {}, commenterId: {}",
+                    submission.getSubmitterId(), event.commenterId());
+        } catch (Exception e) {
+            log.error("댓글 알림 생성 실패 - commentId: {}, error: {}",
+                    event.commentId(), e.getMessage());
         }
     }
 }

@@ -2,6 +2,7 @@ package econovation.moongtaengi.onboarding.application;
 
 import econovation.moongtaengi.collection.domain.event.CollectionEquippedEvent;
 import econovation.moongtaengi.onboarding.domain.OnboardingMissionType;
+import econovation.moongtaengi.study.domain.comment.CommentCreatedEvent;
 import econovation.moongtaengi.study.domain.event.StudyJoinedEvent;
 import econovation.moongtaengi.study.domain.submission.SubmissionCreatedEvent;
 import lombok.RequiredArgsConstructor;
@@ -64,6 +65,21 @@ public class OnboardingEventListener {
         } catch (Exception e) {
             log.error("컬렉션 변경 온보딩 미션 업데이트 실패 - memberId: {}, error: {}",
                     event.memberId(), e.getMessage());
+        }
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void handleCommentCreated(CommentCreatedEvent event) {
+        log.info("CommentCreatedEvent 수신 (온보딩) - commentId: {}, commenterId: {}",
+                event.commentId(), event.commenterId());
+
+        try {
+            // 온보딩 미션 진행도 업데이트 (WRITE_COMMENT)
+            onboardingService.updateOnboardingMission(event.commenterId(), OnboardingMissionType.WRITE_COMMENT);
+        } catch (Exception e) {
+            log.error("댓글 작성 온보딩 미션 업데이트 실패 - commenterId: {}, error: {}",
+                    event.commenterId(), e.getMessage());
         }
     }
 }
