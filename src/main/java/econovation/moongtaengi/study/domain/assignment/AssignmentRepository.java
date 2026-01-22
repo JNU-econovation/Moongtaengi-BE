@@ -57,7 +57,10 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
             a.assigneeId,
             m.totalExperience,
             sub.id,
-            sub.createdAt
+            sub.createdAt,
+            sub.content.value,
+             sub.attachment.name,
+             sub.attachment.url
         )
         FROM Assignment a
         JOIN StudyProcess p ON a.processId = p.id

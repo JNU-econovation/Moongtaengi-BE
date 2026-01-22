@@ -10,6 +10,9 @@ public record AssignmentDetailRaw(
         Long assigneeId,
         int totalExperience,
         Long submissionId,
-        LocalDateTime submitTime
+        LocalDateTime submitTime,
+        String submissionContent,
+        String submissionFileName,
+        String submissionFileUrl
 ) {
 }

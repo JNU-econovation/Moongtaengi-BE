@@ -19,6 +19,7 @@ import econovation.moongtaengi.study.domain.assignment.AssignmentErrorCode;
 import econovation.moongtaengi.study.domain.assignment.AssignmentException;
 import econovation.moongtaengi.study.domain.assignment.AssignmentRepository;
 import econovation.moongtaengi.study.domain.process.StudyProcessRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -120,8 +121,11 @@ class AssignmentQueryServiceTest {
                 "지환",
                 assigneeId,
                 experience,
-                null,
-                null
+                55L,
+                LocalDateTime.now(),
+                "열심히 작성한 과제 내용입니다.",
+                "file.png",
+                "http://example.com/file.png"
         );
 
         given(assignmentRepository.findDetailRawById(assignmentId))
@@ -156,6 +160,9 @@ class AssignmentQueryServiceTest {
                 "닉네임",
                 assigneeId,
                 0,
+                null,
+                null,
+                null,
                 null,
                 null
         );
@@ -205,6 +212,9 @@ class AssignmentQueryServiceTest {
                 "지환",
                 assigneeId,
                 0,
+                null,
+                null,
+                null,
                 null,
                 null
         );
