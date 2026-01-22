@@ -4,6 +4,7 @@ import econovation.moongtaengi.global.annotation.LoginMemberId;
 import econovation.moongtaengi.study.api.dto.StudyCreateRequest;
 import econovation.moongtaengi.study.api.dto.StudyDetailResponse;
 import econovation.moongtaengi.study.api.dto.StudyJoinRequest;
+import econovation.moongtaengi.study.api.dto.StudyJoinResponse;
 import econovation.moongtaengi.study.api.dto.StudyUpdateRequest;
 import econovation.moongtaengi.study.application.CreateStudyService;
 import econovation.moongtaengi.study.application.JoinStudyService;
@@ -52,15 +53,15 @@ public class StudyController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<Void> joinStudy(
+    public ResponseEntity<StudyJoinResponse> joinStudy(
             @LoginMemberId Long memberId,
             @RequestBody @Valid StudyJoinRequest request) {
         log.info("스터디 가입 API 호출 - memberId: {}, inviteCode: {}",
                 memberId, request.inviteCode());
 
-        joinStudyService.joinStudy(memberId, request.inviteCode());
+        StudyJoinResponse response = joinStudyService.joinStudy(memberId, request.inviteCode());
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{studyId}")
