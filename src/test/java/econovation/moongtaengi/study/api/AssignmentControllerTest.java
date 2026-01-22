@@ -245,7 +245,11 @@ public class AssignmentControllerTest {
                 "비기너",
                 null,
                 null,
-                true
+                true,
+                "제출물 내용",
+                "파일.pdf",
+                "http://file.url",
+                List.of()
         );
 
         given(assignmentQueryService.getAssignmentDetail(loginMemberId, assignmentId))

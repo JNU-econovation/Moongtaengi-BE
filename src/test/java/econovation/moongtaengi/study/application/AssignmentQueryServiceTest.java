@@ -19,6 +19,9 @@ import econovation.moongtaengi.study.domain.assignment.AssignmentErrorCode;
 import econovation.moongtaengi.study.domain.assignment.AssignmentException;
 import econovation.moongtaengi.study.domain.assignment.AssignmentRepository;
 import econovation.moongtaengi.study.domain.process.StudyProcessRepository;
+import econovation.moongtaengi.study.domain.reaction.EmojiType;
+import econovation.moongtaengi.study.domain.reaction.ReactionRepository;
+import econovation.moongtaengi.study.domain.reaction.ReactionStat;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +44,8 @@ class AssignmentQueryServiceTest {
     StudyProcessRepository processRepository;
     @Mock
     StudyMemberRepository studyMemberRepository;
+    @Mock
+    ReactionRepository reactionRepository;
 
     @Test
     @DisplayName("스터디 멤버가 존재하는 프로세스의 과제 목록을 조회하면, 과제 리스트를 반환한다.")
@@ -105,15 +110,17 @@ class AssignmentQueryServiceTest {
     }
 
     @Test
-    @DisplayName("과제 상세 조회 성공 및 칭호 변환과 본인 여부가 정확해야 한다")
+    @DisplayName("과제 상세 조회 성공: 칭호, 본인 여부, 그리고 리액션 통계까지 정확히 반환되어야 한다")
     void 과제_상세_조회_성공() {
-        //given
+        // given
         Long loginMemberId = 1L;
         Long assignmentId = 10L;
         Long assigneeId = 1L;
         Long studyId = 100L;
         int experience = 100;
+        Long submissionId = 55L;
 
+        // 1. 과제 상세 Raw 데이터 준비
         AssignmentDetailRaw raw = new AssignmentDetailRaw(
                 studyId,
                 "테스트 스터디",
@@ -121,7 +128,7 @@ class AssignmentQueryServiceTest {
                 "지환",
                 assigneeId,
                 experience,
-                55L,
+                submissionId,
                 LocalDateTime.now(),
                 "열심히 작성한 과제 내용입니다.",
                 "file.png",
@@ -134,16 +141,28 @@ class AssignmentQueryServiceTest {
         given(studyMemberRepository.existsByStudyIdAndMemberId(studyId, loginMemberId))
                 .willReturn(true);
 
-        // when
+        ReactionStat stat1 = new ReactionStat(EmojiType.HEART, 5L, true);
+        ReactionStat stat2 = new ReactionStat(EmojiType.CLAP, 3L, false);
+        List<ReactionStat> expectedReactions = List.of(stat1, stat2);
+
+        given(reactionRepository.findStatBySubmissionIdAndMemberId(submissionId, loginMemberId))
+                .willReturn(expectedReactions);
+
+        //when
         AssignmentDetail result = assignmentQueryService.getAssignmentDetail(loginMemberId, assignmentId);
 
-        // then
+        //then
         assertThat(result.memberTitle()).isEqualTo(Title.fromExperience(experience).getDisplayName());
         assertThat(result.isOwner()).isTrue();
         assertThat(result.studyName()).isEqualTo("테스트 스터디");
-        assertThat(result.assignmentDescription()).isEqualTo("테스트 과제");
-    }
+        assertThat(result.submissionContent()).isEqualTo("열심히 작성한 과제 내용입니다.");
+        assertThat(result.submissionFileName()).isEqualTo("file.png");
 
+        assertThat(result.reactions()).hasSize(2);
+        assertThat(result.reactions()).containsExactly(stat1, stat2);
+        assertThat(result.reactions().get(0).count()).isEqualTo(5L);
+        assertThat(result.reactions().get(0).isClicked()).isTrue();
+    }
     @Test
     @DisplayName("타인의 과제를 조회하면 isOwner는 false여야 한다")
     void 타인의_과제는_isOwner_false() {
@@ -231,7 +250,6 @@ class AssignmentQueryServiceTest {
                 .isInstanceOf(StudyException.class)
                 .extracting("errorCode")
                 .isEqualTo(StudyErrorCode.NOT_STUDY_MEMBER);
-
 
     }
 

@@ -8,6 +8,8 @@ import econovation.moongtaengi.study.domain.assignment.AssignmentException;
 import econovation.moongtaengi.study.domain.assignment.AssignmentRepository;
 import econovation.moongtaengi.study.domain.process.StudyProcessRepository;
 import econovation.moongtaengi.study.domain.assignment.AssignmentErrorCode;
+import econovation.moongtaengi.study.domain.reaction.ReactionRepository;
+import econovation.moongtaengi.study.domain.reaction.ReactionStat;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ public class AssignmentQueryService {
     private final AssignmentRepository assignmentRepository;
     private final StudyProcessRepository processRepository;
     private final StudyMemberRepository studyMemberRepository;
+    private final ReactionRepository reactionRepository;
 
     public List<AssignmentSummary> getAssignmentSummaries(Long memberId, Long processId) {
         Long studyId = processRepository.findStudyIdById(processId)
@@ -42,7 +45,13 @@ public class AssignmentQueryService {
             throw new StudyException(StudyErrorCode.NOT_STUDY_MEMBER);
         }
 
-        return AssignmentDetail.of(memberId, raw);
+        List<ReactionStat> reactions = List.of();
+        if (raw.submissionId() != null) {
+            reactions = reactionRepository.findStatBySubmissionIdAndMemberId(raw.submissionId(), memberId);
+        }
+
+
+        return AssignmentDetail.of(memberId, raw, reactions);
     }
 
 }
