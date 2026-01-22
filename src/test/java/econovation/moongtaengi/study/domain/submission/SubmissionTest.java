@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -112,6 +111,85 @@ public class SubmissionTest {
         Collection<Object> events = submission.domainEvents();
         assertThat(events).hasSize(1);
         assertThat(((SubmissionCreatedEvent) events.iterator().next()).isLate()).isFalse();
+    }
+
+    @Test
+    @DisplayName("제출물의 내용과 첨부파일을 수정할 수 있다")
+    void 제출물_수정_성공() {
+        //given
+        Long submitterId = 1L;
+        Submission submission = aSubmission()
+                .submitterId(submitterId)
+                .build();
+
+        SubmissionContent newContent = new SubmissionContent("수정된 내용");
+        SubmissionAttachment newAttachment = SubmissionAttachment.of("new.pdf", "https://new-url.com");
+
+        //when
+        submission.update(submitterId, newContent, newAttachment);
+
+        //then
+        assertThat(submission.getContent()).isEqualTo(newContent);
+        assertThat(submission.getAttachment()).isPresent();
+        assertThat(submission.getAttachment().get().getName()).isEqualTo("new.pdf");
+        assertThat(submission.getAttachment().get().getUrl()).isEqualTo("https://new-url.com");
+    }
+
+    @Test
+    @DisplayName("첨부파일을 null로 업데이트하면 첨부파일이 삭제된다")
+    void 제출물_수정_첨부파일_삭제() {
+        //given
+        Long submitterId = 1L;
+        Submission submission = aSubmission()
+                .submitterId(submitterId)
+                .build();
+
+        SubmissionContent newContent = new SubmissionContent("첨부파일 삭제함");
+
+        //when
+        submission.update(submitterId, newContent, null);
+
+        //then
+        assertThat(submission.getContent()).isEqualTo(newContent);
+        assertThat(submission.getAttachment()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("수정 시 내용은 필수이므로 null이 들어오면 예외가 발생한다")
+    void 제출물_수정_실패_내용누락() {
+        //given
+        Long submitterId = 1L;
+        Submission submission = aSubmission()
+                .submitterId(submitterId)
+                .build();
+
+        //when&then
+        assertThatThrownBy(() -> submission.update(submitterId,  null, null))
+                .isInstanceOf(SubmissionException.class)
+                .extracting("errorCode")
+                .isEqualTo(SubmissionErrorCode.INVALID_SUBMISSION_INFO);
+    }
+
+    @Test
+    @DisplayName("작성자가 아닌 사람이 수정을 시도하면 예외가 발생한다")
+    void 제출물_수정_실패_작성자_불일치() {
+        //given
+        Long submitterId = 1L;
+        Long otherUserId = 999L;
+
+        Submission submission = aSubmission()
+                .submitterId(submitterId)
+                .build();
+
+        SubmissionContent newContent = new SubmissionContent("다른 사람이지롱~");
+
+        //when&then
+        assertThatThrownBy(() ->
+                submission.update(otherUserId, newContent, null)
+        )
+                .isInstanceOf(SubmissionException.class)
+                .extracting("errorCode")
+                .isEqualTo(SubmissionErrorCode.NOT_SUBMISSION_OWNER);
     }
 }
 
