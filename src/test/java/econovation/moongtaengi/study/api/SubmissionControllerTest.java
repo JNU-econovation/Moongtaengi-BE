@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -14,8 +15,11 @@ import econovation.moongtaengi.global.config.WebConfig;
 import econovation.moongtaengi.global.security.CustomAuthentication;
 import econovation.moongtaengi.global.security.LoginMemberIdArgumentResolver;
 import econovation.moongtaengi.study.api.dto.SubmissionCreateRequest;
+import econovation.moongtaengi.study.api.dto.SubmissionUpdateRequest;
 import econovation.moongtaengi.study.application.submission.CreateSubmissionCommand;
 import econovation.moongtaengi.study.application.submission.CreateSubmissionService;
+import econovation.moongtaengi.study.application.submission.UpdateSubmissionCommand;
+import econovation.moongtaengi.study.application.submission.UpdateSubmissionService;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,6 +53,9 @@ public class SubmissionControllerTest {
 
     @MockitoBean
     private CreateSubmissionService createSubmissionService;
+
+    @MockitoBean
+    private UpdateSubmissionService updateSubmissionService;
 
     @BeforeEach
     void setUp() {
@@ -115,5 +122,35 @@ public class SubmissionControllerTest {
                 Arguments.of("내용 누락(빈 문자열)", 1L, ""),
                 Arguments.of("내용 누락(공백)", 1L, "   ")
         );
+    }
+
+    @Test
+    @DisplayName("과제 수정 요청이 오면 200 OK를 반환하고 서비스에 올바른 명령을 전달한다")
+    void 과제_수정_성공() throws Exception {
+        //given
+        Long submissionId = 1L;
+        Long requesterId = 1L;
+
+        SubmissionUpdateRequest request = new SubmissionUpdateRequest(
+                "수정된 내용",
+                "new.pdf",
+                "http://new-url.com"
+        );
+
+        //when&then
+        mvc.perform(patch("/api/submissions/{submissionId}", submissionId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(status().isOk());
+        ArgumentCaptor<UpdateSubmissionCommand> commandCaptor = ArgumentCaptor.forClass(UpdateSubmissionCommand.class);
+        verify(updateSubmissionService).updateSubmission(commandCaptor.capture());
+
+        UpdateSubmissionCommand passedCommand = commandCaptor.getValue();
+
+        assertThat(passedCommand.submissionId()).isEqualTo(submissionId);
+        assertThat(passedCommand.requesterId()).isEqualTo(requesterId);
+        assertThat(passedCommand.content()).isEqualTo(request.content());
+        assertThat(passedCommand.fileName()).isEqualTo(request.fileName());
     }
 }
