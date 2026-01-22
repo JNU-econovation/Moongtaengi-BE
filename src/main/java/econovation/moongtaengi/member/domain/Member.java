@@ -107,4 +107,11 @@ public class Member extends BaseEntity {
         }
         this.profileIcon = type;
     }
+
+    public void updateNickname(Nickname nickname) {
+        if (nickname == null) {
+            throw new IllegalArgumentException("닉네임은 null일 수 없습니다.");
+        }
+        this.nickname = nickname;
+    }
 }

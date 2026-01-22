@@ -1,7 +1,9 @@
 package econovation.moongtaengi.member.api;
 
+import econovation.moongtaengi.global.annotation.LoginMemberId;
 import econovation.moongtaengi.member.api.dto.CompleteRegistrationRequest;
 import econovation.moongtaengi.member.api.dto.NicknameCheckResponse;
+import econovation.moongtaengi.member.api.dto.NicknameUpdateRequest;
 import econovation.moongtaengi.member.application.MemberService;
 import econovation.moongtaengi.member.domain.NicknameException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +49,18 @@ public class MemberController {
         memberService.completeRegistration(memberId, request.nickname());
 
         log.info("회원가입 완료 API 호출 성공 - memberId: {}", memberId);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/nickname")
+    public ResponseEntity<Void> updateNickname(
+            @Valid @RequestBody NicknameUpdateRequest request,
+            @LoginMemberId Long memberId
+    ) {
+        memberService.updateNickname(memberId, request.nickname());
+
+        log.info("닉네임 변경 API 호출 성공 - memberId: {}", memberId);
 
         return ResponseEntity.ok().build();
     }

@@ -52,4 +52,18 @@ public class MemberService {
 
         return MemberInfoResponse.from(member);
     }
+
+    @Transactional
+    public void updateNickname(Long memberId, String nicknameValue) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        Nickname nickname = nicknameFactory.createNickname(nicknameValue);
+
+        member.updateNickname(nickname);
+
+        memberRepository.save(member);
+
+        log.info("닉네임 변경 완료 - memberId: {}, nickname: {}", memberId, nickname.getValue());
+    }
 }
