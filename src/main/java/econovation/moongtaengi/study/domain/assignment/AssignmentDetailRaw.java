@@ -1,5 +1,6 @@
 package econovation.moongtaengi.study.domain.assignment;
 
+import econovation.moongtaengi.collection.domain.CollectionType;
 import java.time.LocalDateTime;
 
 public record AssignmentDetailRaw(
@@ -10,6 +11,10 @@ public record AssignmentDetailRaw(
         Long assigneeId,
         int totalExperience,
         Long submissionId,
-        LocalDateTime submitTime
+        LocalDateTime submitTime,
+        String submissionContent,
+        String submissionFileName,
+        String submissionFileUrl,
+        CollectionType profileIcon
 ) {
 }
