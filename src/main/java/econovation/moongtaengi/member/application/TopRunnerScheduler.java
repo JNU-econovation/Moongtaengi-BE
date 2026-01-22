@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * 탑러너 스케줄러
- * - 10분마다 경험치 상위 5명 선정
+ * - 5분마다 경험치 상위 5명 선정
  * - TopRunnerSelectedEvent 발행 (컬렉션 해금은 CollectionEventListener가 처리)
  * - 한번 해금되면 순위에서 밀려나도 회수하지 않음
  */
@@ -30,7 +30,7 @@ public class TopRunnerScheduler {
      * 10분마다 실행 - 탑러너 선정
      * 경험치 상위 5명 선정 후 이벤트 발행
      */
-    @Scheduled(cron = "0 */1 * * * *")
+    @Scheduled(cron = "0 */5 * * * *")
     public void selectTopRunners() {
         log.info("탑러너 선정 스케줄 시작");
 
