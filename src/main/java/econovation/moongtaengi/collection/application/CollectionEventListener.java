@@ -2,6 +2,7 @@ package econovation.moongtaengi.collection.application;
 
 import econovation.moongtaengi.collection.domain.CollectionType;
 import econovation.moongtaengi.collection.domain.event.CollectionUnlockedEvent;
+import econovation.moongtaengi.member.domain.event.TopRunnerSelectedEvent;
 import econovation.moongtaengi.member.domain.event.ExperienceAddedEvent;
 import econovation.moongtaengi.member.domain.event.MemberRegisteredEvent;
 import econovation.moongtaengi.onboarding.domain.event.OnboardingMissionCompletedEvent;
@@ -14,6 +15,7 @@ import econovation.moongtaengi.study.domain.reaction.ReactionAddedEvent;
 import econovation.moongtaengi.study.domain.reaction.ReactionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -174,5 +176,23 @@ public class CollectionEventListener {
             collectionService.unlockCollection(event.commenterId(), CollectionType.KANE);
             log.info("회원 {}의 댓글 100개 작성으로 KANE 컬렉션이 해금되었습니다", event.commenterId());
         }
+    }
+
+    /**
+     * 탑러너 선정 이벤트 처리
+     * TOP_RUNNER 컬렉션 해금
+     * 스케줄러로부터 발행된 이벤트 (트랜잭션 없음)
+     */
+    @EventListener
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void handleTopRunnerSelected(TopRunnerSelectedEvent event) {
+        log.info("탑러너 선정 이벤트 수신 - 선정된 회원 수: {}", event.memberIds().size());
+
+        // 각 탑러너에게 TOP_RUNNER 컬렉션 해금
+        for (Long memberId : event.memberIds()) {
+            collectionService.unlockCollection(memberId, CollectionType.TOP_RUNNER);
+        }
+
+        log.info("탑러너 컬렉션 해금 완료 - 처리된 회원 수: {}", event.memberIds().size());
     }
 }
