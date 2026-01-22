@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
+import econovation.moongtaengi.collection.domain.CollectionType;
 import econovation.moongtaengi.member.domain.Title;
 import econovation.moongtaengi.study.application.assignment.AssignmentDetail;
 import econovation.moongtaengi.study.application.assignment.AssignmentQueryService;
@@ -132,7 +133,8 @@ class AssignmentQueryServiceTest {
                 LocalDateTime.now(),
                 "열심히 작성한 과제 내용입니다.",
                 "file.png",
-                "http://example.com/file.png"
+                "http://example.com/file.png",
+                CollectionType.DEFAULT
         );
 
         given(assignmentRepository.findDetailRawById(assignmentId))
@@ -183,7 +185,8 @@ class AssignmentQueryServiceTest {
                 null,
                 null,
                 null,
-                null
+                null,
+                CollectionType.DEFAULT
         );
 
         given(assignmentRepository.findDetailRawById(assignmentId))
@@ -235,7 +238,8 @@ class AssignmentQueryServiceTest {
                 null,
                 null,
                 null,
-                null
+                null,
+                CollectionType.DEFAULT
         );
 
         given(assignmentRepository.findDetailRawById(assignmentId))

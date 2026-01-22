@@ -249,6 +249,7 @@ public class AssignmentControllerTest {
                 "제출물 내용",
                 "파일.pdf",
                 "http://file.url",
+                "http://profile.url",
                 List.of()
         );
 
