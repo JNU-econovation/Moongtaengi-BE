@@ -29,7 +29,7 @@ public class UpdateAssignmentService {
 
         ProcessInfo processInfo = infoProvider.getProcessInfo(assignment.getProcessId());
 
-        policy.validate(processInfo.studyId(), command.requesterId());
+        policy.validateAuthority(processInfo.studyId(), command.requesterId());
 
         assignment.updateDescription(new AssignmentDescription(command.description()));
 

@@ -20,7 +20,9 @@ public enum AssignmentErrorCode implements ErrorCode {
 
     CANNOT_APPROVE_NOT_SUBMITTED(HttpStatus.BAD_REQUEST, "AS_006", "제출되지 않은 과제는 승인할 수 없습니다."),
 
-    UPDATE_ALLOWED_ONLY_IN_WAITING(HttpStatus.BAD_REQUEST, "AS_007","과제 내용은 WAITING 상태에서만 수정 가능합니다.");
+    UPDATE_ALLOWED_ONLY_IN_WAITING(HttpStatus.BAD_REQUEST, "AS_007","과제 내용은 WAITING 상태에서만 수정 가능합니다."),
+
+    INVALID_ASSIGNEE(HttpStatus.BAD_REQUEST, "AS_008", "해당 멤버는 과제 할당 대상이 아닙니다.");
 
     private final HttpStatus status;
     private final String code;
