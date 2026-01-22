@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum Title {
-    BEGINNER("비기너", 0),
-    PRO("프로", 100),
-    MASTER("마스터", 300);
+    BEGINNER("BEGINNER", 0),
+    PRO("PRO", 100),
+    MASTER("MASTER", 300);
 
     private final String displayName;
     private final int requiredExperience;
