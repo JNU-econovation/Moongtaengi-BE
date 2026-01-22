@@ -3,14 +3,18 @@ package econovation.moongtaengi.study.api;
 import econovation.moongtaengi.global.annotation.LoginMemberId;
 import econovation.moongtaengi.study.api.dto.CommentCreateRequest;
 import econovation.moongtaengi.study.api.dto.CommentUpdateRequest;
+import econovation.moongtaengi.study.application.comment.CommentQueryService;
+import econovation.moongtaengi.study.application.comment.CommentSummary;
 import econovation.moongtaengi.study.application.comment.CreateCommentCommand;
 import econovation.moongtaengi.study.application.comment.CreateCommentService;
 import econovation.moongtaengi.study.application.comment.UpdateCommentService;
 import jakarta.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,6 +30,7 @@ public class CommentController {
 
     private final CreateCommentService createCommentService;
     private final UpdateCommentService updateCommentService;
+    private final CommentQueryService commentQueryService;
 
     @PostMapping("/submissions/{submissionId}/comments")
     public ResponseEntity<Void> createComment(
@@ -40,6 +45,15 @@ public class CommentController {
         Long commentId = createCommentService.createComment(command);
 
         return ResponseEntity.created(URI.create("/api/comments/" + commentId)).build();
+    }
+
+    @GetMapping("/submissions/{submissionId}/comments")
+    public ResponseEntity<List<CommentSummary>> getComments(
+            @PathVariable Long submissionId,
+            @LoginMemberId Long memberId
+    ) {
+        List<CommentSummary> response = commentQueryService.getComments(submissionId, memberId);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/comments/{commentId}")
