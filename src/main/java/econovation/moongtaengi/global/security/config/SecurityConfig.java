@@ -48,6 +48,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/kakao/callback",
                                 "/api/members/check-nickname",
+                                "/api/home/top-runners",  // 탑러너 목록 (공개 API)
                                 "/admin/login",           // 관리자 로그인 페이지
                                 "/admin/do-login",
                                 "/admin/login-success",

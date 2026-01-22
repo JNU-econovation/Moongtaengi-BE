@@ -2,6 +2,7 @@ package econovation.moongtaengi.home.api;
 
 import econovation.moongtaengi.global.annotation.LoginMemberId;
 import econovation.moongtaengi.home.api.dto.HomeResponse;
+import econovation.moongtaengi.home.api.dto.TopRunnerListResponse;
 import econovation.moongtaengi.home.application.HomeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,18 @@ public class HomeController {
         log.info("메인 페이지 조회 API 호출 - memberId: {}", memberId);
 
         HomeResponse response = homeService.getHomeInfo(memberId);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 탑러너 목록 조회 (공개 API)
+     * @return 경험치 상위 5명의 탑러너 목록
+     */
+    @GetMapping("/top-runners")
+    public ResponseEntity<TopRunnerListResponse> getTopRunners() {
+        log.info("탑러너 목록 조회 API 호출 (공개)");
+
+        TopRunnerListResponse response = new TopRunnerListResponse(homeService.getTopRunners());
         return ResponseEntity.ok(response);
     }
 }
