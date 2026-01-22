@@ -66,7 +66,7 @@ public class ApproveAssignmentServiceTest {
         //then
         assertThat(assignment.getStatus()).isEqualTo(AssignmentStatus.APPROVED);
 
-        verify(assignmentManagementPolicy).validate(studyId, requesterId);
+        verify(assignmentManagementPolicy).validateAuthority(studyId, requesterId);
     }
 
     @Test
@@ -106,7 +106,7 @@ public class ApproveAssignmentServiceTest {
                 .willReturn(new ProcessInfo(studyId, LocalDate.now(), LocalDate.now()));
 
         willThrow(new AssignmentException(AssignmentErrorCode.NO_MANAGEMENT_PERMISSION))
-                .given(assignmentManagementPolicy).validate(studyId, requesterId);
+                .given(assignmentManagementPolicy).validateAuthority(studyId, requesterId);
 
         //when&then
         assertThatThrownBy(() -> approveAssignmentService.approveAssignment(assignmentId, requesterId))

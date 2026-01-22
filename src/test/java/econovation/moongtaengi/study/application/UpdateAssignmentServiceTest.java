@@ -68,7 +68,7 @@ public class UpdateAssignmentServiceTest {
 
             //then
             verify(infoProvider).getProcessInfo(processId);
-            verify(policy).validate(studyId, requesterId);
+            verify(policy).validateAuthority(studyId, requesterId);
             assertThat(assignment.getDescription().getValue()).isEqualTo(newDescriptionValue);
         }
 
@@ -92,6 +92,6 @@ public class UpdateAssignmentServiceTest {
                     .isEqualTo(AssignmentErrorCode.ASSIGNMENT_NOT_FOUND);
 
             verify(infoProvider, never()).getProcessInfo(any());
-            verify(policy, never()).validate(any(), any());
+            verify(policy, never()).validateAuthority(any(), any());
         }
 }

@@ -23,7 +23,7 @@ public class ApproveAssignmentService {
 
         ProcessInfo processInfo = processInfoProvider.getProcessInfo(assignment.getProcessId());
 
-        assignmentManagementPolicy.validate(processInfo.studyId(), requesterId);
+        assignmentManagementPolicy.validateAuthority(processInfo.studyId(), requesterId);
 
         assignment.approve();
         assignmentRepository.save(assignment);

@@ -80,7 +80,7 @@ public class CreateAssignmentServiceTest {
         //then
         assertThat(resultId).isEqualTo(1L);
 
-        verify(policy).validate(studyId, command.requesterId());
+        verify(policy).validateAllocation(studyId, command.requesterId(), command.assigneeId());
         verify(validator).validate(command.processId(), command.assigneeId());
         verify(infoProvider).getProcessInfo(command.processId());
 

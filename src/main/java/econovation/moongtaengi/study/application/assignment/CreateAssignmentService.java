@@ -27,7 +27,7 @@ public class CreateAssignmentService {
     public Long createAssignment(CreateAssignmentCommand command) {
         ProcessInfo processInfo = infoProvider.getProcessInfo(command.processId());
 
-        policy.validate(processInfo.studyId(), command.requesterId());
+        policy.validateAllocation(processInfo.studyId(), command.requesterId(), command.assigneeId());
 
         validator.validate(command.processId(), command.assigneeId());
 
