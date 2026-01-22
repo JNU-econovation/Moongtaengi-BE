@@ -22,7 +22,8 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
             a.status,
             a.isLate,
             s.attachment.name,
-            s.attachment.url
+            s.attachment.url,
+            m.profileIcon
         )
         FROM StudyMember sm
         JOIN Member m ON sm.memberId = m.id
