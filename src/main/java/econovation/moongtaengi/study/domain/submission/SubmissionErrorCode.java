@@ -24,7 +24,9 @@ public enum SubmissionErrorCode implements ErrorCode {
 
     NOT_ASSIGNEE(HttpStatus.FORBIDDEN, "SM_008", "해당 과제의 담당자가 아닙니다."),
 
-    NOT_SUBMISSION_OWNER(HttpStatus.FORBIDDEN, "SM_009", "제출물 수정 권한이 없습니다.");
+    NOT_SUBMISSION_OWNER(HttpStatus.FORBIDDEN, "SM_009", "제출물 수정 권한이 없습니다."),
+
+    SUBMISSION_NOT_FOUND(HttpStatus.NOT_FOUND, "SM_0010", "존재하지 않는 제출물입니다.");
 
     private final HttpStatus status;
     private final String code;
