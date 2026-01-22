@@ -52,6 +52,8 @@ public class CommentController {
             @PathVariable Long submissionId,
             @LoginMemberId Long memberId
     ) {
+        log.info("댓글 목록 조회 API 호출 - memberId: {}, submissionId: {}", memberId, submissionId);
+
         List<CommentSummary> response = commentQueryService.getComments(submissionId, memberId);
         return ResponseEntity.ok(response);
     }

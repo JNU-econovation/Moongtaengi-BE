@@ -7,9 +7,11 @@ import econovation.moongtaengi.study.domain.submission.SubmissionErrorCode;
 import econovation.moongtaengi.study.domain.submission.SubmissionException;
 import econovation.moongtaengi.study.domain.submission.SubmissionRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UpdateSubmissionService {
@@ -33,6 +35,9 @@ public class UpdateSubmissionService {
         }
 
         submission.update(command.requesterId(), contentToUpdate, attachmentToUpdate);
+
+        log.info("과제 제출 수정 완료 - submissionId: {}, requesterId: {}",
+                submission.getId(), command.requesterId());
     }
 
 }
