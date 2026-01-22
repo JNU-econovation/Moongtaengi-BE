@@ -62,6 +62,29 @@ public class CommentSummaryTest {
         assertThat(summary.profileImageUrl()).isEqualTo(CollectionType.DEFAULT.getUnlockedImageUrl());
     }
 
+    @Test
+    @DisplayName("댓글 내용이나 닉네임이 null이면 빈 문자열로 변환되어야 한다.")
+    void 내용_및_닉네임_null_방어_로직_성공() {
+        //given
+        Long loginMemberId = 1L;
+
+        CommentSummaryRaw raw = new CommentSummaryRaw(
+                10L,
+                null,
+                LocalDateTime.now(),
+                1L,
+                null,
+                CollectionType.DEFAULT
+        );
+
+        //when
+        CommentSummary summary = CommentSummary.of(loginMemberId, raw);
+
+        //then
+        assertThat(summary.content()).isNotNull().isEmpty();
+        assertThat(summary.nickname()).isNotNull().isEmpty();
+    }
+
     private CommentSummaryRaw createRaw(Long writerId, CollectionType type) {
         return new CommentSummaryRaw(
                 10L,

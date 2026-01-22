@@ -16,10 +16,10 @@ public record CommentSummary(
     public static CommentSummary of(Long loginMemberId, CommentSummaryRaw raw) {
         return new CommentSummary(
                 raw.commentId(),
-                raw.content(),
+                nullToEmpty(raw.content()),
                 raw.createdAt(),
                 raw.memberId(),
-                raw.nickname(),
+                nullToEmpty(raw.nickname()),
                 getProfileIconUrl(raw.profileIcon()),
                 isMyComment(loginMemberId, raw.memberId())
         );
@@ -34,5 +34,9 @@ public record CommentSummary(
 
     private static boolean isMyComment(Long loginMemberId, Long writerId) {
         return loginMemberId != null && loginMemberId.equals(writerId);
+    }
+
+    private static String nullToEmpty(String value) {
+        return value == null ? "" : value;
     }
 }
