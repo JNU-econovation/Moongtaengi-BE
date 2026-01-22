@@ -75,16 +75,6 @@ public class HomeService {
                 .map(study -> study.getId())
                 .orElse(null);
 
-        // 탑러너 목록 조회
-        List<TopRunnerInfo> topRunners = memberRepository
-                .findTopMembersByExperience(PageRequest.of(0, 5))
-                .stream()
-                .map(topMember -> new TopRunnerInfo(
-                        topMember.getNickname().getValue(),
-                        topMember.getProfileIcon().getUnlockedImageUrl()
-                ))
-                .toList();
-
         log.info("회원 {}의 메인 페이지 정보를 조회했습니다", memberId);
 
         return new HomeResponse(
@@ -97,8 +87,27 @@ public class HomeService {
                 member.getTitle().getDisplayName(),
                 collectionCount,
                 member.getTotalExperience(),
-                shortcutStudyId,
-                topRunners
+                shortcutStudyId
         );
+    }
+
+    /**
+     * 탑러너 목록 조회 (공개 API)
+     * @return 경험치 상위 5명의 탑러너 목록
+     */
+    public List<TopRunnerInfo> getTopRunners() {
+        log.info("탑러너 목록을 조회합니다");
+
+        List<TopRunnerInfo> topRunners = memberRepository
+                .findTopMembersByExperience(PageRequest.of(0, 5))
+                .stream()
+                .map(topMember -> new TopRunnerInfo(
+                        topMember.getNickname().getValue(),
+                        topMember.getProfileIcon().getUnlockedImageUrl()
+                ))
+                .toList();
+
+        log.info("탑러너 목록 조회 완료 - {} 명", topRunners.size());
+        return topRunners;
     }
 }

@@ -1,7 +1,5 @@
 package econovation.moongtaengi.home.api.dto;
 
-import java.util.List;
-
 /**
  * 메인 페이지 응답
  * @param nickname 사용자 닉네임
@@ -14,7 +12,6 @@ import java.util.List;
  * @param collectionCount 보유 컬렉션 수
  * @param totalExperience 총 경험치
  * @param shortcutStudyId 바로가기 스터디 ID (없으면 null)
- * @param topRunners 탑러너 목록 (최대 5명)
  */
 public record HomeResponse(
         String nickname,
@@ -26,7 +23,6 @@ public record HomeResponse(
         String activityTitle,
         Long collectionCount,
         int totalExperience,
-        Long shortcutStudyId,
-        List<TopRunnerInfo> topRunners
+        Long shortcutStudyId
 ) {
 }
