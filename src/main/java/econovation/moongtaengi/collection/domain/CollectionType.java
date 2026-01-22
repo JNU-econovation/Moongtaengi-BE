@@ -38,6 +38,16 @@ public enum CollectionType {
             "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/special/special_bg.png"
     ),
 
+    // 온보딩 완료
+    WOOD(
+            "나무곡괭이 뭉탱이",
+            CollectionRarity.COMMON,
+            "모든 온보딩 미션 완료",
+            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/wood/wood1.png",
+            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/wood/wood2.png",
+            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/wood/wood_bg.png"
+    ),
+
     // 경험치 기반
     PRO(
             "프로 뭉탱이",
@@ -46,6 +56,26 @@ public enum CollectionType {
             "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/pro/pro1.png",
             "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/pro/pro2.png",
             "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/pro/pro_bg.png"
+    ),
+
+    // 감정표현
+    STICKER(
+            "스티커 뭉탱이",
+            CollectionRarity.RARE,
+            "감정 표현 사용하기",
+            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/sticker/sticker1.png",
+            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/sticker/sticker2.png",
+            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/sticker/sticker_bg.png"
+    ),
+
+    // 댓글 작성
+    GRADUATION(
+            "학사모 뭉탱이",
+            CollectionRarity.EPIC,
+            "댓글 10개 작성하기",
+            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/graduation/graduation1.png",
+            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/graduation/graduation2.png",
+            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/graduation/graduation_bg.png"
     ),
 
     MASTER(
@@ -67,6 +97,16 @@ public enum CollectionType {
             "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/bunch/bunch_bg.png"
     ),
 
+    KANE(
+            "케인 뭉탱이",
+            CollectionRarity.UNIQUE,
+            "댓글 100개 작성하기",
+            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/kane/kane1.png",
+            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/kane/kane2.png",
+            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/kane/kane_bg.png"
+    ),
+
+
     // 컬렉션 수집
     TREASURE(
             "보물주머니 뭉탱이",
@@ -75,45 +115,6 @@ public enum CollectionType {
             "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/treasure/treasure1.png",
             "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/treasure/treasure2.png",
             "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/treasure/treasure_bg.png"
-    ),
-
-    // 온보딩 완료
-    WOOD(
-            "나무곡괭이 뭉탱이",
-            CollectionRarity.COMMON,
-            "모든 온보딩 미션 완료",
-            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/wood/wood1.png",
-            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/wood/wood2.png",
-            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/wood/wood_bg.png"
-    ),
-
-    // 댓글 작성
-    GRADUATION(
-            "학사모 뭉탱이",
-            CollectionRarity.EPIC,
-            "댓글 10개 작성하기",
-                    "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/graduation/graduation1.png",
-                    "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/graduation/graduation2.png",
-                    "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/graduation/graduation_bg.png"
-    ),
-
-    KANE(
-            "케인 뭉탱이",
-            CollectionRarity.UNIQUE,
-            "댓글 100개 작성하기",
-                    "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/kane/kane1.png",
-                    "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/kane/kane2.png",
-                    "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/kane/kane_bg.png"
-    ),
-
-    // 감정표현
-    STICKER(
-            "스티커 뭉탱이",
-            CollectionRarity.RARE,
-            "감정 표현 사용하기",
-            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/sticker/sticker1.png",
-            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/sticker/sticker2.png",
-            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/sticker/sticker_bg.png"
     ),
 
     // 탑러너
