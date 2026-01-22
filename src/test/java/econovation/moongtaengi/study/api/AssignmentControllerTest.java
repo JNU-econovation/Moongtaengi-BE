@@ -197,7 +197,8 @@ public class AssignmentControllerTest {
                         "지환", AssignmentStatus.SUBMITTED,
                         false,
                         "파일명.pdf",
-                        "http://file.url"),
+                        "http://file.url",
+                        "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/econo/econo2.png"),
                 new AssignmentSummary(11L,
                         null,
                         2L,
@@ -206,7 +207,8 @@ public class AssignmentControllerTest {
                         AssignmentStatus.WAITING,
                         true,
                         null,
-                        null)
+                        null,
+                        "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/econo/econo2.png")
         );
 
         given(assignmentQueryService.getAssignmentSummaries(memberId, processId))
