@@ -92,18 +92,18 @@ public enum CollectionType {
             "학사모 뭉탱이",
             CollectionRarity.EPIC,
             "댓글 10개 작성하기",
-                    "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/wood/wood1.png",
-                    "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/wood/wood2.png",
-                    "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/wood/wood_bg.png"
+                    "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/graduation/graduation1.png",
+                    "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/graduation/graduation2.png",
+                    "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/graduation/graduation_bg.png"
     ),
 
     KANE(
             "케인 뭉탱이",
             CollectionRarity.UNIQUE,
             "댓글 100개 작성하기",
-                    "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/wood/wood1.png",
-                    "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/wood/wood2.png",
-                    "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/wood/wood_bg.png"
+                    "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/kane/kane1.png",
+                    "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/kane/kane2.png",
+                    "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/kane/kane_bg.png"
     ),
 
     // 감정표현
@@ -111,9 +111,9 @@ public enum CollectionType {
             "스티커 뭉탱이",
             CollectionRarity.RARE,
             "감정 표현 사용하기",
-            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/wood/wood1.png",
-            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/wood/wood2.png",
-            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/wood/wood_bg.png"
+            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/sticker/sticker1.png",
+            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/sticker/sticker2.png",
+            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/sticker/sticker_bg.png"
     ),
 
     // 탑러너
@@ -121,9 +121,9 @@ public enum CollectionType {
             "탑러너 뭉탱이",
             CollectionRarity.UNIQUE,
             "탑러너에 입성하기",
-            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/wood/wood1.png",
-            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/wood/wood2.png",
-            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/wood/wood_bg.png"
+            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/topRunner/topRunner1.png",
+            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/topRunner/topRunner2.png",
+            "https://moongtaengi-dev.s3.ap-northeast-2.amazonaws.com/collection/topRunner/topRunner_bg.png"
     );
 
     private final String displayName;

@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
 
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/favicon.ico", "/error", "/css/**", "/js/**", "/images/**").permitAll()
                         // 인증 불필요 (public)
                         .requestMatchers(
                                 "/api/auth/kakao/callback",

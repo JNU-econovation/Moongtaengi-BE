@@ -2,6 +2,7 @@ package econovation.moongtaengi.study.domain;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -36,4 +37,13 @@ public interface StudyMemberRepository extends JpaRepository<StudyMember, Long> 
             @Param("memberId") Long memberId,
             @Param("role") StudyRole role
     );
+
+    /**
+     * 회원이 참여 중인 스터디 중 가장 최근에 업데이트된 스터디 조회
+     * @param memberId 회원 ID
+     * @param pageable 페이징 정보 (Limit 1)
+     * @return 가장 최근 업데이트된 스터디
+     */
+    @Query("SELECT sm FROM StudyMember sm JOIN FETCH sm.study s WHERE sm.memberId = :memberId ORDER BY s.updatedAt DESC")
+    List<StudyMember> findMostRecentStudyByMemberId(@Param("memberId") Long memberId, Pageable pageable);
 }
