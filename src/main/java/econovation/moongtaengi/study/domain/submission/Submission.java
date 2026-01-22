@@ -77,4 +77,25 @@ public class Submission extends BaseEntity {
             throw new SubmissionException(SubmissionErrorCode.CREATE_ARGUMENT_MISSING);
         }
     }
+
+    public void update(Long requesterId, SubmissionContent content, SubmissionAttachment attachment) {
+        validateOwner(requesterId);
+        validateUpdatable(content);
+        this.content = content;
+        this.attachment = attachment;
+    }
+
+    private void validateUpdatable(SubmissionContent content) {
+        if (content == null) {
+            throw new SubmissionException(SubmissionErrorCode.INVALID_SUBMISSION_INFO);
+        }
+    }
+
+    private void validateOwner(Long requesterId) {
+        if (!this.submitterId.equals(requesterId)) {
+            throw new SubmissionException(SubmissionErrorCode.NOT_SUBMISSION_OWNER);
+        }
+    }
+
+
 }

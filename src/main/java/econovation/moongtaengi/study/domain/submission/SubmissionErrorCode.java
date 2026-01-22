@@ -22,7 +22,9 @@ public enum SubmissionErrorCode implements ErrorCode {
 
     INVALID_ASSIGNMENT_ID(HttpStatus.NOT_FOUND, "SM_007", "유효하지 않은 과제 ID 입니다."),
 
-    NOT_ASSIGNEE(HttpStatus.FORBIDDEN, "SM_008", "해당 과제의 담당자가 아닙니다.");
+    NOT_ASSIGNEE(HttpStatus.FORBIDDEN, "SM_008", "해당 과제의 담당자가 아닙니다."),
+
+    NOT_SUBMISSION_OWNER(HttpStatus.FORBIDDEN, "SM_009", "제출물 수정 권한이 없습니다.");
 
     private final HttpStatus status;
     private final String code;
