@@ -33,6 +33,8 @@ public class SubmissionController {
             @LoginMemberId Long submitterId,
             @RequestBody @Valid SubmissionCreateRequest request
     ) {
+        log.info("과제 제출 API 호출 - submitterId: {}", submitterId);
+
         CreateSubmissionCommand command = request.toCommand(submitterId);
 
         Long submissionId = createSubmissionService.createSubmission(command);
@@ -46,6 +48,8 @@ public class SubmissionController {
             @PathVariable Long submissionId,
             @RequestBody SubmissionUpdateRequest request
     ) {
+        log.info("과제 제출 수정 API 호출 - requesterId: {}, submissionId: {}", requesterId, submissionId);
+
         UpdateSubmissionCommand command = request.toCommand(submissionId, requesterId);
 
         updateSubmissionService.updateSubmission(command);
